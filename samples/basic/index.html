@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>AirbitzCore Sample App</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+  </head>
+  <body>
+    <nav class="navbar navbar-default">
+      <div class="container">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="#">Airbitz Sample</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <form class="navbar-form navbar-left">
+              <div class="form-group">
+                <input type="text" id="apiKey" class="form-control" placeholder="API key">
+              </div>
+              <button type="button" id="apiKeySubmit" class="btn btn-default">Submit</button>
+          </form>
+          <ul class="nav navbar-nav navbar-right logged_out">
+              <li><a href="javascript://" id="login">Login</a></li>
+              <li><a href="javascript://" id="register">Register</a></li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right logged_in" style="display:hidden">
+              <li><a href="javascript://" id="account">Manage Account</a></li>
+              <li><a href="javascript://" id="logout">Logout</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <div class="container logged_out">
+      <div class="text-center">
+        <h2>You are logged out.</h2>
+        <p>Please signin or register.</p>
+      </div>
+    </div>
+    <div class="container logged_in" style="display:hidden">
+      <table class="table table-striped">
+        <tr>
+          <td>Username:</td>
+          <td><span id="username"></span></td>
+        </tr>
+        <tr>
+          <td>Root Key:</td>
+          <td><span id="key"></span></td>
+        </tr>
+      </table>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.1.0.min.js"   integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s=" crossorigin="anonymous"></script>
+    <script src="/static/abcui.js"></script>
+    <script>
+        var _account = null;
+        var _abcUi = null;
+        function updateUi() {
+          if (_abcUi == null) {
+            $('.logged_out').hide();
+            $('.logged_in').hide();
+          } else if (_account == null) {
+            $('.logged_out').show();
+            $('.logged_in').hide();
+          } else {
+            $('.logged_out').hide();
+            $('.logged_in').show();
+            $('#username').text(_account.username);
+            $('#key').text(_account.rootKey.toString('base64'));
+          }
+        }
+        $(function() {
+          $('#apiKeySubmit').click(function() {
+            _abcUi = abcui.AbcUi({'key': $('#apiKey').val(), 'bundle-path': '/ui'});
+            $('#login').click(function() {
+              _abcUi.login(function(result, account) {
+                _account = account;
+                updateUi();
+              });
+            });
+            $('#register').click(function() {
+              _abcUi.register(function(result, account) {
+                _account = account;
+                updateUi();
+              });
+            });
+            $('#logout').click(function() {
+              _account.logout();
+              _account = null;
+              updateUi();
+            });
+            $('#account').click(function() {
+              _abcUi.manageAccount(_account, function(result, account) {
+                updateUi();
+              });
+            });
+            updateUi();
+        });
+        updateUi();
+      });
+    </script>
+  </body>
+</html>
