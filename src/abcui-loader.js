@@ -379,18 +379,23 @@ var RegistrationForm = React.createClass({
           <div className="row">
             <div className="col-sm-12">
               <div className="form-group">
-                <BootstrapInput type="text" ref="username" placeholder="username" className="form-control" onBlur={this.blur} onFocus={this.focus} />
+                <BootstrapInput type="text" ref="username" placeholder="Choose a Username" className="form-control" onBlur={this.blur} onFocus={this.focus} />
               </div>
             </div>
             <div className="col-sm-12">
               <div className="form-group">
-                <PasswordRequirementsInput ref="password" placeholder="password" className="form-control" />
+                <PasswordRequirementsInput ref="password" placeholder="Choose a Password" className="form-control" />
+              </div>
+            </div>
+            <div className="col-sm-12">
+              <div className="form-group">
+                <PasswordRequirementsInput ref="password_repeat" placeholder="Repeat Password" className="form-control" />
               </div>
             </div>
             <div className="col-sm-12">
               <div className="form-group">
                 <div className="input-group">
-                  <input type="password" ref="pin" placeholder="pin" className="form-control" />
+                  <input type="password" ref="pin" placeholder="Choose a 4 Digit PIN" className="form-control" />
                 </div>
               </div>
             </div>
@@ -427,6 +432,16 @@ var RegistrationForm = React.createClass({
   },
   handleSubmit() {
     var that = this;
+    if (this.refs.password.value() != this.refs.password_repeat.value()) {
+      that.refs.form.setState({ 'error': 'Passwords do not match' });
+      return false;
+    }
+    var checkPasswdResults = context.checkPasswordRules(this.refs.password.value())
+    if (!checkPasswdResults.passed) {
+      that.refs.form.setState({ 'error': 'Insufficient Password' });
+      return false;
+    }
+
     this.refs.register.setLoading(true);
     var username = this.refs.username.value();
     context.accountCreate(username, this.refs.password.value(), function(err, result) {
