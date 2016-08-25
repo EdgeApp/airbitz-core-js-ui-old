@@ -395,7 +395,7 @@ var RegistrationForm = React.createClass({
             <div className="col-sm-12">
               <div className="form-group">
                 <div className="input-group">
-                  <input type="password" ref="pin" placeholder="Choose a 4 Digit PIN" className="form-control" />
+                  <input type="password" ref="pin" maxlength="4" placeholder="Choose a 4 Digit PIN" className="form-control" />
                 </div>
               </div>
             </div>
@@ -439,6 +439,15 @@ var RegistrationForm = React.createClass({
     var checkPasswdResults = context.checkPasswordRules(this.refs.password.value())
     if (!checkPasswdResults.passed) {
       that.refs.form.setState({ 'error': 'Insufficient Password' });
+      return false;
+    }
+    if (4 != this.refs.pin.value.length) {
+      that.refs.form.setState({ 'error': 'PIN Must be 4 digits long' });
+      return false;
+    }
+    var onlyNumbers = /^\d+$/.test(that.refs.pin.value);
+    if (!onlyNumbers) {
+      that.refs.form.setState({ 'error': 'PIN must only have numbers' });
       return false;
     }
 
