@@ -13,12 +13,12 @@
           <a class="navbar-brand" href="#">Airbitz Sample</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
-          <form class="navbar-form navbar-left">
-              <div class="form-group">
-                <input type="text" id="apiKey" class="form-control" placeholder="API key">
-              </div>
-              <button type="button" id="apiKeySubmit" class="btn btn-default">Submit</button>
-          </form>
+          <!--<form class="navbar-form navbar-left">-->
+              <!--<div class="form-group">-->
+                <!--<input type="text" id="apiKey" class="form-control" placeholder="API key">-->
+              <!--</div>-->
+              <!--<button type="button" id="apiKeySubmit" class="btn btn-default">Submit</button>-->
+          <!--</form>-->
           <ul class="nav navbar-nav navbar-right logged_out">
               <li><a href="javascript://" id="login">Login</a></li>
               <li><a href="javascript://" id="register">Register</a></li>
@@ -53,6 +53,8 @@
     <script>
         var _account = null;
         var _abcUi = null;
+        // Replace 'd98e26ce95d1a1ceb76be0f373fd2b1af29335e8' with your own API key from https://developer.airbitz.co
+        _abcUi = abcui.AbcUi({'key': 'd98e26ce95d1a1ceb76be0f373fd2b1af29335e8', 'bundle-path': '/ui'});
         function updateUi() {
           if (_abcUi == null) {
             $('.logged_out').hide();
@@ -67,9 +69,9 @@
             $('#key').text(_account.rootKey.toString('base64'));
           }
         }
-        $(function() {
-          $('#apiKeySubmit').click(function() {
-            _abcUi = abcui.AbcUi({'key': $('#apiKey').val(), 'bundle-path': '/ui'});
+//        $(function() {
+//          $('#apiKeySubmit').click(function() {
+//            _abcUi = abcui.AbcUi({'key': $('#apiKey').val(), 'bundle-path': '/ui'});
             $('#login').click(function() {
               _abcUi.login(function(result, account) {
                 _account = account;
@@ -93,9 +95,9 @@
               });
             });
             updateUi();
-        });
-        updateUi();
-      });
+//        });
+//        updateUi();
+//      });
     </script>
   </body>
 </html>
