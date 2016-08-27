@@ -1,6 +1,10 @@
 import React from 'react'
 import { render } from 'react-dom'
 import { Router, Route, IndexRoute, Link, IndexLink, hashHistory } from 'react-router'
+import abc from 'airbitz-core-js'
+
+var abcc = abc.ABCConditionCode
+var ABCError = abc.ABCError
 
 var SetupRecoveryView = require('./abcui-recovery').SetupRecoveryView
 var ForgotPasswordForm = require('./abcui-recovery').ForgotPasswordForm
@@ -221,7 +225,7 @@ var AbcPasswordLoginForm = React.createClass({
     this.refs.form.setState({'error': null});
     context.passwordLogin(this.refs.username.getValue(), this.refs.password.value, function(err, result) {
       if (err) {
-        that.refs.form.setState({'error': Constants.errorMap(err, 'Invalid Password')});
+        that.refs.form.setState({'error': ABCError(err, 'Invalid Password').message});
       } else {
         that.props.onSuccess(result);
       }
@@ -297,7 +301,7 @@ var AbcPinLoginForm = React.createClass({
     this.refs.signin.setLoading(true);
     context.pinLogin(this.refs.username.getValue(), this.refs.pin.value, function(err, result) {
       if (err) {
-        that.refs.form.setState({'error': Constants.errorMap(err, 'Failed to login with PIN.')});
+        that.refs.form.setState({'error': ABCError(err, 'Failed to login with PIN.').message});
       } else {
         that.props.onSuccess(result);
       }
@@ -457,7 +461,7 @@ var RegistrationForm = React.createClass({
     var username = this.refs.username.value();
     context.accountCreate(username, this.refs.password.value(), function(err, result) {
       if (err) {
-        that.refs.form.setState({'error': Constants.errorMap(err, 'Unable to register at this time.')});
+        that.refs.form.setState({'error': ABCError(err, 'Unable to register at this time.').message});
         that.refs.register.setLoading(false);
       } else {
         var account = result;
@@ -552,7 +556,7 @@ var ChangePasswordView = React.createClass({
       this.refs.changeButton.setLoading(true);
       window.parent.account.passwordSetup(this.refs.password.value(), function(err, result) {
         if (err) {
-          that.refs.form.setState({'error': Constants.errorMap(err, 'Invalid Password')});
+          that.refs.form.setState({'error': ABCError(err, 'Invalid Password').message});
         } else {
           that.refs.modal.close();
           if (window.parent.exitCallback) {
@@ -605,7 +609,7 @@ var ChangePinView = React.createClass({
       this.refs.changeButton.setLoading(true);
       window.parent.account.pinSetup(this.refs.pin.value, function(err, result) {
         if (err) {
-          that.refs.form.setState({'error': Constants.errorMap(err, 'Invalid Password')});
+          that.refs.form.setState({'error': ABCError(err, 'Invalid Password').message});
         } else {
           that.refs.modal.close();
           if (window.parent.exitCallback) {
