@@ -1,6 +1,9 @@
 import React from 'react'
 import { render } from 'react-dom'
 
+var modal = require('./abcui-modal.js')
+var BootstrapButton = modal.BootstrapButton
+var BootstrapModal = modal.BootstrapModal
 
 var SetupRecoveryView = React.createClass({
   render() {
