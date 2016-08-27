@@ -395,7 +395,7 @@ var RegistrationForm = React.createClass({
             <div className="col-sm-12">
               <div className="form-group">
                 <div className="input-group">
-                  <input type="password" ref="pin" maxlength="4" placeholder="Choose a 4 Digit PIN" className="form-control" />
+                  <input type="password" ref="pin" maxLength="4" placeholder="Choose a 4 Digit PIN" className="form-control" />
                 </div>
               </div>
             </div>
