@@ -18,11 +18,13 @@ Developer need only make a handful Javascript API calls to manage a users accoun
 
 Initialize the library
 
-    _abcUi = abcui.AbcUi({'key': 'api-key-here', 'bundle-path': '/path/to/this/bundle'});
+    _abcUi = abcui.makeABCUIContext({'apiKey': 'api-key-here',
+                                     'accountType': 'account:repo:com.mydomain.myapp',
+                                     'bundlePath': '/path/to/this/bundle'});
 
 Launch the registration UI which let's the user create a new account.
 
-    _abcUi.register(function(result, account) {
+    _abcUi.openRegisterWindow(function(error, account) {
       _account = account;
     });
 
@@ -30,7 +32,7 @@ Launch the registration UI which let's the user create a new account.
 
 Create an overlay popup where a user can login to a previously created account via password or PIN.
 
-    _abcUi.login(function(result, account) {
+    _abcUi.openLoginWindow(function(error, account) {
       _account = account;
     });
 
@@ -39,13 +41,13 @@ Create an overlay popup where a user can login to a previously created account v
 
 Launch an account management window for changing password, PIN, and recovery questions
 
-    _abcUi.manageAccount(_account, function(result, account) {
+    _abcUi.openManageWindow(_account, function(error) {
     
     });
 
 ![Manage UI](https://airbitz.co/go/wp-content/uploads/2016/08/Screen-Shot-2016-08-26-at-12.50.26-PM.png)
 
-Get a rootkey that can be used as a raw entropy for a cryptocurrency master key
+Get a rootkey that can be used as raw entropy for a cryptocurrency master key
 
     _account.rootKey.toString('base64')
 

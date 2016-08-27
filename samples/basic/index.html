@@ -54,7 +54,11 @@
         var _account = null;
         var _abcUi = null;
         // Replace 'd98e26ce95d1a1ceb76be0f373fd2b1af29335e8' with your own API key from https://developer.airbitz.co
-        _abcUi = abcui.AbcUi({'key': 'd98e26ce95d1a1ceb76be0f373fd2b1af29335e8', 'bundle-path': '/ui'});
+        _abcUi = abcui.makeABCUIContext({
+            'apiKey': 'd98e26ce95d1a1ceb76be0f373fd2b1af29335e8',
+            'accountType': 'account:repo:com.mydomain.myapp',
+            'bundlePath': '/ui'
+        });
         function updateUi() {
           if (_abcUi == null) {
             $('.logged_out').hide();
@@ -73,13 +77,13 @@
 //          $('#apiKeySubmit').click(function() {
 //            _abcUi = abcui.AbcUi({'key': $('#apiKey').val(), 'bundle-path': '/ui'});
             $('#login').click(function() {
-              _abcUi.login(function(result, account) {
+              _abcUi.openLoginWindow(function(error, account) {
                 _account = account;
                 updateUi();
               });
             });
             $('#register').click(function() {
-              _abcUi.register(function(result, account) {
+              _abcUi.openRegisterWindow(function(error, account) {
                 _account = account;
                 updateUi();
               });
@@ -90,7 +94,7 @@
               updateUi();
             });
             $('#account').click(function() {
-              _abcUi.manageAccount(_account, function(result, account) {
+              _abcUi.openManageWindow(_account, function(error) {
                 updateUi();
               });
             });

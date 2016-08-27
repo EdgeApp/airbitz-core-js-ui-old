@@ -15,44 +15,30 @@ function removeIFrame(frame) {
   frame.parentNode.removeChild(frame);
 }
 
-function AbcUi(args) {
+function makeABCUIContext(args) {
   return new InnerAbcUi(args);
 }
 
-
 function InnerAbcUi(args) {
-  var apiKey = args['key']
+  var apiKey = args.apiKey
   if (!apiKey) {
     throw Error("Missing api key");
   }
-  function authRequest (method, uri, body, callback) {
-    var xhr = new XMLHttpRequest()
-    xhr.addEventListener('load', function () {
-      callback(null, this.status, this.responseText)
-    })
-    xhr.addEventListener('error', function () {
-      callback(Error('Cannot reach auth server'))
-    })
-    xhr.open('POST', uri)
-    xhr.setRequestHeader('Content-Type', 'application/json')
-    xhr.setRequestHeader('Authorization', 'Token ' + apiKey)
-    xhr.send(JSON.stringify(body))
-    console.log(method + ' ' + uri)
-  }
-  window.context = this.context = new abc.Context(authRequest, localStorage);
+  window.context = this.abcContext =
+    abc.makeABContext({'apiKey': args.apiKey, 'accountType': args.accountType});
   if (args['bundle-path']) {
-    this.bundlePath = args['bundle-path'];
+    this.bundlePath = args.bundlePath;
   } else {
     this.bundlePath = '/ui';
   }
 }
 
-InnerAbcUi.prototype.login = function(callback) {
+InnerAbcUi.prototype.openLoginWindow = function(callback) {
   var frame = createIFrame(this.bundlePath + '/index.html#/login');
-  window.loginCallback = function(result, account) {
+  window.loginCallback = function(error, account) {
     if (account) {
       removeIFrame(frame);
-      callback(result, account);
+      callback(error, account);
     }
   };
   window.exitCallback = function() {
@@ -60,15 +46,15 @@ InnerAbcUi.prototype.login = function(callback) {
   };
 };
 
-InnerAbcUi.prototype.context = function() {
-  return this.context;
+InnerAbcUi.prototype.getABCContext = function() {
+  return this.abcContext;
 }
 
-InnerAbcUi.prototype.recovery = function(callback) {
+InnerAbcUi.prototype.openRecoveryWindow = function(callback) {
   var frame = createIFrame(this.bundlePath + '/index.html#/recovery');
 };
 
-InnerAbcUi.prototype.register = function(callback) {
+InnerAbcUi.prototype.openRegisterWindow = function(callback) {
   var frame = createIFrame(this.bundlePath + '/index.html#/register');
   window.registrationCallback = function(result, account) {
     if (account) {
@@ -81,14 +67,15 @@ InnerAbcUi.prototype.register = function(callback) {
   };
 };
 
-InnerAbcUi.prototype.manageAccount = function(account, callback) {
+InnerAbcUi.prototype.openManageWindow = function(account, callback) {
   window.account = account;
   var frame = createIFrame(this.bundlePath + '/index.html#/account/');
   window.exitCallback = function() {
     removeIFrame(frame);
+    callback(null);
   };
 };
 
 var abcui = {};
-abcui.AbcUi = AbcUi;
+abcui.makeABCUIContext = makeABCUIContext;
 module.exports = abcui;
