@@ -1,4 +1,3 @@
-import Constants from './abc-constants.js'
 import React from 'react'
 import { render } from 'react-dom'
 import { Router, Route, IndexRoute, Link, IndexLink, hashHistory } from 'react-router'
