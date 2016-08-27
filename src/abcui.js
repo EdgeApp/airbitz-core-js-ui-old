@@ -29,12 +29,12 @@ function InnerAbcUi(args) {
   if (args['bundle-path']) {
     this.bundlePath = args.bundlePath;
   } else {
-    this.bundlePath = '/ui';
+    this.bundlePath = '/abcui';
   }
 }
 
 InnerAbcUi.prototype.openLoginWindow = function(callback) {
-  var frame = createIFrame(this.bundlePath + '/index.html#/login');
+  var frame = createIFrame(this.bundlePath + '/assets/index.html#/login');
   window.loginCallback = function(error, account) {
     if (account) {
       removeIFrame(frame);
@@ -51,11 +51,11 @@ InnerAbcUi.prototype.getABCContext = function() {
 }
 
 InnerAbcUi.prototype.openRecoveryWindow = function(callback) {
-  var frame = createIFrame(this.bundlePath + '/index.html#/recovery');
+  var frame = createIFrame(this.bundlePath + '/assets/index.html#/recovery');
 };
 
 InnerAbcUi.prototype.openRegisterWindow = function(callback) {
-  var frame = createIFrame(this.bundlePath + '/index.html#/register');
+  var frame = createIFrame(this.bundlePath + '/assets/index.html#/register');
   window.registrationCallback = function(result, account) {
     if (account) {
       removeIFrame(frame);
@@ -69,7 +69,7 @@ InnerAbcUi.prototype.openRegisterWindow = function(callback) {
 
 InnerAbcUi.prototype.openManageWindow = function(account, callback) {
   window.account = account;
-  var frame = createIFrame(this.bundlePath + '/index.html#/account/');
+  var frame = createIFrame(this.bundlePath + '/assets/index.html#/account/');
   window.exitCallback = function() {
     removeIFrame(frame);
     callback(null);

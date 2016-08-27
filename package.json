@@ -4,7 +4,7 @@
   "description": "Airbitz core javascript UI tools",
   "author": "Airbitz, Inc.",
   "license": "SEE LICENSE IN LICENSE",
-  "main": "index.js",
+  "main": "abcui.js",
   "bin": "cli.js",
   "repository": "http://github.com/airbitz/airbitz-core-js-ui",
   "dependencies": { },
