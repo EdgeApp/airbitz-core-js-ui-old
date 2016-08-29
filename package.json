@@ -9,6 +9,8 @@
   "repository": "http://github.com/airbitz/airbitz-core-js-ui",
   "dependencies": { },
   "devDependencies": {
+    "react-localization": "^0.0.5",
+    "standard": "^3.0.0",
     "babel-cli": "^6.10.1",
     "babel-core": "^6.10.4",
     "babel-eslint": "^6.1.0",
@@ -31,6 +33,8 @@
     "react-dom": "^15.2.0",
     "react-router": "^2.5.2",
     "airbitz-core-js": "git://github.com/Airbitz/airbitz-core-js.git"
+    "standard": "^3.0.0",
+    "webpack": "^2.0.0-beta"
   },
   "assets": [
     "index.html",
@@ -38,6 +42,7 @@
   ],
   "scripts": {
     "build": "webpack",
+    "pretest": "standard src/*js",
     "start": "node samples/server.js"
   }
 }
