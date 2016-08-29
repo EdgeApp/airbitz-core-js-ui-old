@@ -5,6 +5,8 @@ import abc from 'airbitz-core-js'
 
 // var abcc = abc.ABCConditionCode
 var ABCError = abc.ABCError
+var strings = require('./abcui-strings.js').strings
+
 
 var AbcUiFormView = require('./abcui-formview')
 var recovery = require('./abcui-recovery')
@@ -46,10 +48,10 @@ var PasswordRequirementsInput = React.createClass({
         password = ''
       }
       return [
-        { name: 'Must have at least one upper case letter', test: (s) => password.match(/[A-Z]/) != null},
-        { name: 'Must have at least one lower case letter', test: (s) => password.match(/[a-z]/) != null},
-        { name: 'Must have at least one number',            test: (s) => password.match(/\d/) != null},
-        { name: 'Must have at least 10 characters',         test: (s) => password.length >= 10},
+        { name: strings.must_have_one_upper,    test: (s) => password.match(/[A-Z]/) != null},
+        { name: strings.must_have_one_lower,    test: (s) => password.match(/[a-z]/) != null},
+        { name: strings.must_have_one_number,   test: (s) => password.match(/\d/) != null},
+        { name: strings.must_have_10_char,      test: (s) => password.length >= 10},
       ].map(r => ({name: r.name, passed: r.test(password) }))
     }
   },
@@ -188,7 +190,7 @@ var AbcPasswordLoginForm = React.createClass({
         <div className='row'>
           <div className='col-sm-12'>
             <div className='form-group'>
-              <input ref='password' type='password' placeholder='Password' className='form-control' />
+              <input ref='password' type='password' placeholder={strings.password_text} className='form-control' />
             </div>
           </div>
         </div>
@@ -215,7 +217,7 @@ var AbcPasswordLoginForm = React.createClass({
     this.refs.form.setState({'error': null})
     context.passwordLogin(this.refs.username.getValue(), this.refs.password.value, function(err, result) {
       if (err) {
-        that.refs.form.setState({'error': ABCError(err, 'Invalid Password').message})
+        that.refs.form.setState({'error': ABCError(err, strings.invalid_password_text).message})
       } else {
         that.props.onSuccess(result)
       }
@@ -240,21 +242,21 @@ var AbcPinLoginForm = React.createClass({
             </div>
             <div className='col-sm-12 text-center'>
               <div className='form-group center-block' style={{'width': '100px'}}>
-                  <input ref='pin' type='password' placeholder='PIN' className='form-control' maxLength='4' />
+                  <input ref='pin' type='password' placeholder={strings.pin_text} className='form-control' maxLength='4' />
               </div>
             </div>
           </div>
           <div className='row'>
             <div className='col-sm-12 text-center'>
               <div className='form-group'>
-                <BootstrapButton ref='signin' onClick={this.handleSubmit}>Sign In</BootstrapButton>
+                <BootstrapButton ref='signin' onClick={this.handleSubmit}>{strings.sign_in_text}</BootstrapButton>
               </div>
             </div>
           </div>
           <div className='row'>
             <div className='col-sm-12 text-center'>
               <div className='form-group'>
-                <button type='button' onClick={this.handleExit} className='btn'>Exit Pin Login</button>
+                <button type='button' onClick={this.handleExit} className='btn'>{strings.exit_pin_login_text}</button>
               </div>
             </div>
           </div>

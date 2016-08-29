@@ -114,7 +114,7 @@ var RecoveryQAView = React.createClass({
             <div className='col-sm-12'>
               <div className='form-group'>
                 <span className='input-group-btn'>
-                  <BootstrapButton ref='register' onClick={this.handleSubmit}>Save</BootstrapButton>
+                  <BootstrapButton ref='register' onClick={this.handleSubmit}>{strings.save_button_text}</BootstrapButton>
                 </span>
               </div>
             </div>
@@ -139,7 +139,7 @@ var RecoveryQAView = React.createClass({
       
       if (question[0] === this.defaultText ||
         question[1] === this.defaultText) {
-        that.refs.form.setState({'error': ABCError(1, 'Please choose two recovery questions').message})
+        that.refs.form.setState({'error': ABCError(1, strings.please_choose_two_recovery).message})
       }
     } else {
 
