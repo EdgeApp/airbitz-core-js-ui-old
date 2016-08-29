@@ -32,7 +32,7 @@ var QuestionAnswerView = React.createClass({
 // props setup
 var RecoveryView = React.createClass({
   render() {
-    "use strict";
+    "use strict"
     let recoveryToken
     // See if token is in the path
     if (this.props.token) {
@@ -45,7 +45,7 @@ var RecoveryView = React.createClass({
 
 var SetupRecoveryView = React.createClass({
   render() {
-    "use strict";
+    "use strict"
 
     // Query core for list of questions
     // Fake for now
@@ -60,7 +60,7 @@ var SetupRecoveryView = React.createClass({
   },
   callback(password, questions, answers)
   {
-    "use strict";
+    "use strict"
     console.log(password)
     console.log(questions)
     console.log(answers)
@@ -72,7 +72,7 @@ var SetupRecoveryView = React.createClass({
 
 var RecoveryQAView = React.createClass({
   render() {
-    "use strict";
+    "use strict"
 
     let questions = ["", ""]
     let answers = ["", ""]
@@ -117,7 +117,7 @@ var RecoveryQAView = React.createClass({
     )
   },
   onChange(index, question, answer) {
-    "use strict";
+    "use strict"
     this.state.question[index] = question
     this.state.answer[index] = answer
   },
@@ -134,14 +134,14 @@ var RecoveryQAView = React.createClass({
     }
 
     this.props.callback(this.refs.currentPassword.value, questions, answers)
-    this.refs.modal.close();
+    this.refs.modal.close()
     if (window.parent.exitCallback) {
-      window.parent.exitCallback();
+      window.parent.exitCallback()
     }
   },
-});
+})
 
-var ForgotPasswordForm = RecoveryView;
+var ForgotPasswordForm = RecoveryView
 
 var ForgotPasswordForm_old = React.createClass({
   render() {
@@ -176,15 +176,15 @@ var ForgotPasswordForm_old = React.createClass({
             </div>
           </div>
         </form>
-      </BootstrapModal>);
+      </BootstrapModal>)
   },
   handleSubmit() {
-    this.refs.modal.close();
+    this.refs.modal.close()
     if (window.parent.exitCallback) {
-      window.parent.exitCallback();
+      window.parent.exitCallback()
     }
   }
-});
+})
 
 module.exports.RecoveryView = RecoveryView
 module.exports.SetupRecoveryView = SetupRecoveryView
