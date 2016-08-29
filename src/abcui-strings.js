@@ -8,6 +8,7 @@ let strings = new LocalizedStrings({
     password_recovery_text: 'Password Recovery',
     save_button_text: 'Save',
     please_choose_two_recovery: 'Please choose two recovery questions',
+    please_choose_answers_with_4_char: 'Please choose answers with at least 4 characters',
     must_have_one_upper: 'Must have at least one upper case letter',
     must_have_one_lower: 'Must have at least one lower case letter',
     must_have_one_number: 'Must have at least one number',
@@ -17,6 +18,7 @@ let strings = new LocalizedStrings({
     pin_text: 'PIN',
     sign_in_text: 'Sign In',
     exit_pin_login_text: 'Exit Pin Login',
+    incorrect_password_text: 'Incorrect Password',
 
     dummy_entry_to_keep_json_happy: ''
   }

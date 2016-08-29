@@ -1,10 +1,13 @@
 import React from 'react'
+import abc from 'airbitz-core-js'
 
 var modal = require('./abcui-modal.js')
 var BootstrapButton = modal.BootstrapButton
 var BootstrapModal = modal.BootstrapModal
 var AbcUiDropDown = require('./abcui-dropdown.js')
+var AbcUiFormView = require('./abcui-formview.js')
 var strings = require('./abcui-strings.js').strings
+var ABCError = abc.ABCError
 
 var QuestionAnswerView = React.createClass({
   render () {
@@ -83,7 +86,13 @@ var RecoveryQAView = React.createClass({
     let questions = ['', '']
     let answers = ['', '']
     let questionChoices = []
+    this.account = window.parent.account
     if (this.props.setup) {
+      if (this.account === null ||
+          this.account.isLoggedIn() === false) {
+        console.log('Error: Account not logged in for recovery setup')
+        return
+      }
       questionChoices = [this.defaultText].concat(this.props.questionChoices)
       answers[0] = answers[1] = strings.answers_are_case_sensitive
     } else {
@@ -91,7 +100,7 @@ var RecoveryQAView = React.createClass({
     }
     return (
       <BootstrapModal ref='modal' title={strings.password_recovery_text}>
-        <form>
+        <AbcUiFormView ref='form'>
           <div className='row'>
             <QuestionAnswerView
               ref='qa1'
@@ -119,29 +128,45 @@ var RecoveryQAView = React.createClass({
               </div>
             </div>
           </div>
-        </form>
+        </AbcUiFormView>
       </BootstrapModal>
     )
-  },
-  onChange(index, question, answer) {
-    'use strict'
-    this.state.question[index] = question
-    this.state.answer[index] = answer
   },
   handleSubmit() {
     let questions = []
     let answers = []
+    let password = ''
     if (this.props.setup) {
       questions[0] = this.refs.qa1.getValue().question
       questions[1] = this.refs.qa2.getValue().question
       answers[0] = this.refs.qa1.getValue().answer
       answers[1] = this.refs.qa2.getValue().answer
+      password = this.refs.currentPassword.value
       
-      if (question[0] === this.defaultText ||
-        question[1] === this.defaultText) {
-        that.refs.form.setState({'error': ABCError(1, strings.please_choose_two_recovery).message})
+      if (questions[0] === this.defaultText ||
+        questions[1] === this.defaultText) {
+        this.refs.form.setState({'error': ABCError(1, strings.please_choose_two_recovery).message})
+        return
       }
+      
+      if (answers[0].length < 4 || answers[1].length < 4) {
+        this.refs.form.setState({'error': ABCError(1, strings.please_choose_answers_with_4_char).message})
+        return
+      }
+
+      if (password != null) {
+        var passwdOk = this.account.checkPassword(password)
+
+        if (!passwdOk) {
+          this.refs.form.setState({'error': ABCError(1, strings.incorrect_password_text).message})
+          return
+        } else {
+          console.log('Yay. good password')
+        }
+      }
+      
     } else {
+      // XXX todo
 
     }
 
