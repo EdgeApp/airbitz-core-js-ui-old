@@ -9,6 +9,8 @@
   "repository": "http://github.com/airbitz/airbitz-core-js-ui",
   "dependencies": { },
   "devDependencies": {
+    "react-localization": "^0.0.5",
+    "standard": "^3.0.0",
     "babel-cli": "^6.10.1",
     "babel-core": "^6.10.4",
     "babel-eslint": "^6.1.0",
