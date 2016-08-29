@@ -5,72 +5,24 @@ var modal = require('./abcui-modal.js')
 var BootstrapButton = modal.BootstrapButton
 var BootstrapModal = modal.BootstrapModal
 
-// var RecoveryView = React.createClass({
-//   render() {
-//
-//     var form = (
-//       <BootstrapModal ref="modal" title="Change Recovery Information">
-//         <form>
-//           <div className="row">
-//
-//             <div className="col-sm-12">
-//               <div className="form-group">
-//                 <label htmlFor="question1">Question 1 Text</label>
-//                 <input type="text" id="question1" ref="question1" placeholder="Question 1 Answer" className="form-control" />
-//               </div>
-//             </div>
-//             <div className="col-sm-12">
-//               <div className="form-group">
-//                 <label htmlFor="question2">Question 2 Text</label>
-//                 <input type="text" id="question2"  ref="question2" placeholder="Question 2 Answer" className="form-control" />
-//               </div>
-//             </div>
-//             <div className="col-sm-12">
-//               <div className="form-group">
-//                 <span className="input-group-btn">
-//                   <BootstrapButton ref="register" onClick={this.handleSubmit}>Save</BootstrapButton>
-//                 </span>
-//               </div>
-//             </div>
-//           </div>
-//         </form>
-//       </BootstrapModal>)
-//
-//     var question = (
-//       <div className="col-sm-12">
-//         <div className="form-group">
-//           <label>Recovery Tokens information...</label>
-//           <input type="password" ref="username" placeholder="Recovery Token" className="form-control" />
-//         </div>
-//       </div>
-//     )
-//
-//     return form
-//   },
-//   handleSubmit() {
-//     this.refs.modal.close();
-//     if (window.parent.exitCallback) {
-//       this.close();
-//       window.parent.exitCallback();
-//     }
-//   }
-// });
-
 var QuestionAnswerView = React.createClass({
   render() {
-    "use strict";
-    var questionIndex = "question" + this.props.index
-    var answerIndex = "answer" + this.props.index
     return (
       <div className="col-sm-12">
         <div className="form-group">
-          <input type="text" id={questionIndex} ref={questionIndex} placeholder={this.props.question} className="form-control" />
+          <input type="text" ref="question" placeholder={this.props.question} className="form-control" />
         </div>
         <div className="form-group">
-          <input type="text" id={answerIndex} ref={answerIndex} placeholder={this.props.question} className="form-control" />
+          <input type="text" ref="answer" placeholder={this.props.answer} className="form-control" />
         </div>
       </div>
     )
+  },
+  value() {
+    return {
+      "question": this.refs.question.value,
+      "answer": this.refs.answer.value
+    }
   }
 
 })
@@ -127,6 +79,8 @@ var RecoveryQAView = React.createClass({
     let questionChoices
     if (this.props.setup) {
       questionChoices = this.props.questionChoices
+      questions[0] = questions[1] = "Please choose a recovery question"
+      answers[0] = answers[1] = "Answers are case sensitive"
     } else {
       // Todo
     }
@@ -134,7 +88,16 @@ var RecoveryQAView = React.createClass({
       <BootstrapModal ref="modal" title="Change Recovery Information">
         <form>
           <div className="row">
-            {this.createQAViews(questions, answers, questionChoices)}
+            <QuestionAnswerView
+              ref="qa1"
+              question={questions[0]}
+              answer={answers[0]}
+              questionChoices={questionChoices}/>
+            <QuestionAnswerView
+              ref="qa2"
+              question={questions[1]}
+              answer={answers[1]}
+              questionChoices={questionChoices}/>
             <div className="col-sm-12">
               <div className="form-group">
                 <label>Current password</label>
@@ -153,42 +116,29 @@ var RecoveryQAView = React.createClass({
       </BootstrapModal>
     )
   },
+  onChange(index, question, answer) {
+    "use strict";
+    this.state.question[index] = question
+    this.state.answer[index] = answer
+  },
   handleSubmit() {
-    this.refs.modal.close();
-    if (window.parent.exitCallback) {
-      this.close();
-      window.parent.exitCallback();
-    }
-
     let questions = []
     let answers = []
     if (this.props.setup) {
-      questions[0] = this.refs.question1
-      questions[1] = this.refs.question2
-      answers[0] = this.refs.answers1
-      answers[1] = this.refs.answers2
+      questions[0] = this.refs.qa1.value().question
+      questions[1] = this.refs.qa2.value().question
+      answers[0] = this.refs.qa1.value().answer
+      answers[1] = this.refs.qa2.value().answer
     } else {
 
     }
-    this.props.callback(this.refs.currentPassword, questions, answers)
+
+    this.props.callback(this.refs.currentPassword.value, questions, answers)
+    this.refs.modal.close();
+    if (window.parent.exitCallback) {
+      window.parent.exitCallback();
+    }
   },
-  createQAViews(questions, answers, questionChoices) {
-    "use strict"
-    var index = 0
-
-      return (<QuestionAnswerView question={questions[0]}
-                                  answer={answers[0]}
-                                  questionChoices={questionChoices}
-                                  index={index.toString()} />)
-    // questions.map(function(questionString, index) {
-    //   return (<QuestionAnswerView question={questionString}
-    //                               answer={answers[index]}
-    //                               questionChoices={questionChoices}
-    //                               index={index.toString()} />)
-    // })
-  }
-
-
 });
 
 var ForgotPasswordForm = RecoveryView;

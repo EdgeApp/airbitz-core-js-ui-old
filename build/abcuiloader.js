@@ -26918,24 +26918,26 @@ var abcuiloader =
 	var QuestionAnswerView = _react2.default.createClass({
 	  displayName: 'QuestionAnswerView',
 	  render: function render() {
-	    "use strict";
-
-	    var questionIndex = "question" + this.props.index;
-	    var answerIndex = "answer" + this.props.index;
 	    return _react2.default.createElement(
 	      'div',
 	      { className: 'col-sm-12' },
 	      _react2.default.createElement(
 	        'div',
 	        { className: 'form-group' },
-	        _react2.default.createElement('input', { type: 'text', id: questionIndex, ref: questionIndex, placeholder: this.props.question, className: 'form-control' })
+	        _react2.default.createElement('input', { type: 'text', ref: 'question', placeholder: this.props.question, className: 'form-control' })
 	      ),
 	      _react2.default.createElement(
 	        'div',
 	        { className: 'form-group' },
-	        _react2.default.createElement('input', { type: 'text', id: answerIndex, ref: answerIndex, placeholder: this.props.question, className: 'form-control' })
+	        _react2.default.createElement('input', { type: 'text', ref: 'answer', placeholder: this.props.answer, className: 'form-control' })
 	      )
 	    );
+	  },
+	  value: function value() {
+	    return {
+	      "question": this.refs.question.value,
+	      "answer": this.refs.answer.value
+	    };
 	  }
 	});
 
@@ -26987,6 +26989,8 @@ var abcuiloader =
 	    var questionChoices = void 0;
 	    if (this.props.setup) {
 	      questionChoices = this.props.questionChoices;
+	      questions[0] = questions[1] = "Please choose a recovery question";
+	      answers[0] = answers[1] = "Answers are case sensitive";
 	    } else {
 	      // Todo
 	    }
@@ -26999,7 +27003,16 @@ var abcuiloader =
 	        _react2.default.createElement(
 	          'div',
 	          { className: 'row' },
-	          this.createQAViews(questions, answers, questionChoices),
+	          _react2.default.createElement(QuestionAnswerView, {
+	            ref: 'qa1',
+	            question: questions[0],
+	            answer: answers[0],
+	            questionChoices: questionChoices }),
+	          _react2.default.createElement(QuestionAnswerView, {
+	            ref: 'qa2',
+	            question: questions[1],
+	            answer: answers[1],
+	            questionChoices: questionChoices }),
 	          _react2.default.createElement(
 	            'div',
 	            { className: 'col-sm-12' },
@@ -27035,38 +27048,27 @@ var abcuiloader =
 	      )
 	    );
 	  },
-	  handleSubmit: function handleSubmit() {
-	    this.refs.modal.close();
-	    if (window.parent.exitCallback) {
-	      this.close();
-	      window.parent.exitCallback();
-	    }
+	  onChange: function onChange(index, question, answer) {
+	    "use strict";
 
+	    this.state.question[index] = question;
+	    this.state.answer[index] = answer;
+	  },
+	  handleSubmit: function handleSubmit() {
 	    var questions = [];
 	    var answers = [];
 	    if (this.props.setup) {
-	      questions[0] = this.refs.question1;
-	      questions[1] = this.refs.question2;
-	      answers[0] = this.refs.answers1;
-	      answers[1] = this.refs.answers2;
+	      questions[0] = this.refs.qa1.value().question;
+	      questions[1] = this.refs.qa2.value().question;
+	      answers[0] = this.refs.qa1.value().answer;
+	      answers[1] = this.refs.qa2.value().answer;
 	    } else {}
-	    this.props.callback(this.refs.currentPassword, questions, answers);
-	  },
-	  createQAViews: function createQAViews(questions, answers, questionChoices) {
-	    "use strict";
 
-	    var index = 0;
-
-	    return _react2.default.createElement(QuestionAnswerView, { question: questions[0],
-	      answer: answers[0],
-	      questionChoices: questionChoices,
-	      index: index.toString() });
-	    // questions.map(function(questionString, index) {
-	    //   return (<QuestionAnswerView question={questionString}
-	    //                               answer={answers[index]}
-	    //                               questionChoices={questionChoices}
-	    //                               index={index.toString()} />)
-	    // })
+	    this.props.callback(this.refs.currentPassword.value, questions, answers);
+	    this.refs.modal.close();
+	    if (window.parent.exitCallback) {
+	      window.parent.exitCallback();
+	    }
 	  }
 	});
 
