@@ -40,7 +40,7 @@ var BootstrapModal = React.createClass({
   render() {
     return (
       <div className="modal fade" ref="root">
-        <div className="modal-dialog">
+        <div className="modal-dialog modal-sm">
           <div className="modal-content">
             <div className="modal-header">
               <button

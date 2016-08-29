@@ -7,22 +7,22 @@ var abcc = abc.ABCConditionCode
 var ABCError = abc.ABCError
 
 var recovery = require('./abcui-recovery')
+var RecoveryView = recovery.RecoveryView
 var SetupRecoveryView = recovery.SetupRecoveryView
-var ForgotPasswordForm = recovery.ForgotPasswordForm
 
 var modal = require('./abcui-modal.js')
 var BootstrapButton = modal.BootstrapButton
 var BootstrapModal = modal.BootstrapModal
 
 
-var context = window.parent.context;
+var context = window.parent.context
 
 var PasswordRuleRow = React.createClass({
   render(): any {
     if (this.props.passed) {
-      var imageIcon = (<span className="pull-right glyphicon glyphicon-ok" aria-hidden="true"></span>);
+      var imageIcon = (<span className="pull-right glyphicon glyphicon-ok" aria-hidden="true"></span>)
     } else {
-      var imageIcon = (<span className="pull-right glyphicon glyphicon-remove" aria-hidden="true"></span>);
+      var imageIcon = (<span className="pull-right glyphicon glyphicon-remove" aria-hidden="true"></span>)
     }
     return (<li>{ this.props.name } {imageIcon}</li>);
   }
@@ -201,7 +201,7 @@ var AbcPasswordLoginForm = React.createClass({
         <div className="row">
           <div className="col-sm-12 text-center">
             <div className="form-group">
-              <Link className="btn btn-default" to={`/recovery`}>Forgot Password</Link>
+              <Link className="btn btn-default" to={`/account/setuprecovery`}>Forgot Password</Link>
             </div>
           </div>
         </div>
@@ -259,7 +259,7 @@ var AbcPinLoginForm = React.createClass({
               </div>
             </div>
             <div className="col-sm-12 text-center">
-              <div className="form-group">
+              <div className="form-group center-block" style={{"width": "100px"}}>
                   <input ref="pin" type="password" placeholder="PIN" className="form-control" maxLength="4" />
               </div>
             </div>
@@ -643,7 +643,8 @@ render((
       <IndexRoute component={Index} />
       <Route path="login" component={LoginForm} />
       <Route path="register" component={RegistrationForm} />
-      <Route path="recovery" component={ForgotPasswordForm} />
+      <Route path="recovery/:token" component={RecoveryView} />
+      <Route path="recovery" component={RecoveryView} />
       <Route path="account" component={ManageAccountView} />
       <Route path="account/changepassword" component={ChangePasswordView} />
       <Route path="account/changepin" component={ChangePinView} />

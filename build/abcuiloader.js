@@ -26864,7 +26864,7 @@ var abcuiloader =
 	var BootstrapButton = modal.BootstrapButton;
 	var BootstrapModal = modal.BootstrapModal;
 
-	// var SetupRecoveryView = React.createClass({
+	// var RecoveryView = React.createClass({
 	//   render() {
 	//
 	//     var form = (
@@ -26921,43 +26921,76 @@ var abcuiloader =
 	    "use strict";
 
 	    var questionIndex = "question" + this.props.index;
-	    var placeHolder = "Question " + this.props.index + " Answer";
-	    var row = _react2.default.createElement(
+	    var answerIndex = "answer" + this.props.index;
+	    return _react2.default.createElement(
 	      'div',
 	      { className: 'col-sm-12' },
 	      _react2.default.createElement(
 	        'div',
 	        { className: 'form-group' },
-	        _react2.default.createElement(
-	          'label',
-	          { htmlFor: questionIndex },
-	          'Question ',
-	          this.props.index,
-	          ' Text'
-	        ),
-	        _react2.default.createElement('input', { type: 'text', id: questionIndex, ref: questionIndex, placeholder: placeHolder, className: 'form-control' })
+	        _react2.default.createElement('input', { type: 'text', id: questionIndex, ref: questionIndex, placeholder: this.props.question, className: 'form-control' })
+	      ),
+	      _react2.default.createElement(
+	        'div',
+	        { className: 'form-group' },
+	        _react2.default.createElement('input', { type: 'text', id: answerIndex, ref: answerIndex, placeholder: this.props.question, className: 'form-control' })
 	      )
 	    );
-	    return row;
 	  }
 	});
 
-	function createQAViews(numRows) {
-	  "use strict";
+	// Popup dialog asking for username and redirecting to RecoveryQAView with proper
+	// props setup
+	var RecoveryView = _react2.default.createClass({
+	  displayName: 'RecoveryView',
+	  render: function render() {
+	    "use strict";
 
-	  var ret;
-	  for (var i = 0; i < numRows; i++) {
-	    ret += _react2.default.createElement(QuestionAnswerView, { index: i });
+	    var recoveryToken = void 0;
+	    // See if token is in the path
+	    if (this.props.token) {
+	      recoveryToken = this.props.token;
+	    }
+	    return _react2.default.createElement(RecoveryQAView, { state: 'setup', questionChoices: questionChoices });
 	  }
-	  return ret;
-	}
+	});
 
 	var SetupRecoveryView = _react2.default.createClass({
 	  displayName: 'SetupRecoveryView',
 	  render: function render() {
-	    var numRows = 6;
+	    "use strict";
 
-	    var form = _react2.default.createElement(
+	    // Query core for list of questions
+	    // Fake for now
+
+	    var questionChoices = ['Who\'s your daddy?', 'Who dunit?', 'Dude, where\'s my car?'];
+	    return _react2.default.createElement(RecoveryQAView, { setup: '1',
+	      questionChoices: questionChoices,
+	      callback: this.callback });
+	  },
+	  callback: function callback(password, questions, answers) {
+	    "use strict";
+
+	    console.log(password);
+	    console.log(questions);
+	    console.log(answers);
+	  }
+	});
+
+	var RecoveryQAView = _react2.default.createClass({
+	  displayName: 'RecoveryQAView',
+	  render: function render() {
+	    "use strict";
+
+	    var questions = ["", ""];
+	    var answers = ["", ""];
+	    var questionChoices = void 0;
+	    if (this.props.setup) {
+	      questionChoices = this.props.questionChoices;
+	    } else {
+	      // Todo
+	    }
+	    return _react2.default.createElement(
 	      BootstrapModal,
 	      { ref: 'modal', title: 'Change Recovery Information' },
 	      _react2.default.createElement(
@@ -26966,28 +26999,41 @@ var abcuiloader =
 	        _react2.default.createElement(
 	          'div',
 	          { className: 'row' },
-	          _react2.default.createElement(QuestionAnswerView, { index: '1' }),
-	          _react2.default.createElement(QuestionAnswerView, { index: '2' })
+	          this.createQAViews(questions, answers, questionChoices),
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'col-sm-12' },
+	            _react2.default.createElement(
+	              'div',
+	              { className: 'form-group' },
+	              _react2.default.createElement(
+	                'label',
+	                null,
+	                'Current password'
+	              ),
+	              _react2.default.createElement('input', { type: 'password', ref: 'currentPassword', placeholder: 'Current Password', className: 'form-control' })
+	            )
+	          ),
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'col-sm-12' },
+	            _react2.default.createElement(
+	              'div',
+	              { className: 'form-group' },
+	              _react2.default.createElement(
+	                'span',
+	                { className: 'input-group-btn' },
+	                _react2.default.createElement(
+	                  BootstrapButton,
+	                  { ref: 'register', onClick: this.handleSubmit },
+	                  'Save'
+	                )
+	              )
+	            )
+	          )
 	        )
 	      )
 	    );
-
-	    var question = _react2.default.createElement(
-	      'div',
-	      { className: 'col-sm-12' },
-	      _react2.default.createElement(
-	        'div',
-	        { className: 'form-group' },
-	        _react2.default.createElement(
-	          'label',
-	          null,
-	          'Recovery Tokens information...'
-	        ),
-	        _react2.default.createElement('input', { type: 'password', ref: 'username', placeholder: 'Recovery Token', className: 'form-control' })
-	      )
-	    );
-
-	    return form;
 	  },
 	  handleSubmit: function handleSubmit() {
 	    this.refs.modal.close();
@@ -26995,10 +27041,36 @@ var abcuiloader =
 	      this.close();
 	      window.parent.exitCallback();
 	    }
+
+	    var questions = [];
+	    var answers = [];
+	    if (this.props.setup) {
+	      questions[0] = this.refs.question1;
+	      questions[1] = this.refs.question2;
+	      answers[0] = this.refs.answers1;
+	      answers[1] = this.refs.answers2;
+	    } else {}
+	    this.props.callback(this.refs.currentPassword, questions, answers);
+	  },
+	  createQAViews: function createQAViews(questions, answers, questionChoices) {
+	    "use strict";
+
+	    var index = 0;
+
+	    return _react2.default.createElement(QuestionAnswerView, { question: questions[0],
+	      answer: answers[0],
+	      questionChoices: questionChoices,
+	      index: index.toString() });
+	    // questions.map(function(questionString, index) {
+	    //   return (<QuestionAnswerView question={questionString}
+	    //                               answer={answers[index]}
+	    //                               questionChoices={questionChoices}
+	    //                               index={index.toString()} />)
+	    // })
 	  }
 	});
 
-	var ForgotPasswordForm = SetupRecoveryView;
+	var ForgotPasswordForm = RecoveryView;
 
 	var ForgotPasswordForm_old = _react2.default.createClass({
 	  displayName: 'ForgotPasswordForm_old',
@@ -27083,6 +27155,7 @@ var abcuiloader =
 	  }
 	});
 
+	module.exports.RecoveryView = RecoveryView;
 	module.exports.SetupRecoveryView = SetupRecoveryView;
 	module.exports.ForgotPasswordForm = ForgotPasswordForm;
 
@@ -27273,8 +27346,8 @@ var abcuiloader =
 	var ABCError = _airbitzCoreJs2.default.ABCError;
 
 	var recovery = __webpack_require__(193);
+	var RecoveryView = recovery.RecoveryView;
 	var SetupRecoveryView = recovery.SetupRecoveryView;
-	var ForgotPasswordForm = recovery.ForgotPasswordForm;
 
 	var modal = __webpack_require__(151);
 	var BootstrapButton = modal.BootstrapButton;
@@ -27544,7 +27617,7 @@ var abcuiloader =
 	            { className: 'form-group' },
 	            _react2.default.createElement(
 	              _reactRouter.Link,
-	              { className: 'btn btn-default', to: '/recovery' },
+	              { className: 'btn btn-default', to: '/account/setuprecovery' },
 	              'Forgot Password'
 	            )
 	          )
@@ -28165,7 +28238,8 @@ var abcuiloader =
 	    _react2.default.createElement(_reactRouter.IndexRoute, { component: Index }),
 	    _react2.default.createElement(_reactRouter.Route, { path: 'login', component: LoginForm }),
 	    _react2.default.createElement(_reactRouter.Route, { path: 'register', component: RegistrationForm }),
-	    _react2.default.createElement(_reactRouter.Route, { path: 'recovery', component: ForgotPasswordForm }),
+	    _react2.default.createElement(_reactRouter.Route, { path: 'recovery/:token', component: RecoveryView }),
+	    _react2.default.createElement(_reactRouter.Route, { path: 'recovery', component: RecoveryView }),
 	    _react2.default.createElement(_reactRouter.Route, { path: 'account', component: ManageAccountView }),
 	    _react2.default.createElement(_reactRouter.Route, { path: 'account/changepassword', component: ChangePasswordView }),
 	    _react2.default.createElement(_reactRouter.Route, { path: 'account/changepin', component: ChangePinView }),
