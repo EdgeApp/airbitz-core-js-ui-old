@@ -6,6 +6,7 @@ import abc from 'airbitz-core-js'
 // var abcc = abc.ABCConditionCode
 var ABCError = abc.ABCError
 
+var AbcUiFormView = require('./abcui-formview')
 var recovery = require('./abcui-recovery')
 var RecoveryView = recovery.RecoveryView
 var SetupRecoveryView = recovery.SetupRecoveryView
@@ -172,7 +173,7 @@ var AbcUserList = React.createClass({
 var AbcPasswordLoginForm = React.createClass({
   render () {
     return (
-      <FormView ref='form'>
+      <AbcUiFormView ref='form'>
         <div className='row'>
           <div className='col-sm-12'>
             <div className='form-group'>
@@ -205,7 +206,7 @@ var AbcPasswordLoginForm = React.createClass({
             </div>
           </div>
         </div>
-      </FormView>
+      </AbcUiFormView>
     )
   },
   handleSubmit() {
@@ -224,31 +225,10 @@ var AbcPasswordLoginForm = React.createClass({
   }
 })
 
-var FormView = React.createClass({
-  getInitialState() {
-    return { error: null }
-  },
-  render() {
-    var errorView = null
-    if (this.state.error) {
-      errorView = (
-        <div className='form-group has-error text-center'>
-          <span className='help-block'>{this.state.error}</span>
-        </div>)
-    }
-    return (
-      <form className='form'>
-        {errorView}
-        {this.props.children}
-      </form>
-      )
-  }
-})
-
 var AbcPinLoginForm = React.createClass({
   render() {
     return (
-        <FormView ref='form'>
+        <AbcUiFormView ref='form'>
           <div className='row'>
             <div className='col-sm-12 text-center'>
               <div className='form-group'>
@@ -278,7 +258,7 @@ var AbcPinLoginForm = React.createClass({
               </div>
             </div>
           </div>
-        </FormView>
+        </AbcUiFormView>
     )
   },
   handleExit() {
@@ -370,7 +350,7 @@ var RegistrationForm = React.createClass({
           key='regModal'
           cancel='Cancel'
           title='Register'>
-        <FormView ref='form'>
+        <AbcUiFormView ref='form'>
           <div className='row'>
             <div className='col-sm-12'>
               <div className='form-group'>
@@ -402,7 +382,7 @@ var RegistrationForm = React.createClass({
               </div>
             </div>
           </div>
-        </FormView>
+        </AbcUiFormView>
         </BootstrapModal>
     )
   },
@@ -502,7 +482,7 @@ var ChangePasswordView = React.createClass({
   render() {
     return (
     <BootstrapModal ref='modal' title='Change Password'>
-        <FormView ref='form'>
+        <AbcUiFormView ref='form'>
           <div className='row'>
             <div className='col-sm-12'>
               <div className='form-group'>
@@ -527,7 +507,7 @@ var ChangePasswordView = React.createClass({
               </div>
             </div>
           </div>
-        </FormView>
+        </AbcUiFormView>
     </BootstrapModal>)
   },
   comparePasswords() {
