@@ -1,9 +1,9 @@
 import React from 'react'
 import { render } from 'react-dom'
-import { Router, Route, IndexRoute, Link, IndexLink, hashHistory } from 'react-router'
+import { Router, Route, IndexRoute, Link, hashHistory } from 'react-router'
 import abc from 'airbitz-core-js'
 
-var abcc = abc.ABCConditionCode
+// var abcc = abc.ABCConditionCode
 var ABCError = abc.ABCError
 
 var recovery = require('./abcui-recovery')
@@ -14,54 +14,54 @@ var modal = require('./abcui-modal.js')
 var BootstrapButton = modal.BootstrapButton
 var BootstrapModal = modal.BootstrapModal
 
-
 var context = window.parent.context
 
 var PasswordRuleRow = React.createClass({
-  render(): any {
+  render () {
+    let imageIcon
     if (this.props.passed) {
-      var imageIcon = (<span className="pull-right glyphicon glyphicon-ok" aria-hidden="true"></span>)
+      imageIcon = (<span className='pull-right glyphicon glyphicon-ok' aria-hidden='true'></span>)
     } else {
-      var imageIcon = (<span className="pull-right glyphicon glyphicon-remove" aria-hidden="true"></span>)
+      imageIcon = (<span className='pull-right glyphicon glyphicon-remove' aria-hidden='true'></span>)
     }
     return (<li>{ this.props.name } {imageIcon}</li>)
   }
 })
 
 var PasswordRequirementsInput = React.createClass({
-  getInitialState() {
+  getInitialState () {
     return {
-      tests: PasswordRequirementsInput.testPassword(''),
+      tests: PasswordRequirementsInput.testPassword('')
     }
   },
-  componentDidMount() {
+  componentDidMount () {
     $(this.refs.dropdown).hide()
   },
-  componentWillUnmount() {
+  componentWillUnmount () {
   },
   statics: {
-    testPassword(password) {
+    testPassword (password) {
       if (!password) {
         password = ''
       }
       return [
-        { name: "Must have at least one upper case letter", test: (s) => password.match(/[A-Z]/) != null},
-        { name: "Must have at least one lower case letter", test: (s) => password.match(/[a-z]/) != null},
-        { name: "Must have at least one number",            test: (s) => password.match(/\d/) != null},
-        { name: "Must have at least 10 characters",         test: (s) => password.length >= 10},
+        { name: 'Must have at least one upper case letter', test: (s) => password.match(/[A-Z]/) != null},
+        { name: 'Must have at least one lower case letter', test: (s) => password.match(/[a-z]/) != null},
+        { name: 'Must have at least one number',            test: (s) => password.match(/\d/) != null},
+        { name: 'Must have at least 10 characters',         test: (s) => password.length >= 10},
       ].map(r => ({name: r.name, passed: r.test(password) }))
     }
   },
-  render(): any {
+  render () {
     return (
       <div>
-        <input ref="input" type="password"
+        <input ref='input' type='password'
             {...this.props}
             onFocus={this.onFocus}
             onBlur={this.onBlur}
             onKeyUp={this.onKeyUp} />
-          <span className="help-block">
-            <ul ref="dropdown" className="list-unstyled">{
+          <span className='help-block'>
+            <ul ref='dropdown' className='list-unstyled'>{
                 this.state.tests.map(r => {
                   return (<PasswordRuleRow key={r.name} name={r.name} passed={r.passed} />)
                 })
@@ -69,71 +69,71 @@ var PasswordRequirementsInput = React.createClass({
           </span>
       </div>)
   },
-  onFocus() {
+  onFocus () {
     $(this.refs.dropdown).fadeIn()
   },
-  onBlur() {
+  onBlur () {
     $(this.refs.dropdown).fadeOut()
   },
-  onKeyUp() {
+  onKeyUp () {
     this.setState({'tests': PasswordRequirementsInput.testPassword(this.refs.input.value)})
   },
-  value() {
+  value () {
     return this.refs.input.value
   }
 })
 
 var BootstrapInput = React.createClass({
-  getInitialState() {
+  getInitialState () {
     return { error:null, loading:null }
   },
-  render(): any {
-    var classes = "form-group "
+  render () {
+    var classes = 'form-group '
     if (this.state.loading) {
-      var subView = (<span className="help-block"><span className="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> {this.state.loading}</span>)
+      var subView = (<span className='help-block'><span className='glyphicon glyphicon-refresh glyphicon-refresh-animate'></span> {this.state.loading}</span>)
     } else if (this.state.error) {
-      var subView = (<span className="help-block">{this.state.error}</span>)
-      classes += "has-error"
+      var subView = (<span className='help-block'>{this.state.error}</span>)
+      classes += 'has-error'
     }
     return (
-      <div className="{classes}">
-        <input ref="input" {...this.props} />
+      <div className='{classes}'>
+        <input ref='input' {...this.props} />
         {subView}
       </div>)
   },
-  value() {
+  value () {
     return this.refs.input.value
   }
 })
 
 var AbcUserList = React.createClass({
-  getInitialState() {
+  getInitialState () {
     return { showInput: false }
   },
-  render() {
+  render () {
     var block = null
     var that = this
     var userList = context ? context.usernameList().sort() : []
     var toggleInput = null
     if (this.props.allowInput) {
       toggleInput = (
-        <span className="input-group-btn">
-          <button type="button" onClick={this.toggleInput}  className="btn btn-primary">X</button>
+        <span className='input-group-btn'>
+          <button type='button' onClick={this.toggleInput}  className='btn btn-primary'>X</button>
         </span>)
     }
     if (this.props.allowInput && (userList.length == 0 || this.state.showInput)) {
         block = (
-            <div className="input-group">
-              <input autoFocus ref="username" type="text" placeholder="username" className="form-control" />
-              <span className="input-group-btn">
-                <button type="button" onClick={this.toggleInput}  className="btn btn-primary">X</button>
+            <div className='input-group'>
+              <input autoFocus ref='username' type='text' placeholder='username' className='form-control' />
+              <span className='input-group-btn'>
+                <button type='button' onClick={this.toggleInput}  className='btn btn-primary'>X</button>
               </span>
             </div>
         )
     } else {
         var selectElement = (
-              <select ref="username"
-                    className="form-control"
+              <select ref='username'
+                    className='form-control'
                     onChange={this.handleSelection}
                     defaultValue={this.props.username}>
                 {userList.map(function(username) {
@@ -143,7 +143,7 @@ var AbcUserList = React.createClass({
         )
         if (this.props.allowInput) {
             return (
-              <div className="input-group">
+              <div className='input-group'>
                 {selectElement}
                 {toggleInput}
               </div>
@@ -154,54 +154,54 @@ var AbcUserList = React.createClass({
     }
     return (block)
   },
-  toggleInput() {
+  toggleInput () {
     this.setState({'showInput': !this.state.showInput})
     if (this.state.showInput) {
         this.setState({username: ''})
         this.refs.username.focus()
     }
   },
-  handleSelection() {
+  handleSelection () {
     this.props.onUserChange(this.refs.username.value)
   },
-  getValue() {
+  getValue () {
     return this.refs.username.value
   }
 })
 
 var AbcPasswordLoginForm = React.createClass({
-  render() {
+  render () {
     return (
-      <FormView ref="form">
-        <div className="row">
-          <div className="col-sm-12">
-            <div className="form-group">
+      <FormView ref='form'>
+        <div className='row'>
+          <div className='col-sm-12'>
+            <div className='form-group'>
               <AbcUserList
-                ref="username" 
+                ref='username'
                 allowInput={true}
                 username={this.props.username}
                 onUserChange={this.props.onUserChange} />
             </div>
           </div>
         </div>
-        <div className="row">
-          <div className="col-sm-12">
-            <div className="form-group">
-              <input ref="password" type="password" placeholder="Password" className="form-control" />
+        <div className='row'>
+          <div className='col-sm-12'>
+            <div className='form-group'>
+              <input ref='password' type='password' placeholder='Password' className='form-control' />
             </div>
           </div>
         </div>
-        <div className="row">
-          <div className="col-sm-12 text-center">
-            <div className="form-group">
-              <BootstrapButton ref="signin" onClick={this.handleSubmit}>Sign In</BootstrapButton>
+        <div className='row'>
+          <div className='col-sm-12 text-center'>
+            <div className='form-group'>
+              <BootstrapButton ref='signin' onClick={this.handleSubmit}>Sign In</BootstrapButton>
             </div>
           </div>
         </div>
-        <div className="row">
-          <div className="col-sm-12 text-center">
-            <div className="form-group">
-              <Link className="btn btn-default" to={`/account/setuprecovery`}>Forgot Password</Link>
+        <div className='row'>
+          <div className='col-sm-12 text-center'>
+            <div className='form-group'>
+              <Link className='btn btn-default' to={`/account/setuprecovery`}>Forgot Password</Link>
             </div>
           </div>
         </div>
@@ -232,12 +232,12 @@ var FormView = React.createClass({
     var errorView = null
     if (this.state.error) {
       errorView = (
-        <div className="form-group has-error text-center">
-          <span className="help-block">{this.state.error}</span>
+        <div className='form-group has-error text-center'>
+          <span className='help-block'>{this.state.error}</span>
         </div>)
     }
     return (
-      <form className="form">
+      <form className='form'>
         {errorView}
         {this.props.children}
       </form>
@@ -248,33 +248,33 @@ var FormView = React.createClass({
 var AbcPinLoginForm = React.createClass({
   render() {
     return (
-        <FormView ref="form">
-          <div className="row">
-            <div className="col-sm-12 text-center">
-              <div className="form-group">
-                <AbcUserList ref="username"
+        <FormView ref='form'>
+          <div className='row'>
+            <div className='col-sm-12 text-center'>
+              <div className='form-group'>
+                <AbcUserList ref='username'
                     allowInput={false}
                     username={this.props.username}
                     onUserChange={this.props.onUserChange} />
               </div>
             </div>
-            <div className="col-sm-12 text-center">
-              <div className="form-group center-block" style={{"width": "100px"}}>
-                  <input ref="pin" type="password" placeholder="PIN" className="form-control" maxLength="4" />
+            <div className='col-sm-12 text-center'>
+              <div className='form-group center-block' style={{'width': '100px'}}>
+                  <input ref='pin' type='password' placeholder='PIN' className='form-control' maxLength='4' />
               </div>
             </div>
           </div>
-          <div className="row">
-            <div className="col-sm-12 text-center">
-              <div className="form-group">
-                <BootstrapButton ref="signin" onClick={this.handleSubmit}>Sign In</BootstrapButton>
+          <div className='row'>
+            <div className='col-sm-12 text-center'>
+              <div className='form-group'>
+                <BootstrapButton ref='signin' onClick={this.handleSubmit}>Sign In</BootstrapButton>
               </div>
             </div>
           </div>
-          <div className="row">
-            <div className="col-sm-12 text-center">
-              <div className="form-group">
-                <button type="button" onClick={this.handleExit} className="btn">Exit Pin Login</button>
+          <div className='row'>
+            <div className='col-sm-12 text-center'>
+              <div className='form-group'>
+                <button type='button' onClick={this.handleExit} className='btn'>Exit Pin Login</button>
               </div>
             </div>
           </div>
@@ -322,14 +322,14 @@ var LoginForm = React.createClass({
       showPinLogin = false
     }
     if (showPinLogin) {
-      block = (<AbcPinLoginForm ref="pinForm"
+      block = (<AbcPinLoginForm ref='pinForm'
                 username={currentUser}
                 onSuccess={this.handleSuccess}
                 onError={this.handleError}
                 onUserChange={this.handleUserChange}
                 onExit={this.handlePinExit} />)
     } else {
-      block = (<AbcPasswordLoginForm ref="passwordForm"
+      block = (<AbcPasswordLoginForm ref='passwordForm'
                 username={currentUser}
                 onSuccess={this.handleSuccess}
                 onError={this.handleError}
@@ -337,10 +337,10 @@ var LoginForm = React.createClass({
     }
     return (
       <BootstrapModal
-          ref="loginModal"
-          key="loginModal"
-          cancel="Cancel"
-          title="Login">
+          ref='loginModal'
+          key='loginModal'
+          cancel='Cancel'
+          title='Login'>
         {block}
       </BootstrapModal>
     )
@@ -366,38 +366,38 @@ var RegistrationForm = React.createClass({
   render() {
     return (
       <BootstrapModal
-          ref="regModal"
-          key="regModal"
-          cancel="Cancel"
-          title="Register">
-        <FormView ref="form">
-          <div className="row">
-            <div className="col-sm-12">
-              <div className="form-group">
-                <BootstrapInput type="text" ref="username" placeholder="Choose a Username" className="form-control" onBlur={this.blur} onFocus={this.focus} />
+          ref='regModal'
+          key='regModal'
+          cancel='Cancel'
+          title='Register'>
+        <FormView ref='form'>
+          <div className='row'>
+            <div className='col-sm-12'>
+              <div className='form-group'>
+                <BootstrapInput type='text' ref='username' placeholder='Choose a Username' className='form-control' onBlur={this.blur} onFocus={this.focus} />
               </div>
             </div>
-            <div className="col-sm-12">
-              <div className="form-group">
-                <PasswordRequirementsInput ref="password" placeholder="Choose a Password" className="form-control" />
+            <div className='col-sm-12'>
+              <div className='form-group'>
+                <PasswordRequirementsInput ref='password' placeholder='Choose a Password' className='form-control' />
               </div>
             </div>
-            <div className="col-sm-12">
-              <div className="form-group">
-                <PasswordRequirementsInput ref="password_repeat" placeholder="Repeat Password" className="form-control" />
+            <div className='col-sm-12'>
+              <div className='form-group'>
+                <PasswordRequirementsInput ref='password_repeat' placeholder='Repeat Password' className='form-control' />
               </div>
             </div>
-            <div className="col-sm-12">
-              <div className="form-group">
-                <div className="input-group">
-                  <input type="password" ref="pin" maxLength="4" placeholder="Choose a 4 Digit PIN" className="form-control" />
+            <div className='col-sm-12'>
+              <div className='form-group'>
+                <div className='input-group'>
+                  <input type='password' ref='pin' maxLength='4' placeholder='Choose a 4 Digit PIN' className='form-control' />
                 </div>
               </div>
             </div>
-            <div className="col-sm-12">
-              <div className="form-group">
-                <span className="input-group-btn">
-                  <BootstrapButton ref="register" onClick={this.handleSubmit}>Register</BootstrapButton>
+            <div className='col-sm-12'>
+              <div className='form-group'>
+                <span className='input-group-btn'>
+                  <BootstrapButton ref='register' onClick={this.handleSubmit}>Register</BootstrapButton>
                 </span>
               </div>
             </div>
@@ -471,19 +471,19 @@ var RegistrationForm = React.createClass({
 var ManageAccountView = React.createClass({
   render() {
     return (
-      <BootstrapModal ref="modal" title="Manage Account">
+      <BootstrapModal ref='modal' title='Manage Account'>
         <h4>ACCOUNT: <span>{window.parent.account.username}</span></h4>
-        <ul className="list-unstyled">
-            <li><Link className="btn" to={`/account/changepassword`}>Change Password</Link></li>
-            <li><Link className="btn" to={`/account/changepin`}>Change Pin</Link></li>
-            <li><Link className="btn" to={`/account/setuprecovery`}>Setup/Change Recovery</Link></li>
+        <ul className='list-unstyled'>
+            <li><Link className='btn' to={`/account/changepassword`}>Change Password</Link></li>
+            <li><Link className='btn' to={`/account/changepin`}>Change Pin</Link></li>
+            <li><Link className='btn' to={`/account/setuprecovery`}>Setup/Change Recovery</Link></li>
         </ul>
         {/*
         <h4>OPTIONS</h4>
-        <ul className="list-unstyled">
+        <ul className='list-unstyled'>
             <li>
-                <a className="btn" href="javascript://" onClick={this.togglePinEnabled}>Enable PIN Login</a>
-                <input className="form-input pull-right" type="checkbox" ref="pinEnabled" id="pinEnabled" onChange={this.pinEnableChanged} />
+                <a className='btn' href='javascript://' onClick={this.togglePinEnabled}>Enable PIN Login</a>
+                <input className='form-input pull-right' type='checkbox' ref='pinEnabled' id='pinEnabled' onChange={this.pinEnableChanged} />
             </li>
         </ul>
         */}
@@ -501,28 +501,28 @@ var ManageAccountView = React.createClass({
 var ChangePasswordView = React.createClass({
   render() {
     return (
-    <BootstrapModal ref="modal" title="Change Password">
-        <FormView ref="form">
-          <div className="row">
-            <div className="col-sm-12">
-              <div className="form-group">
-                <input type="password" ref="currentPassword" placeholder="Current Password" className="form-control" />
+    <BootstrapModal ref='modal' title='Change Password'>
+        <FormView ref='form'>
+          <div className='row'>
+            <div className='col-sm-12'>
+              <div className='form-group'>
+                <input type='password' ref='currentPassword' placeholder='Current Password' className='form-control' />
               </div>
             </div>
-            <div className="col-sm-12">
-              <div className="form-group">
-                <PasswordRequirementsInput ref="password" placeholder="Password" className="form-control" />
+            <div className='col-sm-12'>
+              <div className='form-group'>
+                <PasswordRequirementsInput ref='password' placeholder='Password' className='form-control' />
               </div>
             </div>
-            <div className="col-sm-12">
-              <div className="form-group">
-                <BootstrapInput type="password" ref="confirmPassword" placeholder="Confirm Password" className="form-control" onChange={this.comparePasswords} />
+            <div className='col-sm-12'>
+              <div className='form-group'>
+                <BootstrapInput type='password' ref='confirmPassword' placeholder='Confirm Password' className='form-control' onChange={this.comparePasswords} />
               </div>
             </div>
-            <div className="col-sm-12">
-              <div className="form-group">
-                <span className="input-group-btn">
-                  <BootstrapButton ref="changeButton" onClick={this.handleSubmit}>Save</BootstrapButton>
+            <div className='col-sm-12'>
+              <div className='form-group'>
+                <span className='input-group-btn'>
+                  <BootstrapButton ref='changeButton' onClick={this.handleSubmit}>Save</BootstrapButton>
                 </span>
               </div>
             </div>
@@ -563,27 +563,27 @@ var ChangePasswordView = React.createClass({
 var ChangePinView = React.createClass({
   render() {
     return (
-    <BootstrapModal ref="modal" title="Change PIN">
+    <BootstrapModal ref='modal' title='Change PIN'>
         <form>
-          <div className="row">
-            <div className="col-sm-12">
-              <div className="form-group">
-                <div className="input-group">
-                    <input type="password" ref="currentPassword" placeholder="Current Password" className="form-control" />
+          <div className='row'>
+            <div className='col-sm-12'>
+              <div className='form-group'>
+                <div className='input-group'>
+                    <input type='password' ref='currentPassword' placeholder='Current Password' className='form-control' />
                 </div>
               </div>
             </div>
-            <div className="col-sm-12">
-              <div className="form-group">
-                <div className="input-group">
-                  <input type="password" ref="pin" placeholder="New PIN" className="form-control" maxLength="4" />
+            <div className='col-sm-12'>
+              <div className='form-group'>
+                <div className='input-group'>
+                  <input type='password' ref='pin' placeholder='New PIN' className='form-control' maxLength='4' />
                 </div>
               </div>
             </div>
-            <div className="col-sm-12">
-              <div className="form-group">
-                <span className="input-group-btn">
-                  <BootstrapButton ref="changeButton" onClick={this.handleSubmit}>Save</BootstrapButton>
+            <div className='col-sm-12'>
+              <div className='form-group'>
+                <span className='input-group-btn'>
+                  <BootstrapButton ref='changeButton' onClick={this.handleSubmit}>Save</BootstrapButton>
                 </span>
               </div>
             </div>
@@ -616,7 +616,7 @@ var ChangePinView = React.createClass({
 
 var MenuItem = React.createClass({
   render() {
-    return (<li><a {...this.props} href="javascript:;" /></li>)
+    return (<li><a {...this.props} href='javascript:;' /></li>)
   }
 })
 const Index = React.createClass({
@@ -639,16 +639,16 @@ const NotFound = React.createClass({
 
 render((
   <Router history={hashHistory}>
-    <Route path="/" component={App}>
+    <Route path='/' component={App}>
       <IndexRoute component={Index} />
-      <Route path="login" component={LoginForm} />
-      <Route path="register" component={RegistrationForm} />
-      <Route path="recovery/:token" component={RecoveryView} />
-      <Route path="recovery" component={RecoveryView} />
-      <Route path="account" component={ManageAccountView} />
-      <Route path="account/changepassword" component={ChangePasswordView} />
-      <Route path="account/changepin" component={ChangePinView} />
-      <Route path="account/setuprecovery" component={SetupRecoveryView} />
+      <Route path='login' component={LoginForm} />
+      <Route path='register' component={RegistrationForm} />
+      <Route path='recovery/:token' component={RecoveryView} />
+      <Route path='recovery' component={RecoveryView} />
+      <Route path='account' component={ManageAccountView} />
+      <Route path='account/changepassword' component={ChangePasswordView} />
+      <Route path='account/changepin' component={ChangePinView} />
+      <Route path='account/setuprecovery' component={SetupRecoveryView} />
     </Route>
   </Router>
 ), document.getElementById('app'))

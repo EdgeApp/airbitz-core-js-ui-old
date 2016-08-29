@@ -4,7 +4,7 @@ var ABCError = abc.ABCError
 
 function createIFrame(path) {
   var frame = document.createElement('iframe')
-  var body = document.getElementsByTagName("BODY")[0]
+  var body = document.getElementsByTagName('BODY')[0]
   body.appendChild(frame, body)
   frame.setAttribute('src', path)
   frame.setAttribute('frameborder', '0')
@@ -24,7 +24,7 @@ function makeABCUIContext(args) {
 function InnerAbcUi(args) {
   var apiKey = args.apiKey
   if (!apiKey) {
-    throw Error("Missing api key")
+    throw Error('Missing api key')
   }
   window.context = this.abcContext =
     abc.makeABCContext({'apiKey': args.apiKey, 'accountType': args.accountType})

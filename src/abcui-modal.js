@@ -5,13 +5,13 @@ var BootstrapButton = React.createClass({
   getInitialState() {
     return {'loading': false}
   },
-  render(): any {
+  render() {
     if (this.state.loading) {
-      return (<button type="button" className="btn btn-primary" disabled="disabled">
-        <span className="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
+      return (<button type='button' className='btn btn-primary' disabled='disabled'>
+        <span className='glyphicon glyphicon-refresh glyphicon-refresh-animate'></span>
       </button>)
     } else {
-      return (<button type="button" {...this.props} className="btn btn-primary">{this.props.children}</button>)
+      return (<button type='button' {...this.props} className='btn btn-primary'>{this.props.children}</button>)
     }
   },
   setLoading(isLoading, callback) {
@@ -39,19 +39,19 @@ var BootstrapModal = React.createClass({
   },
   render() {
     return (
-      <div className="modal fade" ref="root">
-        <div className="modal-dialog modal-sm">
-          <div className="modal-content">
-            <div className="modal-header">
+      <div className='modal fade' ref='root'>
+        <div className='modal-dialog modal-sm'>
+          <div className='modal-content'>
+            <div className='modal-header'>
               <button
-                type="button"
-                className="close"
+                type='button'
+                className='close'
                 onClick={this.handleCancel}>
                 &times;
               </button>
               <h4>{this.state.title}</h4>
             </div>
-            <div className="modal-body">
+            <div className='modal-body'>
               {this.props.children}
             </div>
           </div>

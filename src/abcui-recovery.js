@@ -1,27 +1,26 @@
 import React from 'react'
-import { render } from 'react-dom'
 
 var modal = require('./abcui-modal.js')
 var BootstrapButton = modal.BootstrapButton
 var BootstrapModal = modal.BootstrapModal
 
 var QuestionAnswerView = React.createClass({
-  render() {
+  render () {
     return (
-      <div className="col-sm-12">
-        <div className="form-group">
-          <input type="text" ref="question" placeholder={this.props.question} className="form-control" />
+      <div className='col-sm-12'>
+        <div className='form-group'>
+          <input type='text' ref='question' placeholder={this.props.question} className='form-control' />
         </div>
-        <div className="form-group">
-          <input type="text" ref="answer" placeholder={this.props.answer} className="form-control" />
+        <div className='form-group'>
+          <input type='text' ref='answer' placeholder={this.props.answer} className='form-control' />
         </div>
       </div>
     )
   },
   value() {
     return {
-      "question": this.refs.question.value,
-      "answer": this.refs.answer.value
+      'question': this.refs.question.value,
+      'answer': this.refs.answer.value
     }
   }
 
@@ -32,20 +31,20 @@ var QuestionAnswerView = React.createClass({
 // props setup
 var RecoveryView = React.createClass({
   render() {
-    "use strict"
+    'use strict'
     let recoveryToken
     // See if token is in the path
     if (this.props.token) {
       recoveryToken = this.props.token
     }
-    return (<RecoveryQAView state="setup" questionChoices={questionChoices}></RecoveryQAView>)
+    return (<RecoveryQAView state='setup' questionChoices={questionChoices}></RecoveryQAView>)
   }
 })
 
 
 var SetupRecoveryView = React.createClass({
   render() {
-    "use strict"
+    'use strict'
 
     // Query core for list of questions
     // Fake for now
@@ -54,13 +53,13 @@ var SetupRecoveryView = React.createClass({
       'Who dunit?',
       'Dude, where\'s my car?'
     ]
-    return (<RecoveryQAView setup="1"
+    return (<RecoveryQAView setup='1'
                             questionChoices={questionChoices}
                             callback={this.callback}/>)
   },
   callback(password, questions, answers)
   {
-    "use strict"
+    'use strict'
     console.log(password)
     console.log(questions)
     console.log(answers)
@@ -72,42 +71,42 @@ var SetupRecoveryView = React.createClass({
 
 var RecoveryQAView = React.createClass({
   render() {
-    "use strict"
+    'use strict'
 
-    let questions = ["", ""]
-    let answers = ["", ""]
+    let questions = ['', '']
+    let answers = ['', '']
     let questionChoices
     if (this.props.setup) {
       questionChoices = this.props.questionChoices
-      questions[0] = questions[1] = "Please choose a recovery question"
-      answers[0] = answers[1] = "Answers are case sensitive"
+      questions[0] = questions[1] = 'Please choose a recovery question'
+      answers[0] = answers[1] = 'Answers are case sensitive'
     } else {
       // Todo
     }
     return (
-      <BootstrapModal ref="modal" title="Change Recovery Information">
+      <BootstrapModal ref='modal' title='Change Recovery Information'>
         <form>
-          <div className="row">
+          <div className='row'>
             <QuestionAnswerView
-              ref="qa1"
+              ref='qa1'
               question={questions[0]}
               answer={answers[0]}
               questionChoices={questionChoices}/>
             <QuestionAnswerView
-              ref="qa2"
+              ref='qa2'
               question={questions[1]}
               answer={answers[1]}
               questionChoices={questionChoices}/>
-            <div className="col-sm-12">
-              <div className="form-group">
+            <div className='col-sm-12'>
+              <div className='form-group'>
                 <label>Current password</label>
-                <input type="password" ref="currentPassword" placeholder="Current Password" className="form-control" />
+                <input type='password' ref='currentPassword' placeholder='Current Password' className='form-control' />
               </div>
             </div>
-            <div className="col-sm-12">
-              <div className="form-group">
-                <span className="input-group-btn">
-                  <BootstrapButton ref="register" onClick={this.handleSubmit}>Save</BootstrapButton>
+            <div className='col-sm-12'>
+              <div className='form-group'>
+                <span className='input-group-btn'>
+                  <BootstrapButton ref='register' onClick={this.handleSubmit}>Save</BootstrapButton>
                 </span>
               </div>
             </div>
@@ -117,7 +116,7 @@ var RecoveryQAView = React.createClass({
     )
   },
   onChange(index, question, answer) {
-    "use strict"
+    'use strict'
     this.state.question[index] = question
     this.state.answer[index] = answer
   },
@@ -146,31 +145,31 @@ var ForgotPasswordForm = RecoveryView
 var ForgotPasswordForm_old = React.createClass({
   render() {
     return (
-      <BootstrapModal ref="modal" title="Change Recovery Information">
+      <BootstrapModal ref='modal' title='Change Recovery Information'>
         <form>
-          <div className="row">
-            <div className="col-sm-12">
-              <div className="form-group">
+          <div className='row'>
+            <div className='col-sm-12'>
+              <div className='form-group'>
                 <label>Recovery Tokens information...</label>
-                <input type="password" ref="username" placeholder="Recovery Token" className="form-control" />
+                <input type='password' ref='username' placeholder='Recovery Token' className='form-control' />
               </div>
             </div>
-            <div className="col-sm-12">
-              <div className="form-group">
-                <label htmlFor="question1">Question 1 Text</label>
-                <input type="text" id="question1" ref="question1" placeholder="Question 1 Answer" className="form-control" />
+            <div className='col-sm-12'>
+              <div className='form-group'>
+                <label htmlFor='question1'>Question 1 Text</label>
+                <input type='text' id='question1' ref='question1' placeholder='Question 1 Answer' className='form-control' />
               </div>
             </div>
-            <div className="col-sm-12">
-              <div className="form-group">
-                <label htmlFor="question2">Question 2 Text</label>
-                <input type="text" id="question2"  ref="question2" placeholder="Question 2 Answer" className="form-control" />
+            <div className='col-sm-12'>
+              <div className='form-group'>
+                <label htmlFor='question2'>Question 2 Text</label>
+                <input type='text' id='question2'  ref='question2' placeholder='Question 2 Answer' className='form-control' />
               </div>
             </div>
-            <div className="col-sm-12">
-              <div className="form-group">
-                <span className="input-group-btn">
-                  <BootstrapButton ref="register" onClick={this.handleSubmit}>Save</BootstrapButton>
+            <div className='col-sm-12'>
+              <div className='form-group'>
+                <span className='input-group-btn'>
+                  <BootstrapButton ref='register' onClick={this.handleSubmit}>Save</BootstrapButton>
                 </span>
               </div>
             </div>
