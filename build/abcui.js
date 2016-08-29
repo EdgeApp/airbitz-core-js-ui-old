@@ -4478,10 +4478,7 @@ var abcui =
 	  var userId = userMap.getUserId(ctx.localStorage, username)
 
 	  loginOffline(ctx, username, userId, password, function (err, account) {
-	    if (!err) {
-	      account.loggedIn = true
-	      return callback(null, account)
-	    }
+	    if (!err) return callback(null, account)
 	    return loginOnline(ctx, username, userId, password, callback)
 	  })
 	}
