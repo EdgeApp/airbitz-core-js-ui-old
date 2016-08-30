@@ -28,6 +28,7 @@ function InnerAbcUi(args) {
   }
   window.context = this.abcContext =
     abc.makeABCContext({'apiKey': args.apiKey, 'accountType': args.accountType})
+  window.uiContext = {'vendorName': args.vendorName}
   if (args['bundle-path']) {
     this.bundlePath = args.bundlePath
   } else {

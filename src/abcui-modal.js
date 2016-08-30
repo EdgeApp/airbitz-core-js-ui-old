@@ -60,9 +60,11 @@ var BootstrapModal = React.createClass({
     )
   },
   handleCancel() {
-    if (window.parent.exitCallback) {
+    if (this.props.onClose) {
+      // Parent will take care of closing the modal
+      this.props.onClose()
+    } else {
       this.close()
-      window.parent.exitCallback()
     }
   },
   handleHidden() {

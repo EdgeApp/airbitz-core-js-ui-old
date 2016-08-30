@@ -19,8 +19,16 @@ let strings = new LocalizedStrings({
     sign_in_text: 'Sign In',
     exit_pin_login_text: 'Exit PIN Login',
     incorrect_password_text: 'Incorrect Password',
+    save_recovery_token_popup:  "Save Recovery Token",
+    save_recovery_token_popup_message: "To complete account recovery setup you MUST save an account recovery token. This will be required to recover your account in addition to your username and recovery answers. Please enter your email below to send yourself the recovery token.",
+    email_address_text: 'Email address',
+    email_text: 'Email',
+    invalid_email_address: 'Invalid email address',
+    recovery_email_subject: '{0} Recovery Token',
+    recovery_token_email_body: 'Please click the link below from a device with {0} installed to initiate account recovery for username [{1}]\n\n{2}',
 
     dummy_entry_to_keep_json_happy: ''
+
   }
 });
 

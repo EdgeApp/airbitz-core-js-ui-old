@@ -9,6 +9,7 @@ var AbcUiFormView = require('./abcui-formview.js')
 var strings = require('./abcui-strings.js').strings
 var ABCError = abc.ABCError
 var Modal = require('react-modal');
+var tools = require('./abcui-tools.js')
 
 var QuestionAnswerView = React.createClass({
   render () {
@@ -51,12 +52,18 @@ var RecoveryView = React.createClass({
   }
 })
 
-
 var SetupRecoveryView = React.createClass({
+  getInitialState: function() {
+    return {
+      showEmailModal: false,
+      showQAModal: true
+    }
+  },
   render() {
     'use strict'
 
     this.account = window.parent.account
+    this.vendorName = window.parent.uiContext.vendorName
     if (this.account === null ||
         this.account.isLoggedIn() === false) {
       console.log('Error: Account not logged in for recovery setup')
@@ -77,16 +84,52 @@ var SetupRecoveryView = React.createClass({
     questionChoices = [strings.please_select_a_question].concat(questionChoices)
 
     return (
-      <BootstrapModal id='recoverymodal' ref='modal' title={strings.password_recovery_text}>
-        <AbcUiFormView ref='form'>
-          <RecoveryQAView setup='1'
-                          questions={questions}
-                          answers={answers}
-                          questionChoices={questionChoices}
-                          callback={this.callback}/>
-        </AbcUiFormView>
-      </BootstrapModal>
+      <div>
+
+        {this.state.showQAModal ? (
+          <BootstrapModal id='recoverymodal' ref='modal' title={strings.password_recovery_text} onClose={this.onCloseQA}>
+            <AbcUiFormView ref='form'>
+              <RecoveryQAView setup='1'
+                              questions={questions}
+                              answers={answers}
+                              questionChoices={questionChoices}
+                              callback={this.callback}/>
+            </AbcUiFormView>
+          </BootstrapModal>
+        ) : null}
+
+        {this.state.showEmailModal ? (
+          <BootstrapModal id='emailmodal' ref='emailmodal' title={strings.save_recovery_token_popup} onClose={this.onCloseEmail}>
+            <AbcUiFormView ref='emailform'>
+              <label>{strings.save_recovery_token_popup_message}</label>
+              <input type='text' ref='email' placeholder={strings.email_address_text} className='form-control' />
+              <span className='input-group-btn'>
+                <BootstrapButton ref='register' onClick={this.callBackEmail}>{strings.email_text}</BootstrapButton>
+              </span>
+            </AbcUiFormView>
+          </BootstrapModal>
+        ) : null}
+
+      </div>
     )
+  },
+  onCloseQA () {
+    'use strict';
+    if (window.parent.exitCallback) {
+      window.parent.exitCallback()
+    }
+  },
+  onCloseEmail () {
+    'use strict';
+    this.showEmail(false)
+  },
+  showEmail (show) {
+    'use strict';
+    this.setState({showEmailModal: show})
+  },
+  showQA (show) {
+    'use strict';
+    this.setState({showQAModal: show})
   },
   callback(password, questions, answers)
   {
@@ -108,7 +151,6 @@ var SetupRecoveryView = React.createClass({
 
     if (password != null) {
       var passwdOk = this.account.checkPassword(password)
-      // var passwdOk = true;
 
       if (!passwdOk) {
         this.refs.form.setState({'error': ABCError(1, strings.incorrect_password_text).message})
@@ -116,20 +158,49 @@ var SetupRecoveryView = React.createClass({
       } else {
         console.log('Yay. good password')
         // Open another modal
-
-        this.refs.modal.close()
-        if (window.parent.exitCallback) {
-          window.parent.exitCallback()
-        }
-
+        this.showQA(true)
+        this.showEmail(true)
       }
     }
+  },
+  callBackEmail () {
+    'use strict';
+    console.log(this.refs.email.value)
+    
+    if (tools.validateEmail(this.refs.email.value)) {
+      console.log('good email')
+      // if (window.parent.exitCallback) {
+      //   window.parent.exitCallback()
+      // }
 
+      var baseUrl = 'http://localhost:3000/recovery/?token=IAMATOKEN'
 
+      if (!this.account) {
+        this.account = {name: 'NoName'}
+      }
+
+      var emailTo = this.refs.email.value
+      var emailSubject = String.format(strings.recovery_email_subject, this.vendorName)
+      emailSubject = encodeURI(emailSubject)
+      var emailBody = String.format(strings.recovery_token_email_body, this.vendorName, this.account.username, baseUrl)
+      emailBody = encodeURI(emailBody)
+
+      var url = `https://mail.google.com/mail/?view=cm&fs=1&to=${emailTo}&su=${emailSubject}&body=${emailBody}`
+      window.open(url, '_blank');
+    } else {
+      this.refs.emailform.setState({'error': ABCError(1, strings.invalid_email_address).message})
+    }
   }
 })
 
-
+String.format = function(format) {
+  var args = Array.prototype.slice.call(arguments, 1)
+  return format.replace(/{(\d+)}/g, function(match, number) {
+    return typeof args[number] != 'undefined'
+      ? args[number]
+      : match
+  })
+}
 
 var RecoveryQAView = React.createClass({
   render() {

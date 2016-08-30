@@ -322,7 +322,8 @@ var LoginForm = React.createClass({
           ref='loginModal'
           key='loginModal'
           cancel='Cancel'
-          title='Login'>
+          title='Login'
+          onClose={this.onClose}>
         {block}
       </BootstrapModal>
     )
@@ -341,6 +342,12 @@ var LoginForm = React.createClass({
       this.refs.loginModal.close()
       window.parent.loginCallback(null, account)
     }
+  },
+  onClose () {
+    'use strict';
+    if (window.parent.exitCallback) {
+      window.parent.exitCallback()
+    }
   }
 })
 
@@ -351,7 +358,8 @@ var RegistrationForm = React.createClass({
           ref='regModal'
           key='regModal'
           cancel='Cancel'
-          title='Register'>
+          title='Register'
+          onClose={this.onClose}>
         <AbcUiFormView ref='form'>
           <div className='row'>
             <div className='col-sm-12'>
@@ -447,13 +455,19 @@ var RegistrationForm = React.createClass({
       }
     })
     return false
+  },
+  onClose () {
+    'use strict';
+    if (window.parent.exitCallback) {
+      window.parent.exitCallback()
+    }
   }
 })
 
 var ManageAccountView = React.createClass({
   render() {
     return (
-      <BootstrapModal ref='modal' title='Manage Account'>
+      <BootstrapModal ref='modal' title='Manage Account' onClose={this.onClose}>
         <h4>ACCOUNT: <span>{window.parent.account.username}</span></h4>
         <ul className='list-unstyled'>
             <li><Link className='btn' to={`/account/changepassword`}>Change Password</Link></li>
@@ -477,13 +491,19 @@ var ManageAccountView = React.createClass({
   },
   pinEnableChanged() {
     alert(this.refs.pinEnabled.checked)
+  },
+  onClose () {
+    'use strict';
+    if (window.parent.exitCallback) {
+      window.parent.exitCallback()
+    }
   }
 })
 
 var ChangePasswordView = React.createClass({
   render() {
     return (
-    <BootstrapModal ref='modal' title='Change Password'>
+    <BootstrapModal ref='modal' title='Change Password' onClose={this.onClose}>
         <AbcUiFormView ref='form'>
           <div className='row'>
             <div className='col-sm-12'>
@@ -539,13 +559,19 @@ var ChangePasswordView = React.createClass({
     } else {
       that.refs.form.setState({'error': 'Incorrect current password'})
     }
+  },
+  onClose () {
+    'use strict';
+    if (window.parent.exitCallback) {
+      window.parent.exitCallback()
+    }
   }
 })
 
 var ChangePinView = React.createClass({
   render() {
     return (
-    <BootstrapModal ref='modal' title='Change PIN'>
+    <BootstrapModal ref='modal' title='Change PIN' onClose={this.onClose}>
         <form>
           <div className='row'>
             <div className='col-sm-12'>
@@ -591,6 +617,12 @@ var ChangePinView = React.createClass({
       })
     } else {
       that.refs.form.setState({'error': 'Incorrect current password'})
+    }
+  },
+  onClose () {
+    'use strict';
+    if (window.parent.exitCallback) {
+      window.parent.exitCallback()
     }
   }
 })

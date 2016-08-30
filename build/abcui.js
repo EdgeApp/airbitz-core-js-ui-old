@@ -40,7 +40,7 @@ var abcui =
 /******/ 	// __webpack_public_path__
 /******/ 	__webpack_require__.p = "";
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 221);
+/******/ 	return __webpack_require__(__webpack_require__.s = 222);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -13224,7 +13224,8 @@ var abcui =
 /* 218 */,
 /* 219 */,
 /* 220 */,
-/* 221 */
+/* 221 */,
+/* 222 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -13263,6 +13264,7 @@ var abcui =
 	    throw Error('Missing api key');
 	  }
 	  window.context = this.abcContext = _airbitzCoreJs2.default.makeABCContext({ 'apiKey': args.apiKey, 'accountType': args.accountType });
+	  window.uiContext = { 'vendorName': args.vendorName };
 	  if (args['bundle-path']) {
 	    this.bundlePath = args.bundlePath;
 	  } else {
