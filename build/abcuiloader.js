@@ -21817,6 +21817,8 @@ var abcuiloader =
 	    save_recovery_token_popup_message: "To complete account recovery setup you MUST save an account recovery token. This will be required to recover your account in addition to your username and recovery answers. Please enter your email below to send yourself the recovery token.",
 	    email_address_text: 'Email address',
 	    email_text: 'Email',
+	    send_using_xx: 'Send using {0}',
+	    done_text: 'Done',
 	    invalid_email_address: 'Invalid email address',
 	    recovery_email_subject: '{0} Recovery Token',
 	    recovery_token_email_body: 'Please click the link below from a device with {0} installed to initiate account recovery for username [{1}]\n\n{2}',
@@ -28001,7 +28003,8 @@ var abcuiloader =
 	  getInitialState: function getInitialState() {
 	    return {
 	      showEmailModal: false,
-	      showQAModal: true
+	      showQAModal: true,
+	      showDone: false
 	    };
 	  },
 	  render: function render() {
@@ -28009,10 +28012,11 @@ var abcuiloader =
 
 	    this.account = window.parent.account;
 	    this.vendorName = window.parent.uiContext.vendorName;
-	    if (this.account === null || this.account.isLoggedIn() === false) {
-	      console.log('Error: Account not logged in for recovery setup');
-	      return;
-	    }
+	    // if (this.account === null ||
+	    //     this.account.isLoggedIn() === false) {
+	    //   console.log('Error: Account not logged in for recovery setup')
+	    //   return
+	    // }
 	    var questions = ['', ''];
 	    var answers = ['', ''];
 
@@ -28051,15 +28055,66 @@ var abcuiloader =
 	            strings.save_recovery_token_popup_message
 	          ),
 	          _react2.default.createElement('input', { type: 'text', ref: 'email', placeholder: strings.email_address_text, className: 'form-control' }),
+	          _react2.default.createElement('br', null),
 	          _react2.default.createElement(
 	            'span',
 	            { className: 'input-group-btn' },
 	            _react2.default.createElement(
 	              BootstrapButton,
-	              { ref: 'register', onClick: this.callBackEmail },
-	              strings.email_text
+	              { ref: 'btn-gmail', onClick: this.callBackGmail },
+	              String.format(strings.send_using_xx, 'Gmail')
 	            )
-	          )
+	          ),
+	          _react2.default.createElement('br', null),
+	          _react2.default.createElement(
+	            'span',
+	            { className: 'input-group-btn' },
+	            _react2.default.createElement(
+	              BootstrapButton,
+	              { ref: 'btn-yahoo', onClick: this.callBackYahoo },
+	              String.format(strings.send_using_xx, 'Yahoo')
+	            )
+	          ),
+	          _react2.default.createElement('br', null),
+	          _react2.default.createElement(
+	            'span',
+	            { className: 'input-group-btn' },
+	            _react2.default.createElement(
+	              BootstrapButton,
+	              { ref: 'btn-ms', onClick: this.callBackMicrosoft },
+	              String.format(strings.send_using_xx, 'Hotmail, Outlook, Live Mail')
+	            )
+	          ),
+	          _react2.default.createElement('br', null),
+	          _react2.default.createElement(
+	            'span',
+	            { className: 'input-group-btn' },
+	            _react2.default.createElement(
+	              BootstrapButton,
+	              { ref: 'btn-aol', onClick: this.callBackAOL },
+	              String.format(strings.send_using_xx, 'AOL')
+	            )
+	          ),
+	          _react2.default.createElement('br', null),
+	          _react2.default.createElement(
+	            'span',
+	            { className: 'input-group-btn' },
+	            _react2.default.createElement(
+	              BootstrapButton,
+	              { ref: 'btn-email', onClick: this.callBackEmailGeneric },
+	              String.format(strings.send_using_xx, 'Email App')
+	            )
+	          ),
+	          _react2.default.createElement('br', null),
+	          this.state.showDone ? _react2.default.createElement(
+	            'span',
+	            { className: 'input-group-btn' },
+	            _react2.default.createElement(
+	              BootstrapButton,
+	              { ref: 'btn-email', onClick: this.callBackEmailDone },
+	              strings.done_text
+	            )
+	          ) : null
 	        )
 	      ) : null
 	    );
@@ -28093,18 +28148,21 @@ var abcuiloader =
 	    console.log(questions);
 	    console.log(answers);
 
-	    if (questions[0] === strings.please_select_a_question || questions[1] === strings.please_select_a_question) {
-	      this.refs.form.setState({ 'error': ABCError(1, strings.please_choose_two_recovery).message });
-	      return;
-	    }
-
-	    if (answers[0].length < 4 || answers[1].length < 4) {
-	      this.refs.form.setState({ 'error': ABCError(1, strings.please_choose_answers_with_4_char).message });
-	      return;
-	    }
-
-	    if (password != null) {
-	      var passwdOk = this.account.checkPassword(password);
+	    // if (questions[0] === strings.please_select_a_question ||
+	    //   questions[1] === strings.please_select_a_question) {
+	    //   this.refs.form.setState({'error': ABCError(1, strings.please_choose_two_recovery).message})
+	    //   return
+	    // }
+	    //
+	    // if (answers[0].length < 4 || answers[1].length < 4) {
+	    //   this.refs.form.setState({'error': ABCError(1, strings.please_choose_answers_with_4_char).message})
+	    //   return
+	    // }
+	    //
+	    // if (password != null)
+	    {
+	      // var passwdOk = this.account.checkPassword(password)
+	      var passwdOk = true;
 
 	      if (!passwdOk) {
 	        this.refs.form.setState({ 'error': ABCError(1, strings.incorrect_password_text).message });
@@ -28117,16 +28175,33 @@ var abcuiloader =
 	      }
 	    }
 	  },
-	  callBackEmail: function callBackEmail() {
+	  callBackGmail: function callBackGmail() {
+	    var url = 'https://mail.google.com/mail/?view=cm&fs=1&to={0}&su={1}&body={2}';
+	    this.callBackEmail(url);
+	  },
+	  callBackEmailGeneric: function callBackEmailGeneric() {
+	    var url = 'mailto:{0}?subject={1}&body={2}';
+	    this.callBackEmail(url);
+	  },
+	  callBackYahoo: function callBackYahoo() {
+	    var url = 'http://compose.mail.yahoo.com/?to={0}&subj={1}&body={2}';
+	    this.callBackEmail(url);
+	  },
+	  callBackMicrosoft: function callBackMicrosoft() {
+	    var url = 'https://mail.live.com/default.aspx?rru=compose&to={0}&subject={1}&body={2}';
+	    this.callBackEmail(url);
+	  },
+	  callBackAOL: function callBackAOL() {
+	    var url = 'http://mail.aol.com/mail/compose-message.aspx?to={0}&subject={1}&body={2}';
+	    this.callBackEmail(url);
+	  },
+	  callBackEmail: function callBackEmail(url) {
 	    'use strict';
 
 	    console.log(this.refs.email.value);
 
 	    if (tools.validateEmail(this.refs.email.value)) {
 	      console.log('good email');
-	      // if (window.parent.exitCallback) {
-	      //   window.parent.exitCallback()
-	      // }
 
 	      var baseUrl = 'http://localhost:3000/recovery/?token=IAMATOKEN';
 
@@ -28140,10 +28215,18 @@ var abcuiloader =
 	      var emailBody = String.format(strings.recovery_token_email_body, this.vendorName, this.account.username, baseUrl);
 	      emailBody = encodeURI(emailBody);
 
-	      var url = 'https://mail.google.com/mail/?view=cm&fs=1&to=' + emailTo + '&su=' + emailSubject + '&body=' + emailBody;
-	      window.open(url, '_blank');
+	      var urlFinal = String.format(url, emailTo, emailSubject, emailBody);
+	      this.setState({ 'showDone': true });
+	      window.open(urlFinal, '_blank');
 	    } else {
 	      this.refs.emailform.setState({ 'error': ABCError(1, strings.invalid_email_address).message });
+	    }
+	  },
+	  callBackEmailDone: function callBackEmailDone() {
+	    'use strict';
+
+	    if (window.parent.exitCallback) {
+	      window.parent.exitCallback();
 	    }
 	  }
 	});

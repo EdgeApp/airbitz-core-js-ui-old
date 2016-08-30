@@ -56,7 +56,8 @@ var SetupRecoveryView = React.createClass({
   getInitialState: function() {
     return {
       showEmailModal: false,
-      showQAModal: true
+      showQAModal: true,
+      showDone: false
     }
   },
   render() {
@@ -64,11 +65,11 @@ var SetupRecoveryView = React.createClass({
 
     this.account = window.parent.account
     this.vendorName = window.parent.uiContext.vendorName
-    if (this.account === null ||
-        this.account.isLoggedIn() === false) {
-      console.log('Error: Account not logged in for recovery setup')
-      return
-    }
+    // if (this.account === null ||
+    //     this.account.isLoggedIn() === false) {
+    //   console.log('Error: Account not logged in for recovery setup')
+    //   return
+    // }
     let questions = ['', '']
     let answers = ['', '']
 
@@ -102,10 +103,26 @@ var SetupRecoveryView = React.createClass({
           <BootstrapModal id='emailmodal' ref='emailmodal' title={strings.save_recovery_token_popup} onClose={this.onCloseEmail}>
             <AbcUiFormView ref='emailform'>
               <label>{strings.save_recovery_token_popup_message}</label>
-              <input type='text' ref='email' placeholder={strings.email_address_text} className='form-control' />
+              <input type='text' ref='email' placeholder={strings.email_address_text} className='form-control' /><br/>
               <span className='input-group-btn'>
-                <BootstrapButton ref='register' onClick={this.callBackEmail}>{strings.email_text}</BootstrapButton>
-              </span>
+                <BootstrapButton ref='btn-gmail' onClick={this.callBackGmail}>{String.format(strings.send_using_xx, 'Gmail')}</BootstrapButton>
+              </span><br/>
+              <span className='input-group-btn'>
+                <BootstrapButton ref='btn-yahoo' onClick={this.callBackYahoo}>{String.format(strings.send_using_xx, 'Yahoo')}</BootstrapButton>
+              </span><br/>
+              <span className='input-group-btn'>
+                <BootstrapButton ref='btn-ms' onClick={this.callBackMicrosoft}>{String.format(strings.send_using_xx, 'Hotmail, Outlook, Live Mail')}</BootstrapButton>
+              </span><br/>
+              <span className='input-group-btn'>
+                <BootstrapButton ref='btn-aol' onClick={this.callBackAOL}>{String.format(strings.send_using_xx, 'AOL')}</BootstrapButton>
+              </span><br/>
+              <span className='input-group-btn'>
+                <BootstrapButton ref='btn-email' onClick={this.callBackEmailGeneric}>{String.format(strings.send_using_xx, 'Email App')}</BootstrapButton>
+              </span><br/>
+              {this.state.showDone ? (
+                <span className='input-group-btn'>
+                  <BootstrapButton ref='btn-email' onClick={this.callBackEmailDone}>{strings.done_text}</BootstrapButton>
+                </span>) : null}
             </AbcUiFormView>
           </BootstrapModal>
         ) : null}
@@ -138,19 +155,21 @@ var SetupRecoveryView = React.createClass({
     console.log(questions)
     console.log(answers)
 
-    if (questions[0] === strings.please_select_a_question ||
-      questions[1] === strings.please_select_a_question) {
-      this.refs.form.setState({'error': ABCError(1, strings.please_choose_two_recovery).message})
-      return
-    }
-
-    if (answers[0].length < 4 || answers[1].length < 4) {
-      this.refs.form.setState({'error': ABCError(1, strings.please_choose_answers_with_4_char).message})
-      return
-    }
-
-    if (password != null) {
-      var passwdOk = this.account.checkPassword(password)
+    // if (questions[0] === strings.please_select_a_question ||
+    //   questions[1] === strings.please_select_a_question) {
+    //   this.refs.form.setState({'error': ABCError(1, strings.please_choose_two_recovery).message})
+    //   return
+    // }
+    //
+    // if (answers[0].length < 4 || answers[1].length < 4) {
+    //   this.refs.form.setState({'error': ABCError(1, strings.please_choose_answers_with_4_char).message})
+    //   return
+    // }
+    //
+    // if (password != null)
+    {
+      // var passwdOk = this.account.checkPassword(password)
+      var passwdOk = true;
 
       if (!passwdOk) {
         this.refs.form.setState({'error': ABCError(1, strings.incorrect_password_text).message})
@@ -163,15 +182,32 @@ var SetupRecoveryView = React.createClass({
       }
     }
   },
-  callBackEmail () {
-    'use strict';
+  callBackGmail () {
+    var url = 'https://mail.google.com/mail/?view=cm&fs=1&to={0}&su={1}&body={2}'
+    this.callBackEmail(url)
+  },
+  callBackEmailGeneric () {
+    var url = 'mailto:{0}?subject={1}&body={2}'
+    this.callBackEmail(url)
+  },
+  callBackYahoo () {
+    var url = 'http://compose.mail.yahoo.com/?to={0}&subj={1}&body={2}'
+    this.callBackEmail(url)
+  },
+  callBackMicrosoft () {
+    var url = 'https://mail.live.com/default.aspx?rru=compose&to={0}&subject={1}&body={2}'
+    this.callBackEmail(url)
+  },
+  callBackAOL () {
+    var url = 'http://mail.aol.com/mail/compose-message.aspx?to={0}&subject={1}&body={2}'
+    this.callBackEmail(url)
+  },
+  callBackEmail (url) {
+    'use strict'
     console.log(this.refs.email.value)
     
     if (tools.validateEmail(this.refs.email.value)) {
       console.log('good email')
-      // if (window.parent.exitCallback) {
-      //   window.parent.exitCallback()
-      // }
 
       var baseUrl = 'http://localhost:3000/recovery/?token=IAMATOKEN'
 
@@ -185,10 +221,17 @@ var SetupRecoveryView = React.createClass({
       var emailBody = String.format(strings.recovery_token_email_body, this.vendorName, this.account.username, baseUrl)
       emailBody = encodeURI(emailBody)
 
-      var url = `https://mail.google.com/mail/?view=cm&fs=1&to=${emailTo}&su=${emailSubject}&body=${emailBody}`
-      window.open(url, '_blank');
+      var urlFinal = String.format(url, emailTo, emailSubject, emailBody)
+      this.setState({'showDone': true})
+      window.open(urlFinal, '_blank');
     } else {
       this.refs.emailform.setState({'error': ABCError(1, strings.invalid_email_address).message})
+    }
+  },
+  callBackEmailDone () {
+    'use strict';
+    if (window.parent.exitCallback) {
+      window.parent.exitCallback()
     }
   }
 })
