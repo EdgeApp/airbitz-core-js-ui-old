@@ -17,7 +17,7 @@ let strings = new LocalizedStrings({
     password_text: 'Password',
     pin_text: 'PIN',
     sign_in_text: 'Sign In',
-    exit_pin_login_text: 'Exit Pin Login',
+    exit_pin_login_text: 'Exit PIN Login',
     incorrect_password_text: 'Incorrect Password',
 
     dummy_entry_to_keep_json_happy: ''
