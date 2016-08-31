@@ -2,6 +2,7 @@ import LocalizedStrings from 'react-localization';
 
 let strings = new LocalizedStrings({
   en:{
+    ok_button_text: 'OK',
     current_password_text: 'Current Password',
     please_select_a_question: 'Please select a question',
     answers_are_case_sensitive: 'Answers are case sensitive',
@@ -27,7 +28,10 @@ let strings = new LocalizedStrings({
     done_text: 'Done',
     invalid_email_address: 'Invalid email address',
     recovery_email_subject: '{0} Recovery Token',
-    recovery_token_email_body: 'Please click the link below from a device with {0} installed to initiate account recovery for username [{1}]\n\n{2}',
+    recovery_token_email_body: 'To recover your account, install the {0} Mobile App on iOS or Android from https://airbitz.co/app\n\n' +
+    'Please click one of the links below from a device with {0} installed to initiate account recovery for username [{1}]\n\n{2}',
+    if_recovery_setup: 'If recovery was setup, you should have emailed yourself a recovery token with a link. To recover your account, install the Airbitz Mobile App on iOS or Android',
+    if_recovery_setup2: 'Then click one of the links in the recovery email from a device with Airbitz installed',
 
     dummy_entry_to_keep_json_happy: ''
 

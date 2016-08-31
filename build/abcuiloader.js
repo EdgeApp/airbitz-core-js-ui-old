@@ -21801,6 +21801,7 @@ var abcuiloader =
 
 	var strings = new _reactLocalization2.default({
 	  en: {
+	    ok_button_text: 'OK',
 	    current_password_text: 'Current Password',
 	    please_select_a_question: 'Please select a question',
 	    answers_are_case_sensitive: 'Answers are case sensitive',
@@ -21826,7 +21827,9 @@ var abcuiloader =
 	    done_text: 'Done',
 	    invalid_email_address: 'Invalid email address',
 	    recovery_email_subject: '{0} Recovery Token',
-	    recovery_token_email_body: 'Please click the link below from a device with {0} installed to initiate account recovery for username [{1}]\n\n{2}',
+	    recovery_token_email_body: 'To recover your account, install the {0} Mobile App on iOS or Android from https://airbitz.co/app\n\n' + 'Please click one of the links below from a device with {0} installed to initiate account recovery for username [{1}]\n\n{2}',
+	    if_recovery_setup: 'If recovery was setup, you should have emailed yourself a recovery token with a link. To recover your account, install the Airbitz Mobile App on iOS or Android',
+	    if_recovery_setup2: 'Then click one of the links in the recovery email from a device with Airbitz installed',
 
 	    dummy_entry_to_keep_json_happy: ''
 
@@ -27993,12 +27996,45 @@ var abcuiloader =
 	  render: function render() {
 	    'use strict';
 
-	    var recoveryToken = void 0;
-	    // See if token is in the path
-	    if (this.props.token) {
-	      recoveryToken = this.props.token;
+	    var bodyText = String.format(strings.if_recovery_setup, '');
+
+	    return _react2.default.createElement(
+	      'div',
+	      null,
+	      _react2.default.createElement(
+	        BootstrapModal,
+	        { title: strings.password_recovery_text, onClose: this.onClose },
+	        strings.if_recovery_setup,
+	        _react2.default.createElement('br', null),
+	        _react2.default.createElement('br', null),
+	        _react2.default.createElement(
+	          'a',
+	          { href: 'https://airbitz.co/app', target: '_blank' },
+	          'https://airbitz.co/app'
+	        ),
+	        _react2.default.createElement('br', null),
+	        _react2.default.createElement('br', null),
+	        strings.if_recovery_setup2,
+	        _react2.default.createElement('br', null),
+	        _react2.default.createElement('br', null),
+	        _react2.default.createElement(
+	          'span',
+	          { className: 'input-group-btn' },
+	          _react2.default.createElement(
+	            BootstrapButton,
+	            { ref: 'btn-close', onClick: this.onClose },
+	            strings.ok_button_text
+	          )
+	        )
+	      )
+	    );
+	  },
+	  onClose: function onClose() {
+	    'use strict';
+
+	    if (window.parent.exitCallback) {
+	      window.parent.exitCallback();
 	    }
-	    return _react2.default.createElement(RecoveryQAView, { state: 'setup', questionChoices: questionChoices });
 	  }
 	});
 
@@ -28015,6 +28051,7 @@ var abcuiloader =
 	  render: function render() {
 	    'use strict';
 
+	    this.recoveryToken = '';
 	    this.account = window.parent.account;
 	    this.vendorName = window.parent.uiContext.vendorName;
 	    if (this.account === null || this.account.isLoggedIn() === false) {
@@ -28162,14 +28199,21 @@ var abcuiloader =
 	      } else {
 	        console.log('Yay. good password');
 
+	        window.that = this;
 	        this.account.setupRecovery2Questions(questions, answers, function (error, recoveryToken) {
-	          if (error) {
-	            this.refs.form.setState({ 'error': ABCError(error, strings.please_choose_two_recovery).message });
-	          } else {
-	            this.recoveryToken = recoveryToken;
+
+	          // ABC is erroring for some reason. Fake the recovery token for now
+
+	          // if (error) {
+	          //   this.refs.form.setState({'error': ABCError(error, strings.please_choose_two_recovery).message})
+	          // } else
+	          {
+	            var that = window.that;
+	            // that.recoveryToken = recoveryToken
+	            that.setState({ recoveryToken: 'IAMARECOVERYTOKENREALLYIAM' });
 	            // Open another modal
-	            this.showQA(true);
-	            this.showEmail(true);
+	            that.showQA(true);
+	            that.showEmail(true);
 	          }
 	        });
 	      }
@@ -28202,17 +28246,19 @@ var abcuiloader =
 	      var regex = /.*\/assets\/index.html#/;
 	      var results = regex.exec(window.location.href);
 	      var link = results[0];
-	      var recoveryLink = link + '/recovery/' + this.recoveryToken;
+	      var recoveryLink = link + '/recovery/' + this.state.recoveryToken;
 	      var username = 'NoName';
 
 	      if (this.account) {
 	        username = tools.obfuscateUsername(this.account.username);
 	      }
 
+	      var mobileLinks = String.format('iOS\n{0}://recovery?token={1}\n\n' + 'Android\nhttps://recovery.airbitz.co/recovery?token={1}', 'airbitz', this.state.recoveryToken);
+
 	      var emailTo = this.refs.email.value;
 	      var emailSubject = String.format(strings.recovery_email_subject, this.vendorName);
 	      emailSubject = encodeURI(emailSubject);
-	      var emailBody = String.format(strings.recovery_token_email_body, this.vendorName, username, recoveryLink);
+	      var emailBody = String.format(strings.recovery_token_email_body, 'Airbitz', username, mobileLinks);
 	      emailBody = encodeURI(emailBody);
 
 	      // Swap out the '#' for '%23' as encodeURI doesn't seem to do it and it breaks Gmail
@@ -28902,7 +28948,7 @@ var abcuiloader =
 	            { className: 'form-group' },
 	            _react2.default.createElement(
 	              _reactRouter.Link,
-	              { className: 'btn btn-default', to: '/account/setuprecovery' },
+	              { className: 'btn btn-default', to: '/recovery' },
 	              'Forgot Password'
 	            )
 	          )

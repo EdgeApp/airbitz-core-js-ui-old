@@ -204,7 +204,7 @@ var AbcPasswordLoginForm = React.createClass({
         <div className='row'>
           <div className='col-sm-12 text-center'>
             <div className='form-group'>
-              <Link className='btn btn-default' to={`/account/setuprecovery`}>Forgot Password</Link>
+              <Link className='btn btn-default' to={`/recovery`}>Forgot Password</Link>
             </div>
           </div>
         </div>
