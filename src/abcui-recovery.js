@@ -8,7 +8,6 @@ var AbcUiDropDown = require('./abcui-dropdown.js')
 var AbcUiFormView = require('./abcui-formview.js')
 var strings = require('./abcui-strings.js').strings
 var ABCError = abc.ABCError
-var Modal = require('react-modal');
 var tools = require('./abcui-tools.js')
 
 var QuestionAnswerView = React.createClass({
@@ -326,51 +325,6 @@ var RecoveryQAView = React.createClass({
     this.props.callback(this.refs.currentPassword.value, questions, answers)
   },
 })
-
-var Modal = require('react-bootstrap-modal')
-
-class ModalExample extends React.Component {
-
-  render(){
-    let closeModal = () => this.setState({ open: false })
-
-    let saveAndClose = () => {
-      api.saveData()
-        .then(() => this.setState({ open: false }))
-    }
-
-    return (
-      <div>
-        <button type='button'>Launch modal</button>
-
-        <Modal
-          show={this.state.open}
-          onHide={closeModal}
-          aria-labelledby="ModalHeader"
-        >
-          <Modal.Header closeButton>
-            <Modal.Title id='ModalHeader'>A Title Goes here</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <p>Some Content here</p>
-          </Modal.Body>
-          <Modal.Footer>
-            // If you don't have anything fancy to do you can use
-            // the convenient `Dismiss` component, it will
-            // trigger `onHide` when clicked
-            <Modal.Dismiss className='btn btn-default'>Cancel</Modal.Dismiss>
-
-            // Or you can create your own dismiss buttons
-            <button className='btn btn-primary' onClick={saveAndClose}>
-              Save
-            </button>
-          </Modal.Footer>
-        </Modal>
-      </div>
-    )
-  }
-}
-
 
 module.exports.RecoveryView = RecoveryView
 module.exports.SetupRecoveryView = SetupRecoveryView
