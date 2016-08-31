@@ -27582,8 +27582,6 @@ var abcuiloader =
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	// var bwipjs = require('bwip-js')
-
 	// var abcc = abc.ABCConditionCode
 	var ABCError = _airbitzCoreJs2.default.ABCError;
 	var strings = __webpack_require__(152).strings;

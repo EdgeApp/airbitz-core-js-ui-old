@@ -13208,14 +13208,9 @@ var abcui =
 
 	'use strict';
 
-	var _airbitzCoreJs = __webpack_require__(43);
-
-	var _airbitzCoreJs2 = _interopRequireDefault(_airbitzCoreJs);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var abcc = _airbitzCoreJs2.default.ABCConditionCode;
-	var ABCError = _airbitzCoreJs2.default.ABCError;
+	var abc = __webpack_require__(43);
+	var abcc = abc.ABCConditionCode;
+	var ABCError = abc.ABCError;
 
 	function createIFrame(path) {
 	  var frame = document.createElement('iframe');
@@ -13241,7 +13236,7 @@ var abcui =
 	  if (!apiKey) {
 	    throw Error('Missing api key');
 	  }
-	  window.context = this.abcContext = _airbitzCoreJs2.default.makeABCContext({ 'apiKey': args.apiKey, 'accountType': args.accountType });
+	  window.context = this.abcContext = abc.makeABCContext({ 'apiKey': args.apiKey, 'accountType': args.accountType });
 	  if (args['bundlePath']) {
 	    this.bundlePath = args.bundlePath;
 	  } else {
