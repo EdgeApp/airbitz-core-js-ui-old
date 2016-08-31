@@ -206,15 +206,16 @@ var SetupRecoveryView = React.createClass({
       var results = regex.exec(window.location.href)
       var link = results[0]
       var recoveryLink = link + '/recovery/IAMATOKENREALLYIAM'
+      var username = 'NoName'
 
-      if (!this.account) {
-        this.account = {name: 'NoName'}
+      if (this.account) {
+        username = tools.obfuscateUsername(this.account.username)
       }
 
       var emailTo = this.refs.email.value
       var emailSubject = String.format(strings.recovery_email_subject, this.vendorName)
       emailSubject = encodeURI(emailSubject)
-      var emailBody = String.format(strings.recovery_token_email_body, this.vendorName, this.account.username, recoveryLink)
+      var emailBody = String.format(strings.recovery_token_email_body, this.vendorName, username, recoveryLink)
       emailBody = encodeURI(emailBody)
 
       // Swap out the '#' for '%23' as encodeURI doesn't seem to do it and it breaks Gmail
