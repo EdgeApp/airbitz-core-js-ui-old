@@ -25,6 +25,8 @@ let strings = new LocalizedStrings({
     email_address_text: 'Email address',
     email_text: 'Email',
     send_using_xx: 'Send using {0}',
+    scan_barcode_to_signin: 'Scan barcode to sign in with Airbitz',
+    scan_barcode_to_register: 'Scan barcode to register with Airbitz',
     done_text: 'Done',
     invalid_email_address: 'Invalid email address',
     recovery_email_subject: '{0} Recovery Token',

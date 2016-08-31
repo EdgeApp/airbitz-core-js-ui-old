@@ -172,10 +172,71 @@ var AbcUserList = React.createClass({
   }
 })
 
+
+
+
+var LoginWithAirbitz = React.createClass({
+  getInitialState () {
+    return {
+      barcode: ''
+    }
+  },
+  render () {
+
+    var buttonUrl = 'airbitz-ret://x-callback-uri/edgelogin/[EDGELOGINTOKEN]'
+    buttonUrl = encodeURI(buttonUrl)
+    this.buttonBouncerUrl = 'https://airbitz.co/blf/?address=' + buttonUrl
+
+    return (
+      <div className="row">
+        <div className='col-sm-12 text-center'>
+          <div className='form-group center-block' style={{'width': '320px'}}>
+            <a className="btn btn-block btn-social btn-facebook" onClick={this.onClick}>
+              <img src="Airbitz-icon-white-transparent.png" style={{'width': '28px', "padding": "4px"}}/>
+              {this.props.register ? strings.scan_barcode_to_register : strings.scan_barcode_to_signin }
+            </a>
+          </div>
+          <div className='form-group center-block' style={{'width': '200px'}}>
+            <img src={this.state.barcode} style={{'width': '200px'}}/>
+          </div>
+          <div className='form-group center-block' >
+            <label>OR</label>
+          </div>
+        </div>
+      </div>
+    )
+  },
+  componentDidMount () {
+    var that = this
+    this.setState({barcode: 'barcode.png'})
+    // bwipjs.toBuffer({
+    //   bcid:        'code128',       // Barcode type
+    //   text:        '0123456789',    // Text to encode
+    //   scale:       3,               // 3x scaling factor
+    //   height:      10,              // Bar height, in millimeters
+    //   includetext: true,            // Show human-readable text
+    //   textxalign:  'center',        // Always good to set this
+    //   textsize:    13               // Font size, in points
+    // }, function (err, png) {
+    //   if (err) {
+    //     // Decide how to handle the error
+    //     // `err` may be a string or Error object
+    //   } else {
+    //     var imgb64 = 'data:image/png;base64,' + png.toString('base64')
+    //     that.setState({'barcode': imgb64})
+    //   }
+    // });
+  },
+  onClick () {
+    window.open(this.buttonBouncerUrl, '_blank')
+  }
+})
+
 var AbcPasswordLoginForm = React.createClass({
   render () {
     return (
       <AbcUiFormView ref='form'>
+        <LoginWithAirbitz/>
         <div className='row'>
           <div className='col-sm-12'>
             <div className='form-group'>
@@ -204,7 +265,7 @@ var AbcPasswordLoginForm = React.createClass({
         <div className='row'>
           <div className='col-sm-12 text-center'>
             <div className='form-group'>
-              <Link className='btn btn-default' to={`/recovery`}>Forgot Password</Link>
+              <Link className='btn btn-link' to={`/recovery`}>Forgot Password</Link>
             </div>
           </div>
         </div>
@@ -231,9 +292,10 @@ var AbcPinLoginForm = React.createClass({
   render() {
     return (
         <AbcUiFormView ref='form'>
+          <LoginWithAirbitz/>
           <div className='row'>
             <div className='col-sm-12 text-center'>
-              <div className='form-group'>
+              <div className='form-group center-block' style={{'width': '240px'}}>
                 <AbcUserList ref='username'
                     allowInput={false}
                     username={this.props.username}
@@ -248,15 +310,15 @@ var AbcPinLoginForm = React.createClass({
           </div>
           <div className='row'>
             <div className='col-sm-12 text-center'>
-              <div className='form-group'>
+              <div className='form-group center-block' style={{'width': '240px'}}>
                 <BootstrapButton ref='signin' onClick={this.handleSubmit}>{strings.sign_in_text}</BootstrapButton>
               </div>
             </div>
           </div>
           <div className='row'>
             <div className='col-sm-12 text-center'>
-              <div className='form-group'>
-                <button type='button' onClick={this.handleExit} className='btn'>{strings.exit_pin_login_text}</button>
+              <div className='form-group center-block' style={{'width': '240px'}}>
+                <button type='button' onClick={this.handleExit} className='btn-link'>{strings.exit_pin_login_text}</button>
               </div>
             </div>
           </div>
@@ -361,6 +423,7 @@ var RegistrationForm = React.createClass({
           title='Register'
           onClose={this.onClose}>
         <AbcUiFormView ref='form'>
+          <LoginWithAirbitz register="true"/>
           <div className='row'>
             <div className='col-sm-12'>
               <div className='form-group'>
