@@ -4448,6 +4448,8 @@ var abcuiloader =
 	  return loginRecovery2.setup(this.ctx, this, questions, answers, callback)
 	}
 
+	Account.prototype.setupRecovery2Questions = Account.prototype.recovery2Set
+
 	Account.prototype.isLoggedIn = function () {
 	  return this.loggedIn
 	}
@@ -7952,7 +7954,7 @@ var abcuiloader =
 	}
 
 	function recovery2Auth (recovery2Key, answers) {
-	  if (!(answers instanceof Array)) {
+	  if (!(Object.prototype.toString.call(answers) === '[object Array]')) {
 	    throw new TypeError('Answers must be an array of strings')
 	  }
 
@@ -8046,8 +8048,11 @@ var abcuiloader =
 	 * Sets up a password for the account.
 	 */
 	function setup (ctx, account, questions, answers, callback) {
-	  if (!(questions instanceof Array) || !(answers instanceof Array)) {
+	  if (!(Object.prototype.toString.call(questions) === '[object Array]')) {
 	    throw new TypeError('Questions must be an array of strings')
+	  }
+	  if (!(Object.prototype.toString.call(answers) === '[object Array]')) {
+	    throw new TypeError('Answers must be an array of strings')
 	  }
 
 	  var recovery2Key = account.userStorage.getItem('recovery2Key')
@@ -28156,9 +28161,17 @@ var abcuiloader =
 	        return;
 	      } else {
 	        console.log('Yay. good password');
-	        // Open another modal
-	        this.showQA(true);
-	        this.showEmail(true);
+
+	        this.account.setupRecovery2Questions(questions, answers, function (error, recoveryToken) {
+	          if (error) {
+	            this.refs.form.setState({ 'error': ABCError(error, strings.please_choose_two_recovery).message });
+	          } else {
+	            this.recoveryToken = recoveryToken;
+	            // Open another modal
+	            this.showQA(true);
+	            this.showEmail(true);
+	          }
+	        });
 	      }
 	    }
 	  },
@@ -28189,16 +28202,17 @@ var abcuiloader =
 	      var regex = /.*\/assets\/index.html#/;
 	      var results = regex.exec(window.location.href);
 	      var link = results[0];
-	      var recoveryLink = link + '/recovery/IAMATOKENREALLYIAM';
+	      var recoveryLink = link + '/recovery/' + this.recoveryToken;
+	      var username = 'NoName';
 
-	      if (!this.account) {
-	        this.account = { name: 'NoName' };
+	      if (this.account) {
+	        username = tools.obfuscateUsername(this.account.username);
 	      }
 
 	      var emailTo = this.refs.email.value;
 	      var emailSubject = String.format(strings.recovery_email_subject, this.vendorName);
 	      emailSubject = encodeURI(emailSubject);
-	      var emailBody = String.format(strings.recovery_token_email_body, this.vendorName, this.account.username, recoveryLink);
+	      var emailBody = String.format(strings.recovery_token_email_body, this.vendorName, username, recoveryLink);
 	      emailBody = encodeURI(emailBody);
 
 	      // Swap out the '#' for '%23' as encodeURI doesn't seem to do it and it breaks Gmail
@@ -29532,14 +29546,36 @@ var abcuiloader =
 /* 221 */
 /***/ function(module, exports) {
 
-	"use strict";
+	'use strict';
 
 	function validateEmail(email) {
 	  var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 	  return re.test(email);
 	}
 
+	function obfuscateUsername(username) {
+	  'use strict';
+
+	  var obfuscatedUsername;
+
+	  var acctlen = username.length;
+	  console.log(acctlen);
+	  if (acctlen <= 3) {
+	    obfuscatedUsername = username.substr(0, acctlen - 1) + '*';
+	  } else if (acctlen <= 6) {
+	    obfuscatedUsername = username.substr(0, acctlen - 2) + '**';
+	  } else if (acctlen <= 9) {
+	    obfuscatedUsername = username.substr(0, acctlen - 3) + '***';
+	  } else if (acctlen <= 12) {
+	    obfuscatedUsername = username.substr(0, acctlen - 4) + '****';
+	  } else {
+	    obfuscatedUsername = username.substr(0, acctlen - 5) + '*****';
+	  }
+
+	  return obfuscatedUsername;
+	}
 	exports.validateEmail = validateEmail;
+	exports.obfuscateUsername = obfuscateUsername;
 
 /***/ },
 /* 222 */,

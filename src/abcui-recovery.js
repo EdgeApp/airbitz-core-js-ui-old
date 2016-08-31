@@ -173,9 +173,17 @@ var SetupRecoveryView = React.createClass({
         return
       } else {
         console.log('Yay. good password')
-        // Open another modal
-        this.showQA(true)
-        this.showEmail(true)
+
+        this.account.setupRecovery2Questions(questions, answers, function (error, recoveryToken) {
+          if (error) {
+            this.refs.form.setState({'error': ABCError(error, strings.please_choose_two_recovery).message})
+          } else {
+            this.recoveryToken = recoveryToken
+            // Open another modal
+            this.showQA(true)
+            this.showEmail(true)
+          }
+        })
       }
     }
   },
@@ -205,7 +213,7 @@ var SetupRecoveryView = React.createClass({
       var regex = /.*\/assets\/index.html#/
       var results = regex.exec(window.location.href)
       var link = results[0]
-      var recoveryLink = link + '/recovery/IAMATOKENREALLYIAM'
+      var recoveryLink = link + '/recovery/' + this.recoveryToken
       var username = 'NoName'
 
       if (this.account) {

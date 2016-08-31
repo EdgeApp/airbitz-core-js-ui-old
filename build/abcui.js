@@ -2741,6 +2741,8 @@ var abcui =
 	  return loginRecovery2.setup(this.ctx, this, questions, answers, callback)
 	}
 
+	Account.prototype.setupRecovery2Questions = Account.prototype.recovery2Set
+
 	Account.prototype.isLoggedIn = function () {
 	  return this.loggedIn
 	}
@@ -4671,7 +4673,7 @@ var abcui =
 	}
 
 	function recovery2Auth (recovery2Key, answers) {
-	  if (!(answers instanceof Array)) {
+	  if (!(Object.prototype.toString.call(answers) === '[object Array]')) {
 	    throw new TypeError('Answers must be an array of strings')
 	  }
 
@@ -4765,8 +4767,11 @@ var abcui =
 	 * Sets up a password for the account.
 	 */
 	function setup (ctx, account, questions, answers, callback) {
-	  if (!(questions instanceof Array) || !(answers instanceof Array)) {
+	  if (!(Object.prototype.toString.call(questions) === '[object Array]')) {
 	    throw new TypeError('Questions must be an array of strings')
+	  }
+	  if (!(Object.prototype.toString.call(answers) === '[object Array]')) {
+	    throw new TypeError('Answers must be an array of strings')
 	  }
 
 	  var recovery2Key = account.userStorage.getItem('recovery2Key')
