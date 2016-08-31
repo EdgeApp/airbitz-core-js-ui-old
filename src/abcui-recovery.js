@@ -120,31 +120,31 @@ var SetupRecoveryView = React.createClass({
               <label>{strings.save_recovery_token_popup_message}</label>
               <input type='text' ref='email' placeholder={strings.email_address_text} className='form-control' /><br/>
 
-              <a className="btn btn-block btn-social btn-google" onClick={this.callBackGmail}>
-                <span className="fa fa-google"></span>
-                {String.format(strings.send_using_xx, 'Gmail')}
-              </a>
-
-              <a className="btn btn-block btn-social btn-yahoo" onClick={this.callBackYahoo}>
-                <span className="fa fa-yahoo"></span>
-                {String.format(strings.send_using_xx, 'Yahoo')}
-              </a>
-
-              <a className="btn btn-block btn-social btn-microsoft" onClick={this.callBackYahoo}>
-                <span className="fa fa-windows"></span>
-                {String.format(strings.send_using_xx, 'Hotmail, Outlook, Live Mail')}
-              </a>
-
-              <a className="btn btn-block btn-social btn-reddit" onClick={this.callBackEmail}>
-                <span className="fa fa-envelope"></span>
-                {String.format(strings.send_using_xx, 'Email App')}
-              </a><br/>
-
-              {this.state.showDone ? (
-                <a className="btn btn-block btn-primary" onClick={this.callBackEmailDone}>
-                  {strings.done_text}
+                <a className="btn btn-block btn-social btn-google" onClick={this.callBackGmail}>
+                  <span className="fa fa-google"></span>
+                  {String.format(strings.send_using_xx, 'Gmail')}
                 </a>
-              ) : null}
+
+                <a className="btn btn-block btn-social btn-yahoo" onClick={this.callBackYahoo}>
+                  <span className="fa fa-yahoo"></span>
+                  {String.format(strings.send_using_xx, 'Yahoo')}
+                </a>
+
+                <a className="btn btn-block btn-social btn-microsoft" onClick={this.callBackYahoo}>
+                  <span className="fa fa-windows"></span>
+                  {String.format(strings.send_using_xx, 'Hotmail, Outlook, Live Mail')}
+                </a>
+
+                <a className="btn btn-block btn-social btn-reddit" onClick={this.callBackEmail}>
+                  <span className="fa fa-envelope"></span>
+                  {String.format(strings.send_using_xx, 'Email App')}
+                </a><br/>
+
+                {this.state.showDone ? (
+                  <a className="btn btn-block btn-primary" onClick={this.callBackEmailDone}>
+                    {strings.done_text}
+                  </a>
+                ) : null}
             </AbcUiFormView>
           </BootstrapModal>
         ) : null}
