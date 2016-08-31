@@ -6,6 +6,7 @@ import abc from 'airbitz-core-js'
 // var abcc = abc.ABCConditionCode
 var ABCError = abc.ABCError
 var strings = require('./abcui-strings.js').strings
+var JsBarcode = require('jsbarcode');
 
 
 var AbcUiFormView = require('./abcui-formview')
@@ -196,8 +197,8 @@ var LoginWithAirbitz = React.createClass({
               {this.props.register ? strings.scan_barcode_to_register : strings.scan_barcode_to_signin }
             </a>
           </div>
-          <div className='form-group center-block' style={{'width': '200px'}}>
-            <img src={this.state.barcode} style={{'width': '200px'}}/>
+          <div className='form-group center-block' style={{'width': '240px'}}>
+            <img id='barcode' style={{'width': '240px'}}/>
           </div>
           <div className='form-group center-block' >
             <label>OR</label>
@@ -207,25 +208,15 @@ var LoginWithAirbitz = React.createClass({
     )
   },
   componentDidMount () {
-    var that = this
     this.setState({barcode: 'barcode.png'})
-    // bwipjs.toBuffer({
-    //   bcid:        'code128',       // Barcode type
-    //   text:        '0123456789',    // Text to encode
-    //   scale:       3,               // 3x scaling factor
-    //   height:      10,              // Bar height, in millimeters
-    //   includetext: true,            // Show human-readable text
-    //   textxalign:  'center',        // Always good to set this
-    //   textsize:    13               // Font size, in points
-    // }, function (err, png) {
-    //   if (err) {
-    //     // Decide how to handle the error
-    //     // `err` may be a string or Error object
-    //   } else {
-    //     var imgb64 = 'data:image/png;base64,' + png.toString('base64')
-    //     that.setState({'barcode': imgb64})
-    //   }
-    // });
+    JsBarcode("#barcode", "IMABARCODE", {
+      format: "CODE128A",
+      lineColor: "#333333",
+      width: 6,
+      height: 140,
+      fontSize: 36,
+      displayValue: true
+    })
   },
   onClick () {
     window.open(this.buttonBouncerUrl, '_blank')
