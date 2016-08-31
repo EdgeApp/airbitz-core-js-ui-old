@@ -1,4 +1,4 @@
-import abc from 'airbitz-core-js'
+var abc = require('airbitz-core-js')
 var abcc = abc.ABCConditionCode
 var ABCError = abc.ABCError
 
