@@ -13264,12 +13264,15 @@ var abcui =
 	    throw Error('Missing api key');
 	  }
 	  window.context = this.abcContext = _airbitzCoreJs2.default.makeABCContext({ 'apiKey': args.apiKey, 'accountType': args.accountType });
-	  window.uiContext = { 'vendorName': args.vendorName };
-	  if (args['bundle-path']) {
+	  if (args['bundlePath']) {
 	    this.bundlePath = args.bundlePath;
 	  } else {
 	    this.bundlePath = '/abcui';
 	  }
+	  window.uiContext = {
+	    'vendorName': args.vendorName,
+	    'bundlePath': this.bundlePath
+	  };
 	}
 
 	InnerAbcUi.prototype.openLoginWindow = function (callback) {

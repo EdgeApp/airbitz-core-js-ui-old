@@ -209,7 +209,10 @@ var SetupRecoveryView = React.createClass({
     if (tools.validateEmail(this.refs.email.value)) {
       console.log('good email')
 
-      var baseUrl = 'http://localhost:3000/recovery/?token=IAMATOKEN'
+      var regex = /.*\/assets\/index.html#/
+      var results = regex.exec(window.location.href)
+      var baseUrl = results[0]
+      baseUrl += '/recovery/IAMATOKENREALLYIAM'
 
       if (!this.account) {
         this.account = {name: 'NoName'}
