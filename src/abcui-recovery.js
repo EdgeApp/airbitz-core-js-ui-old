@@ -65,11 +65,11 @@ var SetupRecoveryView = React.createClass({
 
     this.account = window.parent.account
     this.vendorName = window.parent.uiContext.vendorName
-    // if (this.account === null ||
-    //     this.account.isLoggedIn() === false) {
-    //   console.log('Error: Account not logged in for recovery setup')
-    //   return
-    // }
+    if (this.account === null ||
+        this.account.isLoggedIn() === false) {
+      console.log('Error: Account not logged in for recovery setup')
+      return
+    }
     let questions = ['', '']
     let answers = ['', '']
 
@@ -114,9 +114,6 @@ var SetupRecoveryView = React.createClass({
                 <BootstrapButton ref='btn-ms' onClick={this.callBackMicrosoft}>{String.format(strings.send_using_xx, 'Hotmail, Outlook, Live Mail')}</BootstrapButton>
               </span><br/>
               <span className='input-group-btn'>
-                <BootstrapButton ref='btn-aol' onClick={this.callBackAOL}>{String.format(strings.send_using_xx, 'AOL')}</BootstrapButton>
-              </span><br/>
-              <span className='input-group-btn'>
                 <BootstrapButton ref='btn-email' onClick={this.callBackEmailGeneric}>{String.format(strings.send_using_xx, 'Email App')}</BootstrapButton>
               </span><br/>
               {this.state.showDone ? (
@@ -155,21 +152,21 @@ var SetupRecoveryView = React.createClass({
     console.log(questions)
     console.log(answers)
 
-    // if (questions[0] === strings.please_select_a_question ||
-    //   questions[1] === strings.please_select_a_question) {
-    //   this.refs.form.setState({'error': ABCError(1, strings.please_choose_two_recovery).message})
-    //   return
-    // }
-    //
-    // if (answers[0].length < 4 || answers[1].length < 4) {
-    //   this.refs.form.setState({'error': ABCError(1, strings.please_choose_answers_with_4_char).message})
-    //   return
-    // }
-    //
-    // if (password != null)
+    if (questions[0] === strings.please_select_a_question ||
+      questions[1] === strings.please_select_a_question) {
+      this.refs.form.setState({'error': ABCError(1, strings.please_choose_two_recovery).message})
+      return
+    }
+
+    if (answers[0].length < 4 || answers[1].length < 4) {
+      this.refs.form.setState({'error': ABCError(1, strings.please_choose_answers_with_4_char).message})
+      return
+    }
+
+    if (password != null)
     {
-      // var passwdOk = this.account.checkPassword(password)
-      var passwdOk = true;
+      var passwdOk = this.account.checkPassword(password)
+      // var passwdOk = true;
 
       if (!passwdOk) {
         this.refs.form.setState({'error': ABCError(1, strings.incorrect_password_text).message})
@@ -198,11 +195,7 @@ var SetupRecoveryView = React.createClass({
     var url = 'https://mail.live.com/default.aspx?rru=compose&to={0}&subject={1}&body={2}'
     this.callBackEmail(url)
   },
-  callBackAOL () {
-    var url = 'http://mail.aol.com/mail/compose-message.aspx?to={0}&subject={1}&body={2}'
-    this.callBackEmail(url)
-  },
-  callBackEmail (url) {
+  callBackEmail (vendorEmailUrl) {
     'use strict'
     console.log(this.refs.email.value)
     
@@ -211,8 +204,8 @@ var SetupRecoveryView = React.createClass({
 
       var regex = /.*\/assets\/index.html#/
       var results = regex.exec(window.location.href)
-      var baseUrl = results[0]
-      baseUrl += '/recovery/IAMATOKENREALLYIAM'
+      var link = results[0]
+      var recoveryLink = link + '/recovery/IAMATOKENREALLYIAM'
 
       if (!this.account) {
         this.account = {name: 'NoName'}
@@ -221,10 +214,13 @@ var SetupRecoveryView = React.createClass({
       var emailTo = this.refs.email.value
       var emailSubject = String.format(strings.recovery_email_subject, this.vendorName)
       emailSubject = encodeURI(emailSubject)
-      var emailBody = String.format(strings.recovery_token_email_body, this.vendorName, this.account.username, baseUrl)
+      var emailBody = String.format(strings.recovery_token_email_body, this.vendorName, this.account.username, recoveryLink)
       emailBody = encodeURI(emailBody)
 
-      var urlFinal = String.format(url, emailTo, emailSubject, emailBody)
+      // Swap out the '#' for '%23' as encodeURI doesn't seem to do it and it breaks Gmail
+      emailBody = emailBody.replace('index.html#', 'index.html%23')
+
+      var urlFinal = String.format(vendorEmailUrl, emailTo, emailSubject, emailBody)
       this.setState({'showDone': true})
       window.open(urlFinal, '_blank');
     } else {
