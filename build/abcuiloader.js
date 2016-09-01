@@ -58,25 +58,40 @@ var abcuiloader =
 	var cachedSetTimeout;
 	var cachedClearTimeout;
 
+	function defaultSetTimout() {
+	    throw new Error('setTimeout has not been defined');
+	}
+	function defaultClearTimeout () {
+	    throw new Error('clearTimeout has not been defined');
+	}
 	(function () {
 	    try {
-	        cachedSetTimeout = setTimeout;
-	    } catch (e) {
-	        cachedSetTimeout = function () {
-	            throw new Error('setTimeout is not defined');
+	        if (typeof setTimeout === 'function') {
+	            cachedSetTimeout = setTimeout;
+	        } else {
+	            cachedSetTimeout = defaultSetTimout;
 	        }
+	    } catch (e) {
+	        cachedSetTimeout = defaultSetTimout;
 	    }
 	    try {
-	        cachedClearTimeout = clearTimeout;
-	    } catch (e) {
-	        cachedClearTimeout = function () {
-	            throw new Error('clearTimeout is not defined');
+	        if (typeof clearTimeout === 'function') {
+	            cachedClearTimeout = clearTimeout;
+	        } else {
+	            cachedClearTimeout = defaultClearTimeout;
 	        }
+	    } catch (e) {
+	        cachedClearTimeout = defaultClearTimeout;
 	    }
 	} ())
 	function runTimeout(fun) {
 	    if (cachedSetTimeout === setTimeout) {
 	        //normal enviroments in sane situations
+	        return setTimeout(fun, 0);
+	    }
+	    // if setTimeout wasn't available but was latter defined
+	    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+	        cachedSetTimeout = setTimeout;
 	        return setTimeout(fun, 0);
 	    }
 	    try {
@@ -97,6 +112,11 @@ var abcuiloader =
 	function runClearTimeout(marker) {
 	    if (cachedClearTimeout === clearTimeout) {
 	        //normal enviroments in sane situations
+	        return clearTimeout(marker);
+	    }
+	    // if clearTimeout wasn't available but was latter defined
+	    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+	        cachedClearTimeout = clearTimeout;
 	        return clearTimeout(marker);
 	    }
 	    try {
@@ -4439,6 +4459,8 @@ var abcuiloader =
 	  return loginRecovery2.setup(this.ctx, this, questions, answers, callback)
 	}
 
+	Account.prototype.setupRecovery2Questions = Account.prototype.recovery2Set
+
 	Account.prototype.isLoggedIn = function () {
 	  return this.loggedIn
 	}
@@ -7655,7 +7677,7 @@ var abcuiloader =
 	    'passwordAuth': passwordAuth.toString('base64')
 	    // "otp": null
 	  }
-	  ctx.authRequest2('GET', '/v2/login', request, function (err, reply) {
+	  ctx.authRequest('GET', '/v2/login', request, function (err, reply) {
 	    if (err) return callback(err)
 
 	    try {
@@ -7739,7 +7761,7 @@ var abcuiloader =
 	  var request = {
 	    'userId': account.userId,
 	    'passwordAuth': account.passwordAuth.toString('base64'),
-	    'password': {
+	    'data': {
 	      'passwordAuth': passwordAuth.toString('base64'),
 	      'passwordAuthSnrp': crypto.passwordAuthSnrp, // TODO: Not needed
 	      'passwordKeySnrp': passwordKeySnrp,
@@ -7747,7 +7769,7 @@ var abcuiloader =
 	      'passwordAuthBox': passwordAuthBox
 	    }
 	  }
-	  ctx.authRequest2('PUT', '/v2/login/password', request, function (err, reply) {
+	  ctx.authRequest('PUT', '/v2/login/password', request, function (err, reply) {
 	    if (err) return callback(err)
 
 	    account.userStorage.setJson('passwordKeySnrp', passwordKeySnrp)
@@ -7882,7 +7904,7 @@ var abcuiloader =
 	}
 
 	function recovery2Auth (recovery2Key, answers) {
-	  if (!(answers instanceof Array)) {
+	  if (!(Object.prototype.toString.call(answers) === '[object Array]')) {
 	    throw new TypeError('Answers must be an array of strings')
 	  }
 
@@ -7911,7 +7933,7 @@ var abcuiloader =
 	    'recovery2Auth': recovery2Auth(recovery2Key, answers)
 	    // "otp": null
 	  }
-	  ctx.authRequest2('GET', '/v2/login', request, function (err, reply) {
+	  ctx.authRequest('GET', '/v2/login', request, function (err, reply) {
 	    if (err) return callback(err)
 
 	    try {
@@ -7951,7 +7973,7 @@ var abcuiloader =
 	    'recovery2Id': recovery2Id(recovery2Key, username).toString('base64')
 	    // "otp": null
 	  }
-	  ctx.authRequest2('GET', '/v2/login', request, function (err, reply) {
+	  ctx.authRequest('GET', '/v2/login', request, function (err, reply) {
 	    if (err) return callback(err)
 
 	    try {
@@ -7976,8 +7998,11 @@ var abcuiloader =
 	 * Sets up a password for the account.
 	 */
 	function setup (ctx, account, questions, answers, callback) {
-	  if (!(questions instanceof Array) || !(answers instanceof Array)) {
+	  if (!(Object.prototype.toString.call(questions) === '[object Array]')) {
 	    throw new TypeError('Questions must be an array of strings')
+	  }
+	  if (!(Object.prototype.toString.call(answers) === '[object Array]')) {
+	    throw new TypeError('Answers must be an array of strings')
 	  }
 
 	  var recovery2Key = account.userStorage.getItem('recovery2Key')
@@ -7994,7 +8019,7 @@ var abcuiloader =
 	  var request = {
 	    'userId': account.userId,
 	    'passwordAuth': account.passwordAuth.toString('base64'),
-	    'recovery2': {
+	    'data': {
 	      'recovery2Id': recovery2Id(recovery2Key, account.username).toString('base64'),
 	      'recovery2Auth': recovery2Auth(recovery2Key, answers),
 	      'recovery2Box': recovery2Box,
@@ -8002,7 +8027,7 @@ var abcuiloader =
 	      'question2Box': question2Box
 	    }
 	  }
-	  ctx.authRequest2('PUT', '/v2/login/recovery2', request, function (err, reply) {
+	  ctx.authRequest('PUT', '/v2/login/recovery2', request, function (err, reply) {
 	    if (err) return callback(err)
 
 	    recovery2Key = encodeKey(recovery2Key)
@@ -12707,7 +12732,6 @@ var abcuiloader =
 	var UserStorage = __webpack_require__(15).UserStorage
 
 	var serverRoot = 'https://auth.airbitz.co/api'
-	var serverRootTest = 'https://test-auth.airbitz.co/api'
 
 	/**
 	 * @param authRequest function (method, uri, body, callback (err, status, body))
@@ -12721,25 +12745,6 @@ var abcuiloader =
 	   */
 	  this.authRequest = function (method, uri, body, callback) {
 	    authRequest(method, serverRoot + uri, body, function (err, status, body) {
-	      if (err) return callback(err)
-	      try {
-	        var reply = JSON.parse(body)
-	      } catch (e) {
-	        return callback(Error('Non-JSON reply, HTTP status ' + status))
-	      }
-
-	      // Look at the Airbitz status code:
-	      switch (reply['status_code']) {
-	        case 0:
-	          return callback(null, reply.results)
-	        default:
-	          return callback(Error(body))
-	      }
-	    })
-	  }
-
-	  this.authRequest2 = function (method, uri, body, callback) {
-	    authRequest(method, serverRootTest + uri, body, function (err, status, body) {
 	      if (err) return callback(err)
 	      try {
 	        var reply = JSON.parse(body)
@@ -27808,13 +27813,12 @@ var abcuiloader =
 
 	          // ABC is erroring for some reason. Fake the recovery token for now
 
-	          // if (error) {
-	          //   this.refs.form.setState({'error': ABCError(error, strings.please_choose_two_recovery).message})
-	          // } else
-	          {
+	          if (error) {
+	            this.refs.form.setState({ 'error': ABCError(error).message });
+	          } else {
 	            var that = window.that;
 	            // that.recoveryToken = recoveryToken
-	            that.setState({ recoveryToken: 'IAMARECOVERYTOKENREALLYIAM' });
+	            that.setState({ recoveryToken: recoveryToken });
 	            // Open another modal
 	            that.showQA(true);
 	            that.showEmail(true);
@@ -28693,7 +28697,6 @@ var abcuiloader =
 	    );
 	  },
 	  componentDidMount: function componentDidMount() {
-	    this.setState({ barcode: 'barcode.png' });
 	    JsBarcode("#barcode", "IMABARCODE", {
 	      format: "CODE128A",
 	      lineColor: "#333333",

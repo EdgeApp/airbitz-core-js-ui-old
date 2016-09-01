@@ -208,7 +208,6 @@ var LoginWithAirbitz = React.createClass({
     )
   },
   componentDidMount () {
-    this.setState({barcode: 'barcode.png'})
     JsBarcode("#barcode", "IMABARCODE", {
       format: "CODE128A",
       lineColor: "#333333",

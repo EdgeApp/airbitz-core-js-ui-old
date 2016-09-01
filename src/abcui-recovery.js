@@ -204,13 +204,13 @@ var SetupRecoveryView = React.createClass({
 
           // ABC is erroring for some reason. Fake the recovery token for now
 
-          // if (error) {
-          //   this.refs.form.setState({'error': ABCError(error, strings.please_choose_two_recovery).message})
-          // } else
+          if (error) {
+            this.refs.form.setState({'error': ABCError(error, ).message})
+          } else
           {
             var that = window.that
             // that.recoveryToken = recoveryToken
-            that.setState({recoveryToken: 'IAMARECOVERYTOKENREALLYIAM'})
+            that.setState({recoveryToken: recoveryToken})
             // Open another modal
             that.showQA(true)
             that.showEmail(true)
