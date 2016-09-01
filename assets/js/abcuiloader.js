@@ -12847,6 +12847,21 @@ var abcuiloader =
 	  }
 	}
 
+	Context.prototype.requestEdgeLogin = function (opts, callback) {
+	  // Stub
+	  callback (null, {id: 'IMEDGELOGIN'})
+
+	  console.log('Edge Login Request from: ' + opts.displayName)
+
+	  var login = this.loginWithPassword
+	  // Add delay to make it feel real. Then do a fake / real login with hard coded password :)
+	  setTimeout(function () {
+	    login('jtest1', 'Test123456', '', null, function (error, account) {
+	      opts.onLogin(account)
+	    })
+	  }, 5000)
+	}
+
 	exports.Context = Context
 
 
@@ -28654,7 +28669,8 @@ var abcuiloader =
 	  displayName: 'LoginWithAirbitz',
 	  getInitialState: function getInitialState() {
 	    return {
-	      barcode: ''
+	      barcode: '',
+	      showLogin: false
 	    };
 	  },
 	  render: function render() {
@@ -28697,13 +28713,19 @@ var abcuiloader =
 	    );
 	  },
 	  componentDidMount: function componentDidMount() {
-	    JsBarcode("#barcode", "IMABARCODE", {
-	      format: "CODE128A",
-	      lineColor: "#333333",
-	      width: 6,
-	      height: 140,
-	      fontSize: 36,
-	      displayValue: true
+	    context.requestEdgeLogin({ displayName: 'Airbitz UI Test App', onLogin: this.props.onLogin }, function (error, results) {
+	      if (results) {
+	        JsBarcode("#barcode", results.id, {
+	          format: "CODE128A",
+	          lineColor: "#333333",
+	          width: 6,
+	          height: 140,
+	          fontSize: 36,
+	          displayValue: true
+	        });
+	      } else {
+	        // XXX
+	      }
 	    });
 	  },
 	  onClick: function onClick() {
@@ -28717,7 +28739,7 @@ var abcuiloader =
 	    return _react2.default.createElement(
 	      AbcUiFormView,
 	      { ref: 'form' },
-	      _react2.default.createElement(LoginWithAirbitz, null),
+	      _react2.default.createElement(LoginWithAirbitz, { onLogin: this.props.onSuccess }),
 	      _react2.default.createElement(
 	        'div',
 	        { className: 'row' },
@@ -28806,7 +28828,7 @@ var abcuiloader =
 	    return _react2.default.createElement(
 	      AbcUiFormView,
 	      { ref: 'form' },
-	      _react2.default.createElement(LoginWithAirbitz, null),
+	      _react2.default.createElement(LoginWithAirbitz, { onLogin: this.props.onSuccess }),
 	      _react2.default.createElement(
 	        'div',
 	        { className: 'row' },
@@ -28973,7 +28995,7 @@ var abcuiloader =
 	      _react2.default.createElement(
 	        AbcUiFormView,
 	        { ref: 'form' },
-	        _react2.default.createElement(LoginWithAirbitz, { register: 'true' }),
+	        _react2.default.createElement(LoginWithAirbitz, { onLogin: this.props.onSuccess, register: 'true' }),
 	        _react2.default.createElement(
 	          'div',
 	          { className: 'row' },

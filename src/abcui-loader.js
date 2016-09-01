@@ -179,7 +179,8 @@ var AbcUserList = React.createClass({
 var LoginWithAirbitz = React.createClass({
   getInitialState () {
     return {
-      barcode: ''
+      barcode: '',
+      showLogin: false
     }
   },
   render () {
@@ -208,13 +209,19 @@ var LoginWithAirbitz = React.createClass({
     )
   },
   componentDidMount () {
-    JsBarcode("#barcode", "IMABARCODE", {
-      format: "CODE128A",
-      lineColor: "#333333",
-      width: 6,
-      height: 140,
-      fontSize: 36,
-      displayValue: true
+    context.requestEdgeLogin({displayName: 'Airbitz UI Test App', onLogin:this.props.onLogin}, function (error, results) {
+      if (results) {
+        JsBarcode("#barcode", results.id, {
+          format: "CODE128A",
+          lineColor: "#333333",
+          width: 6,
+          height: 140,
+          fontSize: 36,
+          displayValue: true
+        })
+      } else {
+        // XXX
+      }
     })
   },
   onClick () {
@@ -226,7 +233,7 @@ var AbcPasswordLoginForm = React.createClass({
   render () {
     return (
       <AbcUiFormView ref='form'>
-        <LoginWithAirbitz/>
+        <LoginWithAirbitz onLogin={this.props.onSuccess}/>
         <div className='row'>
           <div className='col-sm-12'>
             <div className='form-group'>
@@ -282,7 +289,7 @@ var AbcPinLoginForm = React.createClass({
   render() {
     return (
         <AbcUiFormView ref='form'>
-          <LoginWithAirbitz/>
+          <LoginWithAirbitz onLogin={this.props.onSuccess}/>
           <div className='row'>
             <div className='col-sm-12 text-center'>
               <div className='form-group center-block' style={{'width': '240px'}}>
@@ -413,7 +420,7 @@ var RegistrationForm = React.createClass({
           title='Register'
           onClose={this.onClose}>
         <AbcUiFormView ref='form'>
-          <LoginWithAirbitz register="true"/>
+          <LoginWithAirbitz onLogin={this.props.onSuccess} register="true"/>
           <div className='row'>
             <div className='col-sm-12'>
               <div className='form-group'>
