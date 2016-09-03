@@ -7,7 +7,12 @@
   "main": "src/abcui.js",
   "bin": "cli.js",
   "repository": "http://github.com/airbitz/airbitz-core-js-ui",
-  "dependencies": { },
+  "dependencies": { 
+    "bootstrap": "^3.3.7",
+    "bootstrap-social": "^5.0.0",
+    "jquery": "^3.1.0",
+    "jsbarcode": "^3.3.20"
+  },
   "devDependencies": {
     "react-localization": "^0.0.5",
     "standard": "^3.0.0",
@@ -33,7 +38,6 @@
     "react-dom": "^15.2.0",
     "react-router": "^2.5.2",
     "airbitz-core-js": "git@github.com:Airbitz/airbitz-core-js.git",
-    "jsbarcode": "^3.3.20",
     "standard": "^3.0.0",
     "webpack": "^2.0.0-beta"
   },
@@ -42,8 +46,9 @@
     "css/abc.css"
   ],
   "scripts": {
-    "build": "webpack",
     "pretest": "standard src/*js",
-    "start": "node samples/server.js"
+    "start": "node samples/server.js",
+    "prebuild": "mkdir -p assets/dist && cp -a node_modules/jquery assets/dist/jquery && cp -a node_modules/bootstrap assets/dist/bootstrap && cp -a node_modules/bootstrap-social assets/dist/bootstrap-social",
+    "build": "webpack"
   }
 }

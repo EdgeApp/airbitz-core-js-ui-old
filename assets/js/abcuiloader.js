@@ -2816,7 +2816,7 @@ var abcuiloader =
 /* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(Buffer) {var scryptsy = __webpack_require__(139)
+	var require;/* WEBPACK VAR INJECTION */(function(Buffer) {var scryptsy = __webpack_require__(139)
 	var asmcrypto = __webpack_require__(81)
 
 	var userIdSnrp = {
@@ -2857,6 +2857,7 @@ var abcuiloader =
 	    window.crypto.getRandomValues(out)
 	  } catch (e) {
 	    // Alternative using node.js crypto:
+	    var hiddenRequire = require
 	    return __webpack_require__(95).randomBytes(bytes)
 	  }
 	  return out
@@ -7677,7 +7678,7 @@ var abcuiloader =
 	    'passwordAuth': passwordAuth.toString('base64')
 	    // "otp": null
 	  }
-	  ctx.authRequest('GET', '/v2/login', request, function (err, reply) {
+	  ctx.authRequest('POST', '/v2/login', request, function (err, reply) {
 	    if (err) return callback(err)
 
 	    try {
@@ -7933,7 +7934,7 @@ var abcuiloader =
 	    'recovery2Auth': recovery2Auth(recovery2Key, answers)
 	    // "otp": null
 	  }
-	  ctx.authRequest('GET', '/v2/login', request, function (err, reply) {
+	  ctx.authRequest('POST', '/v2/login', request, function (err, reply) {
 	    if (err) return callback(err)
 
 	    try {
@@ -7973,7 +7974,7 @@ var abcuiloader =
 	    'recovery2Id': recovery2Id(recovery2Key, username).toString('base64')
 	    // "otp": null
 	  }
-	  ctx.authRequest('GET', '/v2/login', request, function (err, reply) {
+	  ctx.authRequest('POST', '/v2/login', request, function (err, reply) {
 	    if (err) return callback(err)
 
 	    try {
@@ -12757,7 +12758,7 @@ var abcuiloader =
 	        case 0:
 	          return callback(null, reply.results)
 	        default:
-	          return callback(Error(body))
+	          return callback(Error(status + ' ' + body))
 	      }
 	    })
 	  }
@@ -12853,10 +12854,10 @@ var abcuiloader =
 
 	  console.log('Edge Login Request from: ' + opts.displayName)
 
-	  var login = this.loginWithPassword
+	  var that = this
 	  // Add delay to make it feel real. Then do a fake / real login with hard coded password :)
 	  setTimeout(function () {
-	    login('jtest1', 'Test123456', '', null, function (error, account) {
+	    that.loginWithPassword('jtest1', 'Test123456', '', null, function (error, account) {
 	      opts.onLogin(account)
 	    })
 	  }, 5000)
@@ -28995,7 +28996,7 @@ var abcuiloader =
 	      _react2.default.createElement(
 	        AbcUiFormView,
 	        { ref: 'form' },
-	        _react2.default.createElement(LoginWithAirbitz, { onLogin: this.props.onSuccess, register: 'true' }),
+	        _react2.default.createElement(LoginWithAirbitz, { onLogin: this.onLogin, register: 'true' }),
 	        _react2.default.createElement(
 	          'div',
 	          { className: 'row' },
@@ -29119,6 +29120,17 @@ var abcuiloader =
 	      }
 	    });
 	    return false;
+	  },
+	  onLogin: function onLogin(account) {
+	    LoginForm.updateCurrentUser(account.username);
+	    // Need to Add UI to ask for a PIN
+	    // account.pinSetup(that.refs.pin.value, function(err, result) {
+	    if (window.parent.registrationCallback) {
+	      window.parent.registrationCallback(null, account);
+	    }
+	    that.refs.regModal.close();
+	    that.refs.register.setLoading(false);
+	    // })
 	  },
 	  onClose: function onClose() {
 	    'use strict';

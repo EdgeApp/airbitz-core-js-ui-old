@@ -2223,7 +2223,7 @@ var abcui =
 /* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(Buffer) {var scryptsy = __webpack_require__(139)
+	var require;/* WEBPACK VAR INJECTION */(function(Buffer) {var scryptsy = __webpack_require__(139)
 	var asmcrypto = __webpack_require__(81)
 
 	var userIdSnrp = {
@@ -2264,6 +2264,7 @@ var abcui =
 	    window.crypto.getRandomValues(out)
 	  } catch (e) {
 	    // Alternative using node.js crypto:
+	    var hiddenRequire = require
 	    return __webpack_require__(95).randomBytes(bytes)
 	  }
 	  return out
@@ -4463,7 +4464,7 @@ var abcui =
 	    'passwordAuth': passwordAuth.toString('base64')
 	    // "otp": null
 	  }
-	  ctx.authRequest('GET', '/v2/login', request, function (err, reply) {
+	  ctx.authRequest('POST', '/v2/login', request, function (err, reply) {
 	    if (err) return callback(err)
 
 	    try {
@@ -4719,7 +4720,7 @@ var abcui =
 	    'recovery2Auth': recovery2Auth(recovery2Key, answers)
 	    // "otp": null
 	  }
-	  ctx.authRequest('GET', '/v2/login', request, function (err, reply) {
+	  ctx.authRequest('POST', '/v2/login', request, function (err, reply) {
 	    if (err) return callback(err)
 
 	    try {
@@ -4759,7 +4760,7 @@ var abcui =
 	    'recovery2Id': recovery2Id(recovery2Key, username).toString('base64')
 	    // "otp": null
 	  }
-	  ctx.authRequest('GET', '/v2/login', request, function (err, reply) {
+	  ctx.authRequest('POST', '/v2/login', request, function (err, reply) {
 	    if (err) return callback(err)
 
 	    try {
@@ -6917,7 +6918,7 @@ var abcui =
 	        case 0:
 	          return callback(null, reply.results)
 	        default:
-	          return callback(Error(body))
+	          return callback(Error(status + ' ' + body))
 	      }
 	    })
 	  }
@@ -7013,10 +7014,10 @@ var abcui =
 
 	  console.log('Edge Login Request from: ' + opts.displayName)
 
-	  var login = this.loginWithPassword
+	  var that = this
 	  // Add delay to make it feel real. Then do a fake / real login with hard coded password :)
 	  setTimeout(function () {
-	    login('jtest1', 'Test123456', '', null, function (error, account) {
+	    that.loginWithPassword('jtest1', 'Test123456', '', null, function (error, account) {
 	      opts.onLogin(account)
 	    })
 	  }, 5000)
