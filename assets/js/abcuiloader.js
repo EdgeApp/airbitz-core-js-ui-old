@@ -12856,11 +12856,11 @@ var abcuiloader =
 
 	  var that = this
 	  // Add delay to make it feel real. Then do a fake / real login with hard coded password :)
-	  setTimeout(function () {
-	    that.loginWithPassword('jtest1', 'Test123456', '', null, function (error, account) {
-	      opts.onLogin(account)
-	    })
-	  }, 5000)
+	  // setTimeout(function () {
+	  //   that.loginWithPassword('jtest1', 'Test123456', '', null, function (error, account) {
+	  //     opts.onLogin(account)
+	  //   })
+	  // }, 5000)
 	}
 
 	exports.Context = Context
