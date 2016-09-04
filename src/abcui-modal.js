@@ -19,6 +19,29 @@ var BootstrapButton = React.createClass({
   }
 })
 
+var BootstrapInput = React.createClass({
+  getInitialState () {
+    return { error:null, loading:null }
+  },
+  render () {
+    var classes = 'form-group '
+    if (this.state.loading) {
+      var subView = (<span className='help-block'><span className='glyphicon glyphicon-refresh glyphicon-refresh-animate'></span> {this.state.loading}</span>)
+    } else if (this.state.error) {
+      var subView = (<span className='help-block'>{this.state.error}</span>)
+      classes += 'has-error'
+    }
+    return (
+      <div className='{classes}'>
+        <input ref='input' {...this.props} />
+        {subView}
+      </div>)
+  },
+  value () {
+    return this.refs.input.value
+  }
+})
+
 
 var BootstrapModal = React.createClass({
   getInitialState() {
@@ -76,3 +99,4 @@ var BootstrapModal = React.createClass({
 
 exports.BootstrapButton = BootstrapButton
 exports.BootstrapModal = BootstrapModal
+exports.BootstrapInput = BootstrapInput
