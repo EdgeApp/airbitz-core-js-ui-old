@@ -6,7 +6,7 @@ var BootstrapButton = modal.BootstrapButton
 var BootstrapModal = modal.BootstrapModal
 var AbcUiDropDown = require('./abcui-dropdown.js')
 var AbcUiFormView = require('./abcui-formview.js')
-var strings = require('./abcui-strings.js').strings
+var strings = require('./abcui-strings')
 var ABCError = abc.ABCError
 var tools = require('./abcui-tools.js')
 

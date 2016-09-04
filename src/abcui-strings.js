@@ -40,4 +40,4 @@ let strings = new LocalizedStrings({
   }
 });
 
-exports.strings = strings
+module.exports = strings

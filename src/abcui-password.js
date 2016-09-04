@@ -1,6 +1,6 @@
 import React from 'react'
 import { render } from 'react-dom'
-var strings = require('./abcui-strings.js').strings
+var strings = require('./abcui-strings')
 
 
 var PasswordRuleRow = React.createClass({
@@ -70,4 +70,4 @@ var PasswordRequirementsInput = React.createClass({
 	}
 })
 
-exports = PasswordRequirementsInput
+module.exports = PasswordRequirementsInput

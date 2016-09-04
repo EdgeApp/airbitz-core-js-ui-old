@@ -3,20 +3,17 @@ import { render } from 'react-dom'
 import { Router, Route, IndexRoute, Link, hashHistory } from 'react-router'
 import abc from 'airbitz-core-js'
 
-// var abcc = abc.ABCConditionCode
-var ABCError = abc.ABCError
-
-var AbcUiFormView = require('./abcui-formview')
 var recovery = require('./abcui-recovery')
 var RecoveryView = recovery.RecoveryView
 var SetupRecoveryView = recovery.SetupRecoveryView
 
 var LoginView = require('./abcui-login')
-var manageAccount = require('./abcui-manageaccount.js')
+var RegistrationView = require('./abcui-registration')
+
+var manageAccount = require('./abcui-manageaccount')
 var ManageAccountView = manageAccount.ManageAccountView
 var ChangePinView = manageAccount.ChangePinView
 var ChangePasswordView = manageAccount.ChangePasswordView
-var RegistrationView = require('./abcui-registration.js')
 
 var context = window.parent.context
 

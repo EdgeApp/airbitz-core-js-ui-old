@@ -6,6 +6,7 @@ import abc from 'airbitz-core-js'
 var ABCError = abc.ABCError
 
 var AbcUiFormView = require('./abcui-formview')
+var LoginWithAirbitz = require('./abcui-loginwithairbitz')
 
 var modal = require('./abcui-modal.js')
 var BootstrapButton = modal.BootstrapButton
@@ -13,6 +14,7 @@ var BootstrapModal = modal.BootstrapModal
 var BootstrapInput = modal.BootstrapInput
 
 var LoginView = require('./abcui-login')
+var PasswordRequirementsInput = require('./abcui-password')
 
 var context = window.parent.context
 
@@ -25,6 +27,7 @@ var RegistrationView = React.createClass({
         cancel='Cancel'
         title='Register'
         onClose={this.onClose}>
+
         <AbcUiFormView ref='form'>
           <LoginWithAirbitz onLogin={this.onLogin} register="true"/>
           <div className='row'>
@@ -43,6 +46,7 @@ var RegistrationView = React.createClass({
                 <PasswordRequirementsInput ref='password_repeat' placeholder='Repeat Password' className='form-control' />
               </div>
             </div>
+
             <div className='col-sm-12'>
               <div className='form-group'>
                 <div className='input-group'>
@@ -59,6 +63,8 @@ var RegistrationView = React.createClass({
             </div>
           </div>
         </AbcUiFormView>
+
+
       </BootstrapModal>
     )
   },
@@ -141,4 +147,4 @@ var RegistrationView = React.createClass({
   }
 })
 
-exports = RegistrationView
+module.exports = RegistrationView

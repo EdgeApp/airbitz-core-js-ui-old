@@ -2,7 +2,7 @@ import React from 'react'
 import { render } from 'react-dom'
 
 var JsBarcode = require('jsbarcode');
-var strings = require('./abcui-strings.js').strings
+var strings = require('./abcui-strings')
 
 var context = window.parent.context
 
@@ -59,4 +59,4 @@ var LoginWithAirbitz = React.createClass({
 	}
 })
 
-exports = LoginWithAirbitz
+module.exports = LoginWithAirbitz

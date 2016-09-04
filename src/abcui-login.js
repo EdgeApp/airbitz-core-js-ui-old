@@ -5,7 +5,7 @@ import abc from 'airbitz-core-js'
 
 // var abcc = abc.ABCConditionCode
 var ABCError = abc.ABCError
-var strings = require('./abcui-strings.js').strings
+var strings = require('./abcui-strings')
 
 var AbcUiFormView = require('./abcui-formview')
 var LoginWithAirbitz = require('./abcui-loginwithairbitz')
@@ -260,4 +260,4 @@ var LoginView = React.createClass({
 	}
 })
 
-exports = LoginView
+module.exports = LoginView

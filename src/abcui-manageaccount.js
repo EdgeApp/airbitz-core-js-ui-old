@@ -5,11 +5,9 @@ import abc from 'airbitz-core-js'
 
 // var abcc = abc.ABCConditionCode
 var ABCError = abc.ABCError
-var strings = require('./abcui-strings.js').strings
+var strings = require('./abcui-strings')
 
 var AbcUiFormView = require('./abcui-formview')
-var recovery = require('./abcui-recovery')
-var SetupRecoveryView = recovery.SetupRecoveryView
 
 var modal = require('./abcui-modal.js')
 var BootstrapButton = modal.BootstrapButton
