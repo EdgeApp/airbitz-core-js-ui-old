@@ -60,14 +60,26 @@ InnerAbcUi.prototype.openRecoveryWindow = function(callback) {
   var frame = createIFrame(this.bundlePath + '/assets/index.html#/recovery')
 }
 
+InnerAbcUi.prototype.openSetupRecoveryWindow = function(account, callback) {
+  var frame = createIFrame(this.bundlePath + '/assets/index.html#/account/setuprecovery')
+  window.exitCallback = function() {
+    removeIFrame(frame)
+  }
+}
+
 InnerAbcUi.prototype.openRegisterWindow = function(callback) {
   var frame = createIFrame(this.bundlePath + '/assets/index.html#/register')
-  window.registrationCallback = function(result, account) {
+  var that = this
+  window.registrationCallback = function(result, account, opts) {
     if (account) {
       removeIFrame(frame)
-      callback(result, account)
+      if (opts && opts.setupRecovery) {
+        window.account = account
+        that.openSetupRecoveryWindow(account, function () {})
+      }
     }
   }
+
   window.exitCallback = function() {
     removeIFrame(frame)
   }

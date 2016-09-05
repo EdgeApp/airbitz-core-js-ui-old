@@ -1,6 +1,8 @@
 import React from 'react'
 import { render } from 'react-dom'
 import abc from 'airbitz-core-js'
+import { Link, Router } from 'react-router'
+
 
 // var abcc = abc.ABCConditionCode
 var ABCError = abc.ABCError
@@ -8,6 +10,7 @@ var ABCError = abc.ABCError
 var AbcUiFormView = require('./abcui-formview')
 var LoginWithAirbitz = require('./abcui-loginwithairbitz')
 
+var strings = require('./abcui-strings')
 var modal = require('./abcui-modal.js')
 var BootstrapButton = modal.BootstrapButton
 var BootstrapModal = modal.BootstrapModal
@@ -19,8 +22,16 @@ var PasswordRequirementsInput = require('./abcui-password')
 var context = window.parent.context
 
 var RegistrationView = React.createClass({
+  getInitialState() {
+    return {
+      showSuccess: false,
+      successText: '',
+      account: null
+    }
+  },
   render() {
-    return (
+    
+    var regForm = (
       <BootstrapModal
         ref='regModal'
         key='regModal'
@@ -67,6 +78,27 @@ var RegistrationView = React.createClass({
 
       </BootstrapModal>
     )
+    
+    var successMessage = (
+      <div>
+        <BootstrapModal ref='regModal' title={strings.account_created_text} onClose={this.onClose}>
+          {this.state.successText}
+          <br/><br/>
+          <span className='input-group-btn'>
+            <BootstrapButton onClick={this.onSuccessSetupRecovery}>{strings.setup_recovery_text}</BootstrapButton>
+          </span>
+          <span className='input-group-btn'>
+            <BootstrapButton onClick={this.onSuccessClose}>{strings.later_button_text}</BootstrapButton>
+          </span>
+        </BootstrapModal>
+      </div>
+    )
+
+    if (this.state.showSuccess) {
+      return successMessage
+    } else {
+      return regForm
+    }
   },
   focus() {
     this.refs.username.setState({error:null, loading:null})
@@ -117,12 +149,12 @@ var RegistrationView = React.createClass({
       } else {
         var account = result
         LoginView.updateCurrentUser(account.username)
+        that.setState({account: account})
         account.pinSetup(that.refs.pin.value, function(err, result) {
-          if (window.parent.registrationCallback) {
-            window.parent.registrationCallback(null, account)
-          }
-          that.refs.regModal.close()
+          var msg = String.format(strings.account_created_message, window.parent.uiContext.vendorName)
           that.refs.register.setLoading(false)
+          that.setState({successText: msg})
+          that.setState({showSuccess: true})
         })
       }
     })
@@ -143,6 +175,16 @@ var RegistrationView = React.createClass({
     'use strict';
     if (window.parent.exitCallback) {
       window.parent.exitCallback()
+    }
+  },
+  onSuccessClose () {
+    if (window.parent.registrationCallback) {
+      window.parent.registrationCallback(null, this.state.account)
+    }
+  },
+  onSuccessSetupRecovery () {
+    if (window.parent.registrationCallback) {
+      window.parent.registrationCallback(null, this.state.account, {setupRecovery: true})
     }
   }
 })

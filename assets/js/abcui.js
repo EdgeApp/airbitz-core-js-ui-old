@@ -2708,9 +2708,9 @@ var abcui =
 	var crypto = __webpack_require__(14)
 	var UserStorage = __webpack_require__(15).UserStorage
 	var userMap = __webpack_require__(11)
-	var loginPassword = __webpack_require__(46)
-	var loginPin = __webpack_require__(47)
-	var loginRecovery2 = __webpack_require__(48)
+	var loginPassword = __webpack_require__(47)
+	var loginPin = __webpack_require__(48)
+	var loginRecovery2 = __webpack_require__(49)
 
 	function Account (ctx, username, dataKey) {
 	  this.ctx = ctx
@@ -4372,7 +4372,8 @@ var abcui =
 /* 42 */,
 /* 43 */,
 /* 44 */,
-/* 45 */
+/* 45 */,
+/* 46 */
 /***/ function(module, exports) {
 
 	/**
@@ -4429,7 +4430,7 @@ var abcui =
 
 
 /***/ },
-/* 46 */
+/* 47 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var crypto = __webpack_require__(14)
@@ -4572,7 +4573,7 @@ var abcui =
 
 
 /***/ },
-/* 47 */
+/* 48 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var crypto = __webpack_require__(14)
@@ -4667,7 +4668,7 @@ var abcui =
 
 
 /***/ },
-/* 48 */
+/* 49 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {var BASE58 = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'
@@ -4828,7 +4829,6 @@ var abcui =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1).Buffer))
 
 /***/ },
-/* 49 */,
 /* 50 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -6766,7 +6766,7 @@ var abcui =
 /* 84 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var abcc = __webpack_require__(45)
+	var abcc = __webpack_require__(46)
 
 	/**
 	 * ABCError
@@ -6863,7 +6863,7 @@ var abcui =
 
 	var Context = __webpack_require__(87).Context
 	var userMap = __webpack_require__(11)
-	var abcc = __webpack_require__(45)
+	var abcc = __webpack_require__(46)
 	var abce = __webpack_require__(84)
 
 	exports.Context = Context
@@ -6891,9 +6891,9 @@ var abcui =
 /***/ function(module, exports, __webpack_require__) {
 
 	var loginCreate = __webpack_require__(88)
-	var loginPassword = __webpack_require__(46)
-	var loginPin = __webpack_require__(47)
-	var loginRecovery2 = __webpack_require__(48)
+	var loginPassword = __webpack_require__(47)
+	var loginPin = __webpack_require__(48)
+	var loginRecovery2 = __webpack_require__(49)
 	var userMap = __webpack_require__(11)
 	var UserStorage = __webpack_require__(15).UserStorage
 
@@ -13303,14 +13303,26 @@ var abcui =
 	  var frame = createIFrame(this.bundlePath + '/assets/index.html#/recovery');
 	};
 
+	InnerAbcUi.prototype.openSetupRecoveryWindow = function (account, callback) {
+	  var frame = createIFrame(this.bundlePath + '/assets/index.html#/account/setuprecovery');
+	  window.exitCallback = function () {
+	    removeIFrame(frame);
+	  };
+	};
+
 	InnerAbcUi.prototype.openRegisterWindow = function (callback) {
 	  var frame = createIFrame(this.bundlePath + '/assets/index.html#/register');
-	  window.registrationCallback = function (result, account) {
+	  var that = this;
+	  window.registrationCallback = function (result, account, opts) {
 	    if (account) {
 	      removeIFrame(frame);
-	      callback(result, account);
+	      if (opts && opts.setupRecovery) {
+	        window.account = account;
+	        that.openSetupRecoveryWindow(account, function () {});
+	      }
 	    }
 	  };
+
 	  window.exitCallback = function () {
 	    removeIFrame(frame);
 	  };
