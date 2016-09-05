@@ -77,6 +77,7 @@ InnerAbcUi.prototype.openRegisterWindow = function(callback) {
         window.account = account
         that.openSetupRecoveryWindow(account, function () {})
       }
+      callback(null, account)
     }
   }
 

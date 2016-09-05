@@ -13320,6 +13320,7 @@ var abcui =
 	        window.account = account;
 	        that.openSetupRecoveryWindow(account, function () {});
 	      }
+	      callback(null, account);
 	    }
 	  };
 
