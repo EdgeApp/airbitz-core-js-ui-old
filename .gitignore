@@ -3,4 +3,3 @@ node_modules
 *.swp
 npm-debug.log
 .idea
-assets/dist

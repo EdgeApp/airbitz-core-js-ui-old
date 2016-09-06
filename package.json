@@ -48,7 +48,7 @@
   "scripts": {
     "pretest": "standard src/*js",
     "start": "node samples/server.js",
-    "prebuild": "mkdir -p assets/dist && cp -a node_modules/jquery assets/dist/jquery && cp -a node_modules/bootstrap assets/dist/bootstrap && cp -a node_modules/bootstrap-social assets/dist/bootstrap-social",
+    "prebuild": "/bin/sh prebuild.sh",
     "build": "webpack"
   }
 }
