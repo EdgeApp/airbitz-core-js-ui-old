@@ -10579,7 +10579,9 @@ var abcuiloader =
 	    if_recovery_setup: 'If recovery was setup, you should have emailed yourself a recovery token with a link. To recover your account, install the Airbitz Mobile App on iOS or Android',
 	    if_recovery_setup2: 'Then click one of the links in the recovery email from a device with Airbitz installed',
 	    account_created_text: 'Account Created',
-	    account_created_message: 'Your {0} account has been created.<br/><br/>\n\n Your username and password are known only to you and cannot be reset by {0}.<br/><br/>\n\nWould you like to setup password recovery questions to reset your account in case of a forgotten password?',
+	    account_created_message: 'Your {0} account has been created.',
+	    account_created_zero_knowledge: 'Your username and password are known only to you and cannot be reset by {0}.',
+	    account_created_write_it_down: 'Would you like to setup password recovery questions to reset your account in case of a forgotten password?',
 
 	    dummy_entry_to_keep_json_happy: ''
 
@@ -38054,7 +38056,6 @@ var abcuiloader =
 	  getInitialState: function getInitialState() {
 	    return {
 	      showSuccess: false,
-	      successText: '',
 	      account: null
 	    };
 	  },
@@ -38142,7 +38143,13 @@ var abcuiloader =
 	      _react2.default.createElement(
 	        BootstrapModal,
 	        { ref: 'regModal', title: strings.account_created_text, onClose: this.onClose },
-	        this.state.successText,
+	        String.format(strings.account_created_message, window.parent.uiContext.vendorName),
+	        _react2.default.createElement('br', null),
+	        _react2.default.createElement('br', null),
+	        String.format(strings.account_created_zero_knowledge, window.parent.uiContext.vendorName),
+	        _react2.default.createElement('br', null),
+	        _react2.default.createElement('br', null),
+	        String.format(strings.account_created_write_it_down, window.parent.uiContext.vendorName),
 	        _react2.default.createElement('br', null),
 	        _react2.default.createElement('br', null),
 	        _react2.default.createElement(
@@ -38223,9 +38230,7 @@ var abcuiloader =
 	        LoginView.updateCurrentUser(account.username);
 	        that.setState({ account: account });
 	        account.pinSetup(that.refs.pin.value, function (err, result) {
-	          var msg = String.format(strings.account_created_message, window.parent.uiContext.vendorName);
 	          that.refs.register.setLoading(false);
-	          that.setState({ successText: msg });
 	          that.setState({ showSuccess: true });
 	        });
 	      }
