@@ -7,15 +7,14 @@
   "main": "src/abcui.js",
   "bin": "cli.js",
   "repository": "http://github.com/airbitz/airbitz-core-js-ui",
-  "dependencies": { 
+  "dependencies": {
     "bootstrap": "^3.3.7",
     "bootstrap-social": "^5.0.0",
     "jquery": "^3.1.0",
     "jsbarcode": "^3.3.20"
   },
   "devDependencies": {
-    "react-localization": "^0.0.5",
-    "standard": "^3.0.0",
+    "airbitz-core-js": "git@github.com:Airbitz/airbitz-core-js.git",
     "babel-cli": "^6.10.1",
     "babel-core": "^6.10.4",
     "babel-eslint": "^6.1.0",
@@ -29,15 +28,14 @@
     "babel-preset-stage-1": "^6.5.0",
     "babel-register": "^6.9.0",
     "express": "^4.14.0",
+    "json-loader": "^0.5.4",
     "mocha": "^2.4.0",
-    "webpack": "^2.0.0beta",
-    "standard": "^3.0.0",
     "react": "^15.2.1",
     "react-addons-css-transition-group": "^15.2.0",
     "react-addons-test-utils": "^15.2.0",
     "react-dom": "^15.2.0",
+    "react-localization": "^0.0.5",
     "react-router": "^2.5.2",
-    "airbitz-core-js": "git@github.com:Airbitz/airbitz-core-js.git",
     "standard": "^3.0.0",
     "webpack": "^2.0.0-beta"
   },
