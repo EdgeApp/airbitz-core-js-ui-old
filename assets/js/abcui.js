@@ -6917,7 +6917,7 @@ var abcui =
 	 * Creates a context object.
 	 */
 	abc.makeABCContext = function makeContext (opts) {
-	  return new abc.Context(opts.apiKey, opts.type)
+	  return new abc.Context(opts.apiKey, opts.accountType)
 	}
 
 	module.exports = abc
