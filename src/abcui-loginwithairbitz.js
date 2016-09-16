@@ -40,7 +40,7 @@ var LoginWithAirbitz = React.createClass({
 		)
 	},
 	componentDidMount () {
-		context.requestEdgeLogin({displayName: vendorName, onLogin:this.props.onLogin}, function (error, results) {
+		context.requestEdgeLogin({displayName: vendorName, onLogin:this.handleEdgeLogin}, function (error, results) {
 			if (results) {
 				JsBarcode("#barcode", results.id, {
 					format: "CODE128A",
@@ -54,6 +54,13 @@ var LoginWithAirbitz = React.createClass({
 				// XXX
 			}
 		})
+	},
+	handleEdgeLogin(error, account) {
+		if (error) {
+			console.log('Error on Edge Login')
+		} else {
+			this.props.onLogin(account)
+		}
 	},
 	onClick () {
 		window.open(this.buttonBouncerUrl, '_blank')
