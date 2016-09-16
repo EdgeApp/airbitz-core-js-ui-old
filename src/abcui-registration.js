@@ -145,18 +145,15 @@ var RegistrationView = React.createClass({
 
     this.refs.register.setLoading(true)
     var username = this.refs.username.value()
-    context.accountCreate(username, this.refs.password.value(), function(err, result) {
+    context.createAccount(username, this.refs.password.value(), this.refs.pin.value, function(err, result) {
+      that.refs.register.setLoading(false)
       if (err) {
         that.refs.form.setState({'error': ABCError(err, 'Unable to register at this time.').message})
-        that.refs.register.setLoading(false)
       } else {
         var account = result
         LoginView.updateCurrentUser(account.username)
         that.setState({account: account})
-        account.pinSetup(that.refs.pin.value, function(err, result) {
-          that.refs.register.setLoading(false)
-          that.setState({showSuccess: true})
-        })
+        that.setState({showSuccess: true})
       }
     })
     return false

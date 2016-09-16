@@ -5563,7 +5563,7 @@ var abcui =
 	util.inherits = __webpack_require__(18);
 	/*</replacement>*/
 
-	var Readable = __webpack_require__(62);
+	var Readable = __webpack_require__(63);
 	var Writable = __webpack_require__(43);
 
 	util.inherits(Duplex, Readable);
@@ -5661,7 +5661,7 @@ var abcui =
 	  } catch (e) {
 	    // Alternative using node.js crypto:
 	    var hiddenRequire = require;
-	    return __webpack_require__(51).randomBytes(bytes);
+	    return __webpack_require__(52).randomBytes(bytes);
 	  }
 	  return out;
 	}
@@ -5862,7 +5862,7 @@ var abcui =
 
 	module.exports = Stream;
 
-	var EE = __webpack_require__(52).EventEmitter;
+	var EE = __webpack_require__(53).EventEmitter;
 	var inherits = __webpack_require__(18);
 
 	inherits(Stream, EE);
@@ -6214,7 +6214,7 @@ var abcui =
 	/* WEBPACK VAR INJECTION */(function(Buffer) {'use strict';
 
 	var BASE58 = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
-	var base58 = __webpack_require__(69)(BASE58);
+	var base58 = __webpack_require__(45)(BASE58);
 	var crypto = __webpack_require__(15);
 	var UserStorage = __webpack_require__(26).UserStorage;
 	var userMap = __webpack_require__(16);
@@ -7744,12 +7744,101 @@ var abcui =
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(0)))
 
 /***/ },
-/* 45 */,
+/* 45 */
+/***/ function(module, exports) {
+
+	// base-x encoding
+	// Forked from https://github.com/cryptocoinjs/bs58
+	// Originally written by Mike Hearn for BitcoinJ
+	// Copyright (c) 2011 Google Inc
+	// Ported to JavaScript by Stefan Thomas
+	// Merged Buffer refactorings from base58-native by Stephen Pair
+	// Copyright (c) 2013 BitPay Inc
+
+	module.exports = function base (ALPHABET) {
+	  var ALPHABET_MAP = {}
+	  var BASE = ALPHABET.length
+	  var LEADER = ALPHABET.charAt(0)
+
+	  // pre-compute lookup table
+	  for (var i = 0; i < ALPHABET.length; i++) {
+	    ALPHABET_MAP[ALPHABET.charAt(i)] = i
+	  }
+
+	  function encode (source) {
+	    if (source.length === 0) return ''
+
+	    var digits = [0]
+	    for (var i = 0; i < source.length; ++i) {
+	      for (var j = 0, carry = source[i]; j < digits.length; ++j) {
+	        carry += digits[j] << 8
+	        digits[j] = carry % BASE
+	        carry = (carry / BASE) | 0
+	      }
+
+	      while (carry > 0) {
+	        digits.push(carry % BASE)
+	        carry = (carry / BASE) | 0
+	      }
+	    }
+
+	    // deal with leading zeros
+	    for (var k = 0; source[k] === 0 && k < source.length - 1; ++k) {
+	      digits.push(0)
+	    }
+
+	    // convert digits to a string
+	    for (var ii = 0, jj = digits.length - 1; ii <= jj; ++ii, --jj) {
+	      var tmp = ALPHABET[digits[ii]]
+	      digits[ii] = ALPHABET[digits[jj]]
+	      digits[jj] = tmp
+	    }
+
+	    return digits.join('')
+	  }
+
+	  function decode (string) {
+	    if (string.length === 0) return []
+
+	    var bytes = [0]
+	    for (var i = 0; i < string.length; i++) {
+	      var value = ALPHABET_MAP[string[i]]
+	      if (value === undefined) throw new Error('Non-base' + BASE + ' character')
+
+	      for (var j = 0, carry = value; j < bytes.length; ++j) {
+	        carry += bytes[j] * BASE
+	        bytes[j] = carry & 0xff
+	        carry >>= 8
+	      }
+
+	      while (carry > 0) {
+	        bytes.push(carry & 0xff)
+	        carry >>= 8
+	      }
+	    }
+
+	    // deal with leading zeros
+	    for (var k = 0; string[k] === LEADER && k < string.length - 1; ++k) {
+	      bytes.push(0)
+	    }
+
+	    return bytes.reverse()
+	  }
+
+	  return {
+	    encode: encode,
+	    decode: decode
+	  }
+	}
+
+
+/***/ },
 /* 46 */,
 /* 47 */,
 /* 48 */,
 /* 49 */,
-/* 50 */
+/* 50 */,
+/* 51 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {var createHash = __webpack_require__(99)
@@ -7786,7 +7875,7 @@ var abcui =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1).Buffer))
 
 /***/ },
-/* 51 */
+/* 52 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {var rng = __webpack_require__(104)
@@ -7800,7 +7889,7 @@ var abcui =
 	    ].join('\n'))
 	}
 
-	exports.createHash = __webpack_require__(50)
+	exports.createHash = __webpack_require__(51)
 
 	exports.createHmac = __webpack_require__(94)
 
@@ -7846,7 +7935,7 @@ var abcui =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1).Buffer))
 
 /***/ },
-/* 52 */
+/* 53 */
 /***/ function(module, exports) {
 
 	// Copyright Joyent, Inc. and other Node contributors.
@@ -8154,7 +8243,6 @@ var abcui =
 
 
 /***/ },
-/* 53 */,
 /* 54 */,
 /* 55 */,
 /* 56 */,
@@ -8162,7 +8250,8 @@ var abcui =
 /* 58 */,
 /* 59 */,
 /* 60 */,
-/* 61 */
+/* 61 */,
+/* 62 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// Copyright Joyent, Inc. and other Node contributors.
@@ -8214,7 +8303,7 @@ var abcui =
 
 
 /***/ },
-/* 62 */
+/* 63 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {// Copyright Joyent, Inc. and other Node contributors.
@@ -8251,7 +8340,7 @@ var abcui =
 
 	Readable.ReadableState = ReadableState;
 
-	var EE = __webpack_require__(52).EventEmitter;
+	var EE = __webpack_require__(53).EventEmitter;
 
 	/*<replacement>*/
 	if (!EE.listenerCount) EE.listenerCount = function(emitter, type) {
@@ -8343,7 +8432,7 @@ var abcui =
 	  this.encoding = null;
 	  if (options.encoding) {
 	    if (!StringDecoder)
-	      StringDecoder = __webpack_require__(63).StringDecoder;
+	      StringDecoder = __webpack_require__(64).StringDecoder;
 	    this.decoder = new StringDecoder(options.encoding);
 	    this.encoding = options.encoding;
 	  }
@@ -8453,7 +8542,7 @@ var abcui =
 	// backwards compatibility.
 	Readable.prototype.setEncoding = function(enc) {
 	  if (!StringDecoder)
-	    StringDecoder = __webpack_require__(63).StringDecoder;
+	    StringDecoder = __webpack_require__(64).StringDecoder;
 	  this._readableState.decoder = new StringDecoder(enc);
 	  this._readableState.encoding = enc;
 	  return this;
@@ -9172,7 +9261,7 @@ var abcui =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ },
-/* 63 */
+/* 64 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// Copyright Joyent, Inc. and other Node contributors.
@@ -9399,7 +9488,7 @@ var abcui =
 
 
 /***/ },
-/* 64 */
+/* 65 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -9457,7 +9546,7 @@ var abcui =
 	exports = abcc;
 
 /***/ },
-/* 65 */
+/* 66 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {'use strict';
@@ -9581,7 +9670,7 @@ var abcui =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1).Buffer))
 
 /***/ },
-/* 66 */
+/* 67 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -9719,7 +9808,7 @@ var abcui =
 	exports.setup = setup;
 
 /***/ },
-/* 67 */
+/* 68 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -9824,7 +9913,7 @@ var abcui =
 	exports.setup = setup;
 
 /***/ },
-/* 68 */
+/* 69 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {'use strict';
@@ -9832,7 +9921,7 @@ var abcui =
 	var BASE58 = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
 
 	var crypto = __webpack_require__(15);
-	var base58 = __webpack_require__(69)(BASE58);
+	var base58 = __webpack_require__(45)(BASE58);
 	var userMap = __webpack_require__(16);
 	var Login = __webpack_require__(32);
 
@@ -9978,95 +10067,6 @@ var abcui =
 	}
 	exports.setup = setup;
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1).Buffer))
-
-/***/ },
-/* 69 */
-/***/ function(module, exports) {
-
-	// base-x encoding
-	// Forked from https://github.com/cryptocoinjs/bs58
-	// Originally written by Mike Hearn for BitcoinJ
-	// Copyright (c) 2011 Google Inc
-	// Ported to JavaScript by Stefan Thomas
-	// Merged Buffer refactorings from base58-native by Stephen Pair
-	// Copyright (c) 2013 BitPay Inc
-
-	module.exports = function base (ALPHABET) {
-	  var ALPHABET_MAP = {}
-	  var BASE = ALPHABET.length
-	  var LEADER = ALPHABET.charAt(0)
-
-	  // pre-compute lookup table
-	  for (var i = 0; i < ALPHABET.length; i++) {
-	    ALPHABET_MAP[ALPHABET.charAt(i)] = i
-	  }
-
-	  function encode (source) {
-	    if (source.length === 0) return ''
-
-	    var digits = [0]
-	    for (var i = 0; i < source.length; ++i) {
-	      for (var j = 0, carry = source[i]; j < digits.length; ++j) {
-	        carry += digits[j] << 8
-	        digits[j] = carry % BASE
-	        carry = (carry / BASE) | 0
-	      }
-
-	      while (carry > 0) {
-	        digits.push(carry % BASE)
-	        carry = (carry / BASE) | 0
-	      }
-	    }
-
-	    // deal with leading zeros
-	    for (var k = 0; source[k] === 0 && k < source.length - 1; ++k) {
-	      digits.push(0)
-	    }
-
-	    // convert digits to a string
-	    for (var ii = 0, jj = digits.length - 1; ii <= jj; ++ii, --jj) {
-	      var tmp = ALPHABET[digits[ii]]
-	      digits[ii] = ALPHABET[digits[jj]]
-	      digits[jj] = tmp
-	    }
-
-	    return digits.join('')
-	  }
-
-	  function decode (string) {
-	    if (string.length === 0) return []
-
-	    var bytes = [0]
-	    for (var i = 0; i < string.length; i++) {
-	      var value = ALPHABET_MAP[string[i]]
-	      if (value === undefined) throw new Error('Non-base' + BASE + ' character')
-
-	      for (var j = 0, carry = value; j < bytes.length; ++j) {
-	        carry += bytes[j] * BASE
-	        bytes[j] = carry & 0xff
-	        carry >>= 8
-	      }
-
-	      while (carry > 0) {
-	        bytes.push(carry & 0xff)
-	        carry >>= 8
-	      }
-	    }
-
-	    // deal with leading zeros
-	    for (var k = 0; string[k] === LEADER && k < string.length - 1; ++k) {
-	      bytes.push(0)
-	    }
-
-	    return bytes.reverse()
-	  }
-
-	  return {
-	    encode: encode,
-	    decode: decode
-	  }
-	}
-
 
 /***/ },
 /* 70 */
@@ -12554,7 +12554,7 @@ var abcui =
 /* 94 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(Buffer) {var createHash = __webpack_require__(50)
+	/* WEBPACK VAR INJECTION */(function(Buffer) {var createHash = __webpack_require__(51)
 
 	var zeroBuffer = new Buffer(128)
 	zeroBuffer.fill(0)
@@ -13954,20 +13954,20 @@ var abcui =
 /* 139 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(61)
+	module.exports = __webpack_require__(62)
 
 
 /***/ },
 /* 140 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(process) {exports = module.exports = __webpack_require__(62);
+	/* WEBPACK VAR INJECTION */(function(process) {exports = module.exports = __webpack_require__(63);
 	exports.Stream = __webpack_require__(19);
 	exports.Readable = exports;
 	exports.Writable = __webpack_require__(43);
 	exports.Duplex = __webpack_require__(14);
 	exports.Transform = __webpack_require__(42);
-	exports.PassThrough = __webpack_require__(61);
+	exports.PassThrough = __webpack_require__(62);
 	if (!process.browser && process.env.READABLE_STREAM === 'disable') {
 	  module.exports = __webpack_require__(19);
 	}
@@ -14547,7 +14547,7 @@ var abcui =
 
 	'use strict';
 
-	var abcc = __webpack_require__(64);
+	var abcc = __webpack_require__(65);
 
 	/**
 	 * ABCError
@@ -14645,7 +14645,7 @@ var abcui =
 
 	var Context = __webpack_require__(151).Context;
 	var userMap = __webpack_require__(16);
-	var abcc = __webpack_require__(64);
+	var abcc = __webpack_require__(65);
 	var abce = __webpack_require__(147);
 
 	exports.Context = Context;
@@ -14659,9 +14659,9 @@ var abcui =
 
 	'use strict';
 
-	var loginPassword = __webpack_require__(66);
-	var loginPin = __webpack_require__(67);
-	var loginRecovery2 = __webpack_require__(68);
+	var loginPassword = __webpack_require__(67);
+	var loginPin = __webpack_require__(68);
+	var loginRecovery2 = __webpack_require__(69);
 
 	/**
 	 * This is a thin shim object,
@@ -14672,6 +14672,8 @@ var abcui =
 	  this.login = login;
 	  this.repoInfo = login.accountFind(ctx.accountType);
 	  this.loggedIn = true;
+	  this.edgeLogin = false;
+	  this.username = login.username;
 	}
 
 	Account.prototype.logout = function () {
@@ -14720,10 +14722,10 @@ var abcui =
 
 	var Account = __webpack_require__(149).Account;
 	var loginEdge = __webpack_require__(152);
-	var loginCreate = __webpack_require__(65);
-	var loginPassword = __webpack_require__(66);
-	var loginPin = __webpack_require__(67);
-	var loginRecovery2 = __webpack_require__(68);
+	var loginCreate = __webpack_require__(66);
+	var loginPassword = __webpack_require__(67);
+	var loginPin = __webpack_require__(68);
+	var loginRecovery2 = __webpack_require__(69);
 	var userMap = __webpack_require__(16);
 	var UserStorage = __webpack_require__(26).UserStorage;
 
@@ -14785,7 +14787,7 @@ var abcui =
 	/**
 	 * Creates a login, then creates and attaches an account to it.
 	 */
-	Context.prototype.accountCreate = function (username, password, callback) {
+	Context.prototype.createAccount = function (username, password, pin, callback) {
 	  var ctx = this;
 	  return loginCreate.create(ctx, username, password, {}, function (err, login) {
 	    if (err) return callback(err);
@@ -14795,20 +14797,14 @@ var abcui =
 	      // If the login doesn't have the correct account type, add it first:
 	      return login.accountCreate(ctx, ctx.accountType, function (err) {
 	        if (err) return callback(err);
-	        callback(null, new Account(ctx, login));
+	        loginPin.setup(ctx, login, pin, function (err) {
+	          callback(null, new Account(ctx, login));
+	        });
 	      });
 	    }
 
 	    // Otherwise, we have the correct account type, and can simply return:
-	    callback(null, new Account(ctx, login));
-	  });
-	};
-	Context.prototype.createAccount = function (username, password, pin, opts, callback) {
-	  var ctx = this;
-	  return loginCreate.create(ctx, username, password, function (err, login) {
-	    if (err) return callback(err);
 	    loginPin.setup(ctx, login, pin, function (err) {
-	      if (err) return callback(err);
 	      callback(null, new Account(ctx, login));
 	    });
 	  });
@@ -14885,7 +14881,9 @@ var abcui =
 	  var onLogin = opts.onLogin;
 	  opts.onLogin = function (err, login) {
 	    if (err) return onLogin(err);
-	    onLogin(null, new Account(ctx, login));
+	    var account = new Account(ctx, login);
+	    account.edgeLogin = true;
+	    onLogin(null, account);
 	  };
 	  opts.type = opts.type || ctx.accountType;
 	  loginEdge.create(this, opts, callback);
@@ -14899,17 +14897,19 @@ var abcui =
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {'use strict';
 
-	var loginCreate = __webpack_require__(65);
+	var loginCreate = __webpack_require__(66);
 	var crypto = __webpack_require__(15);
 	var Elliptic = __webpack_require__(7).ec;
 	var secp256k1 = new Elliptic('secp256k1');
+	var BASE58 = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
+	var base58 = __webpack_require__(45)(BASE58);
 
 	/**
 	 * Creates a new login object, and attaches the account repo info to it.
 	 */
 	function createLogin(ctx, account, callback) {
-	  var username = crypto.random(24).toString('base64');
-	  var password = crypto.random(24).toString('base64');
+	  var username = base58.encode(crypto.random(24));
+	  var password = base58.encode(crypto.random(24));
 
 	  var opts = {};
 	  if (account.type === 'account:repo:co.airbitz.wallet') {
@@ -15302,7 +15302,7 @@ var abcui =
 	} else {
 	  // Node.js or Web worker
 	  try {
-	    var crypto = __webpack_require__(51);
+	    var crypto = __webpack_require__(52);
 
 	    Rand.prototype._rand = function _rand(n) {
 	      return crypto.randomBytes(n);
@@ -25333,7 +25333,11 @@ var abcui =
 	  var frame = createIFrame(this.bundlePath + '/assets/index.html#/login');
 	  window.loginCallback = function (error, account) {
 	    if (account) {
+	      window.abcAccount = account;
 	      removeIFrame(frame);
+	      if (account.edgeLogin) {
+	        that.openChangePinEdgeLoginWindow(account, function () {});
+	      }
 	      callback(error, account);
 	    }
 	  };
@@ -25357,15 +25361,24 @@ var abcui =
 	  };
 	};
 
+	InnerAbcUi.prototype.openChangePinEdgeLoginWindow = function (account, callback) {
+	  var frame = createIFrame(this.bundlePath + '/assets/index.html#/account/changepin-edge-login');
+	  window.exitCallback = function () {
+	    removeIFrame(frame);
+	  };
+	};
+
 	InnerAbcUi.prototype.openRegisterWindow = function (callback) {
 	  var frame = createIFrame(this.bundlePath + '/assets/index.html#/register');
 	  var that = this;
 	  window.registrationCallback = function (result, account, opts) {
 	    if (account) {
+	      window.abcAccount = account;
 	      removeIFrame(frame);
 	      if (opts && opts.setupRecovery) {
-	        window.account = account;
 	        that.openSetupRecoveryWindow(account, function () {});
+	      } else if (account.edgeLogin) {
+	        that.openChangePinEdgeLoginWindow(account, function () {});
 	      }
 	      callback(null, account);
 	    }
@@ -25377,7 +25390,7 @@ var abcui =
 	};
 
 	InnerAbcUi.prototype.openManageWindow = function (account, callback) {
-	  window.account = account;
+	  window.abcAccount = account;
 	  var frame = createIFrame(this.bundlePath + '/assets/index.html#/account/');
 	  window.exitCallback = function () {
 	    removeIFrame(frame);

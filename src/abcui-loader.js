@@ -51,7 +51,8 @@ render((
       <Route path='recovery' component={RecoveryView} />
       <Route path='account' component={ManageAccountView} />
       <Route path='account/changepassword' component={ChangePasswordView} />
-      <Route path='account/changepin' component={ChangePinView} />
+      <Route path='account/changepin' component={ChangePinView} title='Change PIN'/>
+      <Route path='account/changepin-edge-login' component={ChangePinView} noRequirePassword='true' title='Login Successful. Please set a PIN for quick re-logins'/>
       <Route path='account/setuprecovery' component={SetupRecoveryView} />
     </Route>
   </Router>

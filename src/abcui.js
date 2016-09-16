@@ -43,7 +43,11 @@ InnerAbcUi.prototype.openLoginWindow = function(callback) {
   var frame = createIFrame(this.bundlePath + '/assets/index.html#/login')
   window.loginCallback = function(error, account) {
     if (account) {
+      window.abcAccount = account
       removeIFrame(frame)
+      if (account.edgeLogin) {
+        that.openChangePinEdgeLoginWindow(account, function () {})
+      }
       callback(error, account)
     }
   }
@@ -67,15 +71,24 @@ InnerAbcUi.prototype.openSetupRecoveryWindow = function(account, callback) {
   }
 }
 
+InnerAbcUi.prototype.openChangePinEdgeLoginWindow = function(account, callback) {
+  var frame = createIFrame(this.bundlePath + '/assets/index.html#/account/changepin-edge-login')
+  window.exitCallback = function() {
+    removeIFrame(frame)
+  }
+}
+
 InnerAbcUi.prototype.openRegisterWindow = function(callback) {
   var frame = createIFrame(this.bundlePath + '/assets/index.html#/register')
   var that = this
   window.registrationCallback = function(result, account, opts) {
     if (account) {
+      window.abcAccount = account
       removeIFrame(frame)
       if (opts && opts.setupRecovery) {
-        window.account = account
         that.openSetupRecoveryWindow(account, function () {})
+      } else if (account.edgeLogin) {
+        that.openChangePinEdgeLoginWindow(account, function () {})
       }
       callback(null, account)
     }
@@ -87,7 +100,7 @@ InnerAbcUi.prototype.openRegisterWindow = function(callback) {
 }
 
 InnerAbcUi.prototype.openManageWindow = function(account, callback) {
-  window.account = account
+  window.abcAccount = account
   var frame = createIFrame(this.bundlePath + '/assets/index.html#/account/')
   window.exitCallback = function() {
     removeIFrame(frame)

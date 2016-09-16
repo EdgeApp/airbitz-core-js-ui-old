@@ -20,7 +20,7 @@ var ManageAccountView = React.createClass({
 	render() {
 		return (
 			<BootstrapModal ref='modal' title='Manage Account' onClose={this.onClose}>
-				<h4>ACCOUNT: <span>{window.parent.account.username}</span></h4>
+				<h4>ACCOUNT: <span>{window.parent.abcAccount.username}</span></h4>
 				<ul className='list-unstyled'>
 					<li><Link className='btn' to={`/account/changepassword`}>Change Password</Link></li>
 					<li><Link className='btn' to={`/account/changepin`}>Change Pin</Link></li>
@@ -97,7 +97,7 @@ var ChangePasswordView = React.createClass({
 	},
 	handleSubmit() {
 		var that = this
-		var account = window.parent.account
+		var account = window.parent.abcAccount
 
 		if (!this.refs.password.meetsRequirements()) {
 			this.refs.form.setState({'error': 'Insufficient password'})
@@ -105,7 +105,7 @@ var ChangePasswordView = React.createClass({
 			this.refs.form.setState({'error': 'Password mismatch'})
 		} else if (account.passwordOk(this.refs.currentPassword.value)) {
 			this.refs.changeButton.setLoading(true)
-			window.parent.account.passwordSetup(this.refs.password.value(), function(err, result) {
+			window.parent.abcAccount.passwordSetup(this.refs.password.value(), function(err, result) {
 				if (err) {
 					that.refs.form.setState({'error': ABCError(err, 'Invalid Password').message})
 				} else {
@@ -131,9 +131,10 @@ var ChangePasswordView = React.createClass({
 var ChangePinView = React.createClass({
 	render() {
 		return (
-			<BootstrapModal ref='modal' title='Change PIN' onClose={this.onClose}>
+			<BootstrapModal ref='modal' title={this.props.route.title} onClose={this.onClose}>
 				<form>
 					<div className='row'>
+						{!this.props.route.noRequirePassword ? (
 						<div className='col-sm-12'>
 							<div className='form-group'>
 								<div className='input-group'>
@@ -141,6 +142,7 @@ var ChangePinView = React.createClass({
 								</div>
 							</div>
 						</div>
+						) : null}
 						<div className='col-sm-12'>
 							<div className='form-group'>
 								<div className='input-group'>
@@ -161,12 +163,13 @@ var ChangePinView = React.createClass({
 	},
 	handleSubmit() {
 		var that = this
-		var account = window.parent.account
-		if (account.passwordOk(this.refs.currentPassword.value)) {
+		var account = window.parent.abcAccount
+		
+		if (this.props.route.noRequirePassword || account.passwordOk(this.refs.currentPassword.value)) {
 			this.refs.changeButton.setLoading(true)
-			window.parent.account.pinSetup(this.refs.pin.value, function(err, result) {
+			window.parent.abcAccount.pinSetup(this.refs.pin.value, function(err, result) {
 				if (err) {
-					that.refs.form.setState({'error': ABCError(err, 'Invalid Password').message})
+					that.refs.form.setState({'error': ABCError(err, strings.error_setting_pin_text).message})
 				} else {
 					that.refs.modal.close()
 					if (window.parent.exitCallback) {
