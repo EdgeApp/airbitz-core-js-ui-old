@@ -5,6 +5,7 @@ var JsBarcode = require('jsbarcode');
 var strings = require('./abcui-strings')
 
 var context = window.parent.context
+var vendorName = window.parent.uiContext.vendorName
 
 var LoginWithAirbitz = React.createClass({
 	getInitialState () {
@@ -39,7 +40,7 @@ var LoginWithAirbitz = React.createClass({
 		)
 	},
 	componentDidMount () {
-		context.requestEdgeLogin({displayName: 'Airbitz UI Test App', onLogin:this.props.onLogin}, function (error, results) {
+		context.requestEdgeLogin({displayName: vendorName, onLogin:this.props.onLogin}, function (error, results) {
 			if (results) {
 				JsBarcode("#barcode", results.id, {
 					format: "CODE128A",
