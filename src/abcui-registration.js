@@ -25,7 +25,6 @@ var RegistrationView = React.createClass({
   getInitialState() {
     return {
       showSuccess: false,
-      successText: '',
       account: null
     }
   },
@@ -82,7 +81,11 @@ var RegistrationView = React.createClass({
     var successMessage = (
       <div>
         <BootstrapModal ref='regModal' title={strings.account_created_text} onClose={this.onClose}>
-          {this.state.successText}
+          {String.format(strings.account_created_message, window.parent.uiContext.vendorName)}
+          <br/><br/>
+          {String.format(strings.account_created_zero_knowledge, window.parent.uiContext.vendorName)}
+          <br/><br/>
+          {String.format(strings.account_created_write_it_down, window.parent.uiContext.vendorName)}
           <br/><br/>
           <span className='input-group-btn'>
             <BootstrapButton onClick={this.onSuccessSetupRecovery}>{strings.setup_recovery_text}</BootstrapButton>
@@ -151,9 +154,7 @@ var RegistrationView = React.createClass({
         LoginView.updateCurrentUser(account.username)
         that.setState({account: account})
         account.pinSetup(that.refs.pin.value, function(err, result) {
-          var msg = String.format(strings.account_created_message, window.parent.uiContext.vendorName)
           that.refs.register.setLoading(false)
-          that.setState({successText: msg})
           that.setState({showSuccess: true})
         })
       }

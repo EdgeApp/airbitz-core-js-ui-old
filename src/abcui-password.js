@@ -60,11 +60,16 @@ var PasswordRequirementsInput = React.createClass({
 		$(this.refs.dropdown).fadeIn()
 	},
 	onBlur () {
-		$(this.refs.dropdown).fadeOut()
+    if (this.meetsRequirements()) {
+      $(this.refs.dropdown).fadeOut()
+    }
 	},
 	onKeyUp () {
 		this.setState({'tests': PasswordRequirementsInput.testPassword(this.refs.input.value)})
 	},
+  meetsRequirements () {
+    return PasswordRequirementsInput.testPassword(this.refs.input.value).reduce((p, c) => p && c.passed, true)
+  },
 	value () {
 		return this.refs.input.value
 	}

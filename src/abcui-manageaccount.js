@@ -84,18 +84,26 @@ var ChangePasswordView = React.createClass({
 				</AbcUiFormView>
 			</BootstrapModal>)
 	},
+	passwordsMatch() {
+		return this.refs.confirmPassword.value() == this.refs.password.value();
+	},
 	comparePasswords() {
 		var confirmPassword = this.refs.confirmPassword
-		if (confirmPassword.value() != this.refs.password.value()) {
-			confirmPassword.setState({'error': 'Password mismatch'})
-		} else {
+		if (this.passwordsMatch()) {
 			confirmPassword.setState({'error': null})
+		} else {
+			confirmPassword.setState({'error': 'Password mismatch'})
 		}
 	},
 	handleSubmit() {
 		var that = this
 		var account = window.parent.account
-		if (account.passwordOk(this.refs.currentPassword.value)) {
+
+		if (!this.refs.password.meetsRequirements()) {
+			this.refs.form.setState({'error': 'Insufficient password'})
+		} else if (!this.passwordsMatch()) {
+			this.refs.form.setState({'error': 'Password mismatch'})
+		} else if (account.passwordOk(this.refs.currentPassword.value)) {
 			this.refs.changeButton.setLoading(true)
 			window.parent.account.passwordSetup(this.refs.password.value(), function(err, result) {
 				if (err) {
