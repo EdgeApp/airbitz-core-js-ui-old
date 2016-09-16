@@ -123,7 +123,7 @@ var AbcPasswordLoginForm = React.createClass({
 		var that = this
 		this.refs.signin.setLoading(true)
 		this.refs.form.setState({'error': null})
-		context.passwordLogin(this.refs.username.getValue(), this.refs.password.value, function(err, result) {
+		context.loginWithPassword(this.refs.username.getValue(), this.refs.password.value, function(err, result) {
 			if (err) {
 				that.refs.form.setState({'error': ABCError(err, strings.invalid_password_text).message})
 			} else {
@@ -179,7 +179,7 @@ var AbcPinLoginForm = React.createClass({
 	handleSubmit() {
 		var that = this
 		this.refs.signin.setLoading(true)
-		context.pinLogin(this.refs.username.getValue(), this.refs.pin.value, function(err, result) {
+		context.loginWithPIN(this.refs.username.getValue(), this.refs.pin.value, function(err, result) {
 			if (err) {
 				that.refs.form.setState({'error': ABCError(err, 'Failed to login with PIN.').message})
 			} else {

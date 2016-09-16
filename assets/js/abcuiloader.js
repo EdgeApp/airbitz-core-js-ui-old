@@ -23838,6 +23838,10 @@ var abcuiloader =
 	  this.repoInfo = login.accountFind(ctx.accountType);
 	  this.loggedIn = true;
 	  this.edgeLogin = false;
+	  this.pinLogin = false;
+	  this.passwordLogin = false;
+	  this.newAccount = false;
+	  this.recoveryLogin = false;
 	  this.username = login.username;
 	}
 
@@ -23963,27 +23967,29 @@ var abcuiloader =
 	      return login.accountCreate(ctx, ctx.accountType, function (err) {
 	        if (err) return callback(err);
 	        loginPin.setup(ctx, login, pin, function (err) {
-	          callback(null, new Account(ctx, login));
+	          var account = new Account(ctx, login);
+	          account.newAccount = true;
+	          callback(null, account);
 	        });
 	      });
 	    }
 
 	    // Otherwise, we have the correct account type, and can simply return:
 	    loginPin.setup(ctx, login, pin, function (err) {
-	      callback(null, new Account(ctx, login));
+	      var account = new Account(ctx, login);
+	      account.newAccount = true;
+	      callback(null, account);
 	    });
 	  });
 	};
 
-	Context.prototype.passwordLogin = function (username, password, callback) {
+	Context.prototype.loginWithPassword = function (username, password, callback) {
 	  var ctx = this;
 	  return loginPassword.login(ctx, username, password, function (err, login) {
-	    if (err) return callback(err);
-	    callback(null, new Account(ctx, login));
+	    var account = new Account(ctx, login);
+	    account.passwordLogin = true;
+	    callback(null, account);
 	  });
-	};
-	Context.prototype.loginWithPassword = function (username, password, otp, opts, callback) {
-	  return loginPassword.login(this, username, password, callback);
 	};
 
 	Context.prototype.pinExists = function (username) {
@@ -23993,15 +23999,14 @@ var abcuiloader =
 	  return loginPin.exists(this, username);
 	};
 
-	Context.prototype.pinLogin = function (username, pin, callback) {
+	Context.prototype.loginWithPIN = function (username, pin, callback) {
 	  var ctx = this;
 	  return loginPin.login(ctx, username, pin, function (err, login) {
 	    if (err) return callback(err);
-	    callback(null, new Account(ctx, login));
+	    var account = new Account(ctx, login);
+	    account.pinLogin = true;
+	    callback(null, account);
 	  });
-	};
-	Context.prototype.loginWithPIN = function (username, pin, opts, callback) {
-	  return loginPin.login(this, username, pin, callback);
 	};
 
 	Context.prototype.getRecovery2Key = function (username, callback) {
@@ -24018,7 +24023,9 @@ var abcuiloader =
 	  var ctx = this;
 	  return loginRecovery2.login(ctx, recovery2Key, username, answers, function (err, login) {
 	    if (err) return callback(err);
-	    callback(null, new Account(ctx, login));
+	    var account = new Account(ctx, login);
+	    account.recoveryLogin = true;
+	    callback(null, account);
 	  });
 	};
 
@@ -34584,7 +34591,7 @@ var abcuiloader =
 			var that = this;
 			this.refs.signin.setLoading(true);
 			this.refs.form.setState({ 'error': null });
-			context.passwordLogin(this.refs.username.getValue(), this.refs.password.value, function (err, result) {
+			context.loginWithPassword(this.refs.username.getValue(), this.refs.password.value, function (err, result) {
 				if (err) {
 					that.refs.form.setState({ 'error': ABCError(err, strings.invalid_password_text).message });
 				} else {
@@ -34671,7 +34678,7 @@ var abcuiloader =
 		handleSubmit: function handleSubmit() {
 			var that = this;
 			this.refs.signin.setLoading(true);
-			context.pinLogin(this.refs.username.getValue(), this.refs.pin.value, function (err, result) {
+			context.loginWithPIN(this.refs.username.getValue(), this.refs.pin.value, function (err, result) {
 				if (err) {
 					that.refs.form.setState({ 'error': ABCError(err, 'Failed to login with PIN.').message });
 				} else {

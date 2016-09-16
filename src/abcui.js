@@ -41,11 +41,12 @@ function InnerAbcUi(args) {
 
 InnerAbcUi.prototype.openLoginWindow = function(callback) {
   var frame = createIFrame(this.bundlePath + '/assets/index.html#/login')
+  var that = this
   window.loginCallback = function(error, account) {
     if (account) {
       window.abcAccount = account
       removeIFrame(frame)
-      if (account.edgeLogin) {
+      if (account.edgeLogin || account.passwordLogin) {
         that.openChangePinEdgeLoginWindow(account, function () {})
       }
       callback(error, account)
