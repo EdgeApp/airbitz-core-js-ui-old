@@ -9,6 +9,7 @@ var ABCError = abc.ABCError
 
 var AbcUiFormView = require('./abcui-formview')
 var LoginWithAirbitz = require('./abcui-loginwithairbitz')
+var classNames = require('classnames');
 
 var strings = require('./abcui-strings')
 var modal = require('./abcui-modal.js')
@@ -25,11 +26,16 @@ var RegistrationView = React.createClass({
   getInitialState() {
     return {
       showSuccess: false,
-      account: null
+      account: null,
+      usernameError: false
     }
   },
   render() {
-    
+
+    var usernameClass = classNames({
+      'form-group': true,
+      'has-error': this.state.usernameError
+    })
     var regForm = (
       <BootstrapModal
         ref='regModal'
@@ -42,7 +48,7 @@ var RegistrationView = React.createClass({
           <LoginWithAirbitz onLogin={this.onLogin} register='true' ref='loginWithAirbitz'/>
           <div className='row'>
             <div className='col-sm-12'>
-              <div className='form-group'>
+              <div className={usernameClass}>
                 <BootstrapInput type='text' ref='username' placeholder='Choose a Username' className='form-control' onBlur={this.blur} onFocus={this.focus} />
               </div>
             </div>
@@ -113,8 +119,10 @@ var RegistrationView = React.createClass({
       that.refs.username.setState({error:null, loading:'Checking availability...'})
       context.usernameAvailable(username, function(err) {
         if (err) {
-          that.refs.username.setState({error:'Username already taken', loading:null})
+          that.setState({usernameError: true})
+          that.refs.username.setState({error:strings.username_already_taken, loading:null})
         } else {
+          that.setState({usernameError: false})
           that.refs.username.setState({error:null, loading:null})
         }
       })

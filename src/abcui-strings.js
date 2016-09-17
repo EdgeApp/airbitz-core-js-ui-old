@@ -42,7 +42,8 @@ let strings = new LocalizedStrings({
     account_created_message: 'Your {0} account has been created.',
     account_created_zero_knowledge: 'Your username and password are known only to you and cannot be reset by {0}.',
     account_created_write_it_down: 'Would you like to setup password recovery questions to reset your account in case of a forgotten password?',
-
+    username_already_taken: 'Username already taken',
+    
     dummy_entry_to_keep_json_happy: ''
 
   }

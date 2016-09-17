@@ -10,6 +10,7 @@
   "dependencies": {
     "bootstrap": "^3.3.7",
     "bootstrap-social": "^5.0.0",
+    "classnames": "^2.2.5",
     "jquery": "^3.1.0",
     "jsbarcode": "^3.3.20"
   },

@@ -7,7 +7,7 @@ var PasswordRuleRow = React.createClass({
 	render () {
 		let imageIcon
 		if (this.props.passed) {
-			imageIcon = (<span className='pull-right glyphicon glyphicon-ok' aria-hidden='true'></span>)
+			imageIcon = (<span className='pull-right glyphicon glyphicon-ok' style={{color: 'green'}} aria-hidden='true'></span>)
 		} else {
 			imageIcon = (<span className='pull-right glyphicon glyphicon-remove' aria-hidden='true'></span>)
 		}
