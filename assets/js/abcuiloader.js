@@ -24076,6 +24076,15 @@ var abcuiloader =
 	var BASE58 = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
 	var base58 = __webpack_require__(45)(BASE58);
 
+	function ABCEdgeLoginRequest(id) {
+	  this.id = id;
+	  this.done_ = false;
+	}
+
+	ABCEdgeLoginRequest.prototype.cancelRequest = function () {
+	  this.done_ = true;
+	};
+
 	/**
 	 * Creates a new login object, and attaches the account repo info to it.
 	 */
@@ -24125,15 +24134,20 @@ var abcuiloader =
 	 * Polls the lobby every second or so,
 	 * looking for a reply to our account request.
 	 */
-	function pollServer(ctx, id, keys, onLogin) {
+	function pollServer(ctx, edgeLogin, keys, onLogin) {
+	  // Don't do anything if the user has cancelled this request:
+	  if (edgeLogin.done_) {
+	    return;
+	  }
+
 	  setTimeout(function () {
-	    ctx.authRequest('GET', '/v2/lobby/' + id, '', function (err, reply) {
+	    ctx.authRequest('GET', '/v2/lobby/' + edgeLogin.id, '', function (err, reply) {
 	      if (err) return onLogin(err);
 
 	      try {
 	        var account = decodeAccountReply(keys, reply);
 	        if (!account) {
-	          return pollServer(ctx, id, keys, onLogin);
+	          return pollServer(ctx, edgeLogin, keys, onLogin);
 	        }
 	        createLogin(ctx, account, onLogin);
 	      } catch (e) {
@@ -24166,12 +24180,12 @@ var abcuiloader =
 	    if (err) return callback(err);
 
 	    try {
-	      var id = reply['id'];
-	      pollServer(ctx, id, keys, opts.onLogin);
+	      var edgeLogin = new ABCEdgeLoginRequest(reply.id);
+	      pollServer(ctx, edgeLogin, keys, opts.onLogin);
 	    } catch (e) {
 	      return callback(e);
 	    }
-	    return callback(null, { 'id': id });
+	    return callback(null, edgeLogin);
 	  });
 	}
 	exports.create = create;
@@ -34520,7 +34534,7 @@ var abcuiloader =
 			return _react2.default.createElement(
 				AbcUiFormView,
 				{ ref: 'form' },
-				_react2.default.createElement(LoginWithAirbitz, { onLogin: this.props.onSuccess }),
+				_react2.default.createElement(LoginWithAirbitz, { onLogin: this.props.onSuccess, ref: 'loginWithAirbitz' }),
 				_react2.default.createElement(
 					'div',
 					{ className: 'row' },
@@ -34587,6 +34601,9 @@ var abcuiloader =
 				)
 			);
 		},
+		onClose: function onClose() {
+			this.refs.loginWithAirbitz.cancelRequest();
+		},
 		handleSubmit: function handleSubmit() {
 			var that = this;
 			this.refs.signin.setLoading(true);
@@ -34595,6 +34612,7 @@ var abcuiloader =
 				if (err) {
 					that.refs.form.setState({ 'error': ABCError(err, strings.invalid_password_text).message });
 				} else {
+					this.refs.loginWithAirbitz.cancelRequest();
 					that.props.onSuccess(result);
 				}
 				that.refs.signin.setLoading(false);
@@ -34609,7 +34627,7 @@ var abcuiloader =
 			return _react2.default.createElement(
 				AbcUiFormView,
 				{ ref: 'form' },
-				_react2.default.createElement(LoginWithAirbitz, { onLogin: this.props.onSuccess }),
+				_react2.default.createElement(LoginWithAirbitz, { onLogin: this.props.onSuccess, ref: 'loginWithAirbitz' }),
 				_react2.default.createElement(
 					'div',
 					{ className: 'row' },
@@ -34671,8 +34689,12 @@ var abcuiloader =
 				)
 			);
 		},
+		onClose: function onClose() {
+			this.refs.loginWithAirbitz.cancelRequest();
+		},
 		handleExit: function handleExit() {
 			this.props.onExit();
+			this.refs.loginWithAirbitz.cancelRequest();
 			return false;
 		},
 		handleSubmit: function handleSubmit() {
@@ -34682,6 +34704,7 @@ var abcuiloader =
 				if (err) {
 					that.refs.form.setState({ 'error': ABCError(err, 'Failed to login with PIN.').message });
 				} else {
+					this.refs.loginWithAirbitz.cancelRequest();
 					that.props.onSuccess(result);
 				}
 				that.refs.signin.setLoading(false);
@@ -34714,14 +34737,14 @@ var abcuiloader =
 				showPinLogin = false;
 			}
 			if (showPinLogin) {
-				block = _react2.default.createElement(AbcPinLoginForm, { ref: 'pinForm',
+				block = _react2.default.createElement(AbcPinLoginForm, { ref: 'pinPasswordForm',
 					username: currentUser,
 					onSuccess: this.handleSuccess,
 					onError: this.handleError,
 					onUserChange: this.handleUserChange,
 					onExit: this.handlePinExit });
 			} else {
-				block = _react2.default.createElement(AbcPasswordLoginForm, { ref: 'passwordForm',
+				block = _react2.default.createElement(AbcPasswordLoginForm, { ref: 'pinPasswordForm',
 					username: currentUser,
 					onSuccess: this.handleSuccess,
 					onError: this.handleError,
@@ -34754,8 +34777,7 @@ var abcuiloader =
 			}
 		},
 		onClose: function onClose() {
-			'use strict';
-
+			if (this.refs.pinPasswordForm) this.refs.pinPasswordForm.onClose();
 			if (window.parent.exitCallback) {
 				window.parent.exitCallback();
 			}
@@ -34791,6 +34813,9 @@ var abcuiloader =
 				barcode: '',
 				showLogin: false
 			};
+		},
+		cancelRequest: function cancelRequest() {
+			if (this.state.edgeLoginRequest) this.state.edgeLoginRequest.cancelRequest();
 		},
 		render: function render() {
 
@@ -34832,6 +34857,7 @@ var abcuiloader =
 			);
 		},
 		componentDidMount: function componentDidMount() {
+			var that = this;
 			context.requestEdgeLogin({ displayName: vendorName, onLogin: this.handleEdgeLogin }, function (error, results) {
 				if (results) {
 					JsBarcode("#barcode", results.id, {
@@ -34842,6 +34868,7 @@ var abcuiloader =
 						fontSize: 36,
 						displayValue: true
 					});
+					that.setState({ edgeLoginRequest: results });
 				} else {
 					// XXX
 				}
@@ -40821,7 +40848,7 @@ var abcuiloader =
 	    'use strict';
 
 	    this.recoveryToken = '';
-	    this.account = window.parent.account;
+	    this.account = window.parent.abcAccount;
 	    this.vendorName = window.parent.uiContext.vendorName;
 	    if (this.account === null || this.account.isLoggedIn() === false) {
 	      console.log('Error: Account not logged in for recovery setup');
@@ -41164,7 +41191,7 @@ var abcuiloader =
 	      _react2.default.createElement(
 	        AbcUiFormView,
 	        { ref: 'form' },
-	        _react2.default.createElement(LoginWithAirbitz, { onLogin: this.onLogin, register: 'true' }),
+	        _react2.default.createElement(LoginWithAirbitz, { onLogin: this.onLogin, register: 'true', ref: 'loginWithAirbitz' }),
 	        _react2.default.createElement(
 	          'div',
 	          { className: 'row' },
@@ -41319,6 +41346,7 @@ var abcuiloader =
 	        that.refs.form.setState({ 'error': ABCError(err, 'Unable to register at this time.').message });
 	      } else {
 	        var account = result;
+	        that.refs.loginWithAirbitz.cancelRequest();
 	        LoginView.updateCurrentUser(account.username);
 	        that.setState({ account: account });
 	        that.setState({ showSuccess: true });
@@ -41338,8 +41366,7 @@ var abcuiloader =
 	    // })
 	  },
 	  onClose: function onClose() {
-	    'use strict';
-
+	    this.refs.loginWithAirbitz.cancelRequest();
 	    if (window.parent.exitCallback) {
 	      window.parent.exitCallback();
 	    }

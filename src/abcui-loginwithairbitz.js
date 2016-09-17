@@ -14,6 +14,10 @@ var LoginWithAirbitz = React.createClass({
 			showLogin: false
 		}
 	},
+	cancelRequest() {
+		if (this.state.edgeLoginRequest)
+			this.state.edgeLoginRequest.cancelRequest()
+	},
 	render () {
 
 		var buttonUrl = 'airbitz-ret://x-callback-uri/edgelogin/[EDGELOGINTOKEN]'
@@ -40,6 +44,7 @@ var LoginWithAirbitz = React.createClass({
 		)
 	},
 	componentDidMount () {
+		var that = this
 		context.requestEdgeLogin({displayName: vendorName, onLogin:this.handleEdgeLogin}, function (error, results) {
 			if (results) {
 				JsBarcode("#barcode", results.id, {
@@ -50,6 +55,7 @@ var LoginWithAirbitz = React.createClass({
 					fontSize: 36,
 					displayValue: true
 				})
+				that.setState({edgeLoginRequest: results})
 			} else {
 				// XXX
 			}

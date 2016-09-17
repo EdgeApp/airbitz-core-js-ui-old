@@ -78,7 +78,7 @@ var SetupRecoveryView = React.createClass({
     'use strict'
 
     this.recoveryToken = ''
-    this.account = window.parent.account
+    this.account = window.parent.abcAccount
     this.vendorName = window.parent.uiContext.vendorName
     if (this.account === null ||
         this.account.isLoggedIn() === false) {

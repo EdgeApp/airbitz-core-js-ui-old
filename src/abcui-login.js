@@ -83,7 +83,7 @@ var AbcPasswordLoginForm = React.createClass({
 	render () {
 		return (
 			<AbcUiFormView ref='form'>
-				<LoginWithAirbitz onLogin={this.props.onSuccess}/>
+				<LoginWithAirbitz onLogin={this.props.onSuccess} ref='loginWithAirbitz'/>
 				<div className='row'>
 					<div className='col-sm-12'>
 						<div className='form-group'>
@@ -119,6 +119,9 @@ var AbcPasswordLoginForm = React.createClass({
 			</AbcUiFormView>
 		)
 	},
+	onClose() {
+		this.refs.loginWithAirbitz.cancelRequest()
+	},
 	handleSubmit() {
 		var that = this
 		this.refs.signin.setLoading(true)
@@ -127,6 +130,7 @@ var AbcPasswordLoginForm = React.createClass({
 			if (err) {
 				that.refs.form.setState({'error': ABCError(err, strings.invalid_password_text).message})
 			} else {
+				this.refs.loginWithAirbitz.cancelRequest()
 				that.props.onSuccess(result)
 			}
 			that.refs.signin.setLoading(false)
@@ -139,7 +143,7 @@ var AbcPinLoginForm = React.createClass({
 	render() {
 		return (
 			<AbcUiFormView ref='form'>
-				<LoginWithAirbitz onLogin={this.props.onSuccess}/>
+				<LoginWithAirbitz onLogin={this.props.onSuccess} ref='loginWithAirbitz'/>
 				<div className='row'>
 					<div className='col-sm-12 text-center'>
 						<div className='form-group center-block' style={{'width': '240px'}}>
@@ -172,8 +176,12 @@ var AbcPinLoginForm = React.createClass({
 			</AbcUiFormView>
 		)
 	},
+	onClose() {
+		this.refs.loginWithAirbitz.cancelRequest()
+	},
 	handleExit() {
 		this.props.onExit()
+		this.refs.loginWithAirbitz.cancelRequest()
 		return false
 	},
 	handleSubmit() {
@@ -183,6 +191,7 @@ var AbcPinLoginForm = React.createClass({
 			if (err) {
 				that.refs.form.setState({'error': ABCError(err, 'Failed to login with PIN.').message})
 			} else {
+				this.refs.loginWithAirbitz.cancelRequest()
 				that.props.onSuccess(result)
 			}
 			that.refs.signin.setLoading(false)
@@ -213,14 +222,14 @@ var LoginView = React.createClass({
 			showPinLogin = false
 		}
 		if (showPinLogin) {
-			block = (<AbcPinLoginForm ref='pinForm'
+			block = (<AbcPinLoginForm ref='pinPasswordForm'
 																username={currentUser}
 																onSuccess={this.handleSuccess}
 																onError={this.handleError}
 																onUserChange={this.handleUserChange}
 																onExit={this.handlePinExit} />)
 		} else {
-			block = (<AbcPasswordLoginForm ref='passwordForm'
+			block = (<AbcPasswordLoginForm ref='pinPasswordForm'
 																		 username={currentUser}
 																		 onSuccess={this.handleSuccess}
 																		 onError={this.handleError}
@@ -253,7 +262,8 @@ var LoginView = React.createClass({
 		}
 	},
 	onClose () {
-		'use strict';
+		if (this.refs.pinPasswordForm)
+			this.refs.pinPasswordForm.onClose()
 		if (window.parent.exitCallback) {
 			window.parent.exitCallback()
 		}

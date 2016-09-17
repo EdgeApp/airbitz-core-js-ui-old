@@ -39,7 +39,7 @@ var RegistrationView = React.createClass({
         onClose={this.onClose}>
 
         <AbcUiFormView ref='form'>
-          <LoginWithAirbitz onLogin={this.onLogin} register="true"/>
+          <LoginWithAirbitz onLogin={this.onLogin} register='true' ref='loginWithAirbitz'/>
           <div className='row'>
             <div className='col-sm-12'>
               <div className='form-group'>
@@ -151,6 +151,7 @@ var RegistrationView = React.createClass({
         that.refs.form.setState({'error': ABCError(err, 'Unable to register at this time.').message})
       } else {
         var account = result
+        that.refs.loginWithAirbitz.cancelRequest()
         LoginView.updateCurrentUser(account.username)
         that.setState({account: account})
         that.setState({showSuccess: true})
@@ -170,7 +171,7 @@ var RegistrationView = React.createClass({
     // })
   },
   onClose () {
-    'use strict';
+    this.refs.loginWithAirbitz.cancelRequest()
     if (window.parent.exitCallback) {
       window.parent.exitCallback()
     }

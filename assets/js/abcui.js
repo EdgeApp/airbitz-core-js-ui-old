@@ -14911,6 +14911,15 @@ var abcui =
 	var BASE58 = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
 	var base58 = __webpack_require__(45)(BASE58);
 
+	function ABCEdgeLoginRequest(id) {
+	  this.id = id;
+	  this.done_ = false;
+	}
+
+	ABCEdgeLoginRequest.prototype.cancelRequest = function () {
+	  this.done_ = true;
+	};
+
 	/**
 	 * Creates a new login object, and attaches the account repo info to it.
 	 */
@@ -14960,15 +14969,20 @@ var abcui =
 	 * Polls the lobby every second or so,
 	 * looking for a reply to our account request.
 	 */
-	function pollServer(ctx, id, keys, onLogin) {
+	function pollServer(ctx, edgeLogin, keys, onLogin) {
+	  // Don't do anything if the user has cancelled this request:
+	  if (edgeLogin.done_) {
+	    return;
+	  }
+
 	  setTimeout(function () {
-	    ctx.authRequest('GET', '/v2/lobby/' + id, '', function (err, reply) {
+	    ctx.authRequest('GET', '/v2/lobby/' + edgeLogin.id, '', function (err, reply) {
 	      if (err) return onLogin(err);
 
 	      try {
 	        var account = decodeAccountReply(keys, reply);
 	        if (!account) {
-	          return pollServer(ctx, id, keys, onLogin);
+	          return pollServer(ctx, edgeLogin, keys, onLogin);
 	        }
 	        createLogin(ctx, account, onLogin);
 	      } catch (e) {
@@ -15001,12 +15015,12 @@ var abcui =
 	    if (err) return callback(err);
 
 	    try {
-	      var id = reply['id'];
-	      pollServer(ctx, id, keys, opts.onLogin);
+	      var edgeLogin = new ABCEdgeLoginRequest(reply.id);
+	      pollServer(ctx, edgeLogin, keys, opts.onLogin);
 	    } catch (e) {
 	      return callback(e);
 	    }
-	    return callback(null, { 'id': id });
+	    return callback(null, edgeLogin);
 	  });
 	}
 	exports.create = create;
