@@ -23783,11 +23783,19 @@ var abcuiloader =
 	  if (code === null) {
 	    return null;
 	  } else if (typeof code.message === 'string') {
-	    json = JSON.parse(code.message);
-	    conditionCode = json.status_code;
-	    msg = json.message;
-	  } else {
+	    try {
+	      json = JSON.parse(code.message);
+	      conditionCode = json.status_code;
+	      msg = json.message;
+	    } catch (e) {
+	      conditionCode = 1;
+	      msg = message;
+	    }
+	  } else if (typeof code === 'number') {
 	    conditionCode = code;
+	  } else {
+	    conditionCode = 1;
+	    msg = message;
 	  }
 
 	  if (msg === null) {
@@ -40646,8 +40654,8 @@ var abcuiloader =
 				BootstrapModal,
 				{ ref: 'modal', title: this.props.route.title, onClose: this.onClose },
 				_react2.default.createElement(
-					'form',
-					null,
+					AbcUiFormView,
+					{ ref: 'form' },
 					_react2.default.createElement(
 						'div',
 						{ className: 'row' },

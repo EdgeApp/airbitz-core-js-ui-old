@@ -132,7 +132,7 @@ var ChangePinView = React.createClass({
 	render() {
 		return (
 			<BootstrapModal ref='modal' title={this.props.route.title} onClose={this.onClose}>
-				<form>
+				<AbcUiFormView ref='form'>
 					<div className='row'>
 						{!this.props.route.noRequirePassword ? (
 						<div className='col-sm-12'>
@@ -158,7 +158,7 @@ var ChangePinView = React.createClass({
 							</div>
 						</div>
 					</div>
-				</form>
+				</AbcUiFormView>
 			</BootstrapModal>)
 	},
 	handleSubmit() {
