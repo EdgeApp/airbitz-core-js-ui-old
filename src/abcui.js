@@ -26,14 +26,14 @@ function InnerAbcUi(args) {
   if (!apiKey) {
     throw Error('Missing api key')
   }
-  window.context = this.abcContext =
+  window.abcContext = this.abcContext =
     abc.makeABCContext({'apiKey': args.apiKey, 'accountType': args.accountType})
   if (args['bundlePath']) {
     this.bundlePath = args.bundlePath
   } else {
     this.bundlePath = '/abcui'
   }
-  window.uiContext = {
+  window.abcuiContext = {
     'vendorName': args.vendorName,
     'bundlePath': this.bundlePath
   }

@@ -20,7 +20,7 @@ var BootstrapInput = modal.BootstrapInput
 var LoginView = require('./abcui-login')
 var PasswordRequirementsInput = require('./abcui-password')
 
-var context = window.parent.context
+var context = window.parent.abcContext
 
 var RegistrationView = React.createClass({
   getInitialState() {
@@ -87,11 +87,11 @@ var RegistrationView = React.createClass({
     var successMessage = (
       <div>
         <BootstrapModal ref='regModal' title={strings.account_created_text} onClose={this.onClose}>
-          {String.format(strings.account_created_message, window.parent.uiContext.vendorName)}
+          {String.format(strings.account_created_message, window.parent.abcuiContext.vendorName)}
           <br/><br/>
-          {String.format(strings.account_created_zero_knowledge, window.parent.uiContext.vendorName)}
+          {String.format(strings.account_created_zero_knowledge, window.parent.abcuiContext.vendorName)}
           <br/><br/>
-          {String.format(strings.account_created_write_it_down, window.parent.uiContext.vendorName)}
+          {String.format(strings.account_created_write_it_down, window.parent.abcuiContext.vendorName)}
           <br/><br/>
           <span className='input-group-btn'>
             <BootstrapButton onClick={this.onSuccessSetupRecovery}>{strings.setup_recovery_text}</BootstrapButton>

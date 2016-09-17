@@ -79,7 +79,7 @@ var SetupRecoveryView = React.createClass({
 
     this.recoveryToken = ''
     this.account = window.parent.abcAccount
-    this.vendorName = window.parent.uiContext.vendorName
+    this.vendorName = window.parent.abcuiContext.vendorName
     if (this.account === null ||
         this.account.isLoggedIn() === false) {
       console.log('Error: Account not logged in for recovery setup')

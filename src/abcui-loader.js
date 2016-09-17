@@ -15,7 +15,7 @@ var ManageAccountView = manageAccount.ManageAccountView
 var ChangePinView = manageAccount.ChangePinView
 var ChangePasswordView = manageAccount.ChangePasswordView
 
-var context = window.parent.context
+var context = window.parent.abcContext
 
 
 var MenuItem = React.createClass({

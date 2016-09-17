@@ -23928,7 +23928,7 @@ var abcuiloader =
 	        case 0:
 	          return callback(null, reply.results);
 	        default:
-	          return callback(Error(status + ' ' + body));
+	          return callback(Error(body));
 	      }
 	    });
 	  };
@@ -23984,9 +23984,10 @@ var abcuiloader =
 	  });
 	};
 
-	Context.prototype.loginWithPassword = function (username, password, callback) {
+	Context.prototype.loginWithPassword = function (username, password, otp, opts, callback) {
 	  var ctx = this;
 	  return loginPassword.login(ctx, username, password, function (err, login) {
+	    if (err) return callback(err);
 	    var account = new Account(ctx, login);
 	    account.passwordLogin = true;
 	    callback(null, account);
@@ -34448,7 +34449,7 @@ var abcuiloader =
 	var BootstrapButton = modal.BootstrapButton;
 	var BootstrapModal = modal.BootstrapModal;
 
-	var context = window.parent.context;
+	var context = window.parent.abcContext;
 
 	var AbcUserList = _react2.default.createClass({
 		displayName: 'AbcUserList',
@@ -34609,11 +34610,11 @@ var abcuiloader =
 			var that = this;
 			this.refs.signin.setLoading(true);
 			this.refs.form.setState({ 'error': null });
-			context.loginWithPassword(this.refs.username.getValue(), this.refs.password.value, function (err, result) {
+			context.loginWithPassword(this.refs.username.getValue(), this.refs.password.value, null, null, function (err, result) {
 				if (err) {
 					that.refs.form.setState({ 'error': ABCError(err, strings.invalid_password_text).message });
 				} else {
-					this.refs.loginWithAirbitz.cancelRequest();
+					that.refs.loginWithAirbitz.cancelRequest();
 					that.props.onSuccess(result);
 				}
 				that.refs.signin.setLoading(false);
@@ -34705,7 +34706,7 @@ var abcuiloader =
 				if (err) {
 					that.refs.form.setState({ 'error': ABCError(err, 'Failed to login with PIN.').message });
 				} else {
-					this.refs.loginWithAirbitz.cancelRequest();
+					that.refs.loginWithAirbitz.cancelRequest();
 					that.props.onSuccess(result);
 				}
 				that.refs.signin.setLoading(false);
@@ -34804,8 +34805,8 @@ var abcuiloader =
 	var JsBarcode = __webpack_require__(274);
 	var strings = __webpack_require__(46);
 
-	var context = window.parent.context;
-	var vendorName = window.parent.uiContext.vendorName;
+	var context = window.parent.abcContext;
+	var vendorName = window.parent.abcuiContext.vendorName;
 
 	var LoginWithAirbitz = _react2.default.createClass({
 		displayName: 'LoginWithAirbitz',
@@ -34912,9 +34913,9 @@ var abcuiloader =
 		render: function render() {
 			var imageIcon = void 0;
 			if (this.props.passed) {
-				imageIcon = _react2.default.createElement('span', { className: 'pull-right glyphicon glyphicon-ok has-success', style: { color: 'green' }, 'aria-hidden': 'true' });
+				imageIcon = _react2.default.createElement('span', { className: 'pull-right glyphicon glyphicon-ok', style: { color: 'green' }, 'aria-hidden': 'true' });
 			} else {
-				imageIcon = _react2.default.createElement('span', { className: 'pull-right glyphicon glyphicon-remove has-error', 'aria-hidden': 'true' });
+				imageIcon = _react2.default.createElement('span', { className: 'pull-right glyphicon glyphicon-remove', 'aria-hidden': 'true' });
 			}
 			return _react2.default.createElement(
 				'li',
@@ -40850,7 +40851,7 @@ var abcuiloader =
 
 	    this.recoveryToken = '';
 	    this.account = window.parent.abcAccount;
-	    this.vendorName = window.parent.uiContext.vendorName;
+	    this.vendorName = window.parent.abcuiContext.vendorName;
 	    if (this.account === null || this.account.isLoggedIn() === false) {
 	      console.log('Error: Account not logged in for recovery setup');
 	      return;
@@ -41170,7 +41171,7 @@ var abcuiloader =
 	var LoginView = __webpack_require__(197);
 	var PasswordRequirementsInput = __webpack_require__(199);
 
-	var context = window.parent.context;
+	var context = window.parent.abcContext;
 
 	var RegistrationView = _react2.default.createClass({
 	  displayName: 'RegistrationView',
@@ -41269,13 +41270,13 @@ var abcuiloader =
 	      _react2.default.createElement(
 	        BootstrapModal,
 	        { ref: 'regModal', title: strings.account_created_text, onClose: this.onClose },
-	        String.format(strings.account_created_message, window.parent.uiContext.vendorName),
+	        String.format(strings.account_created_message, window.parent.abcuiContext.vendorName),
 	        _react2.default.createElement('br', null),
 	        _react2.default.createElement('br', null),
-	        String.format(strings.account_created_zero_knowledge, window.parent.uiContext.vendorName),
+	        String.format(strings.account_created_zero_knowledge, window.parent.abcuiContext.vendorName),
 	        _react2.default.createElement('br', null),
 	        _react2.default.createElement('br', null),
-	        String.format(strings.account_created_write_it_down, window.parent.uiContext.vendorName),
+	        String.format(strings.account_created_write_it_down, window.parent.abcuiContext.vendorName),
 	        _react2.default.createElement('br', null),
 	        _react2.default.createElement('br', null),
 	        _react2.default.createElement(
@@ -41475,7 +41476,7 @@ var abcuiloader =
 	var ChangePinView = manageAccount.ChangePinView;
 	var ChangePasswordView = manageAccount.ChangePasswordView;
 
-	var context = window.parent.context;
+	var context = window.parent.abcContext;
 
 	var MenuItem = _react2.default.createClass({
 	  displayName: 'MenuItem',

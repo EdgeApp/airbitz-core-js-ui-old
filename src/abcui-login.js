@@ -14,7 +14,7 @@ var modal = require('./abcui-modal.js')
 var BootstrapButton = modal.BootstrapButton
 var BootstrapModal = modal.BootstrapModal
 
-var context = window.parent.context
+var context = window.parent.abcContext
 
 var AbcUserList = React.createClass({
 	getInitialState () {

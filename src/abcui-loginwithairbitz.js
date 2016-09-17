@@ -4,8 +4,8 @@ import { render } from 'react-dom'
 var JsBarcode = require('jsbarcode');
 var strings = require('./abcui-strings')
 
-var context = window.parent.context
-var vendorName = window.parent.uiContext.vendorName
+var context = window.parent.abcContext
+var vendorName = window.parent.abcuiContext.vendorName
 
 var LoginWithAirbitz = React.createClass({
 	getInitialState () {

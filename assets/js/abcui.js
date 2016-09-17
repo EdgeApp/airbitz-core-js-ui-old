@@ -14762,7 +14762,7 @@ var abcui =
 	        case 0:
 	          return callback(null, reply.results);
 	        default:
-	          return callback(Error(status + ' ' + body));
+	          return callback(Error(body));
 	      }
 	    });
 	  };
@@ -14818,9 +14818,10 @@ var abcui =
 	  });
 	};
 
-	Context.prototype.loginWithPassword = function (username, password, callback) {
+	Context.prototype.loginWithPassword = function (username, password, otp, opts, callback) {
 	  var ctx = this;
 	  return loginPassword.login(ctx, username, password, function (err, login) {
+	    if (err) return callback(err);
 	    var account = new Account(ctx, login);
 	    account.passwordLogin = true;
 	    callback(null, account);
@@ -25338,13 +25339,13 @@ var abcui =
 	  if (!apiKey) {
 	    throw Error('Missing api key');
 	  }
-	  window.context = this.abcContext = abc.makeABCContext({ 'apiKey': args.apiKey, 'accountType': args.accountType });
+	  window.abcContext = this.abcContext = abc.makeABCContext({ 'apiKey': args.apiKey, 'accountType': args.accountType });
 	  if (args['bundlePath']) {
 	    this.bundlePath = args.bundlePath;
 	  } else {
 	    this.bundlePath = '/abcui';
 	  }
-	  window.uiContext = {
+	  window.abcuiContext = {
 	    'vendorName': args.vendorName,
 	    'bundlePath': this.bundlePath
 	  };
