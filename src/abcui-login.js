@@ -130,7 +130,7 @@ var AbcPasswordLoginForm = React.createClass({
 			if (err) {
 				that.refs.form.setState({'error': ABCError(err, strings.invalid_password_text).message})
 			} else {
-				this.refs.loginWithAirbitz.cancelRequest()
+				that.refs.loginWithAirbitz.cancelRequest()
 				that.props.onSuccess(result)
 			}
 			that.refs.signin.setLoading(false)
@@ -191,7 +191,7 @@ var AbcPinLoginForm = React.createClass({
 			if (err) {
 				that.refs.form.setState({'error': ABCError(err, 'Failed to login with PIN.').message})
 			} else {
-				this.refs.loginWithAirbitz.cancelRequest()
+				that.refs.loginWithAirbitz.cancelRequest()
 				that.props.onSuccess(result)
 			}
 			that.refs.signin.setLoading(false)
