@@ -33,9 +33,14 @@ var BootstrapInput = React.createClass({
     }
     return (
       <div className='{classes}'>
-        <input ref='input' {...this.props} />
+        <input ref='input' onKeyPress={this.onKeyPress} {...this.props} />
         {subView}
       </div>)
+  },
+  onKeyPress (e) {
+    if (this.props.onKeyPress) {
+      this.props.onKeyPress(e)
+    }
   },
   value () {
     return this.refs.input.value

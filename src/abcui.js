@@ -42,12 +42,15 @@ function InnerAbcUi(args) {
 InnerAbcUi.prototype.openLoginWindow = function(callback) {
   var frame = createIFrame(this.bundlePath + '/assets/index.html#/login')
   var that = this
-  window.loginCallback = function(error, account) {
+  window.loginCallback = function(error, account, opts) {
     if (account) {
       window.abcAccount = account
       removeIFrame(frame)
-      if (account.edgeLogin || account.passwordLogin) {
-        that.openChangePinEdgeLoginWindow(account, function () {})
+      if (opts && opts.setupRecovery) {
+        opts.noRequirePassword = true
+        that.openSetupRecoveryWindow(account, opts, function () {})
+      } else if (account.edgeLogin || account.passwordLogin) {
+        that.openChangePinEdgeLoginWindow(account, opts, function () {})
       }
       callback(error, account)
     }
@@ -65,8 +68,12 @@ InnerAbcUi.prototype.openRecoveryWindow = function(callback) {
   var frame = createIFrame(this.bundlePath + '/assets/index.html#/recovery')
 }
 
-InnerAbcUi.prototype.openSetupRecoveryWindow = function(account, callback) {
-  var frame = createIFrame(this.bundlePath + '/assets/index.html#/account/setuprecovery')
+InnerAbcUi.prototype.openSetupRecoveryWindow = function(account, opts, callback) {
+  if (opts && opts.noRequirePassword) {
+    var frame = createIFrame(this.bundlePath + '/assets/index.html#/account/setuprecovery-nopassword')
+  } else {
+    var frame = createIFrame(this.bundlePath + '/assets/index.html#/account/setuprecovery')
+  }
   window.exitCallback = function() {
     removeIFrame(frame)
   }
@@ -74,27 +81,6 @@ InnerAbcUi.prototype.openSetupRecoveryWindow = function(account, callback) {
 
 InnerAbcUi.prototype.openChangePinEdgeLoginWindow = function(account, callback) {
   var frame = createIFrame(this.bundlePath + '/assets/index.html#/account/changepin-edge-login')
-  window.exitCallback = function() {
-    removeIFrame(frame)
-  }
-}
-
-InnerAbcUi.prototype.openRegisterWindow = function(callback) {
-  var frame = createIFrame(this.bundlePath + '/assets/index.html#/register')
-  var that = this
-  window.registrationCallback = function(result, account, opts) {
-    if (account) {
-      window.abcAccount = account
-      removeIFrame(frame)
-      if (opts && opts.setupRecovery) {
-        that.openSetupRecoveryWindow(account, function () {})
-      } else if (account.edgeLogin) {
-        that.openChangePinEdgeLoginWindow(account, function () {})
-      }
-      callback(null, account)
-    }
-  }
-
   window.exitCallback = function() {
     removeIFrame(frame)
   }

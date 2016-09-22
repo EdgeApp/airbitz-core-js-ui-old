@@ -138,7 +138,7 @@ var ChangePinView = React.createClass({
 						<div className='col-sm-12'>
 							<div className='form-group'>
 								<div className='input-group'>
-									<input type='password' ref='currentPassword' placeholder='Current Password' className='form-control' />
+									<input type='password' ref='currentPassword' onKeyPress={this.handlePasswordKeyPress} placeholder='Current Password' className='form-control' />
 								</div>
 							</div>
 						</div>
@@ -146,7 +146,7 @@ var ChangePinView = React.createClass({
 						<div className='col-sm-12'>
 							<div className='form-group'>
 								<div className='input-group'>
-									<input type='password' ref='pin' placeholder='New PIN' className='form-control' maxLength='4' />
+									<input type='password' ref='pin' onKeyPress={this.handlePinKeyPress} placeholder='New PIN' className='form-control' maxLength='4' />
 								</div>
 							</div>
 						</div>
@@ -160,6 +160,16 @@ var ChangePinView = React.createClass({
 					</div>
 				</AbcUiFormView>
 			</BootstrapModal>)
+	},
+	handlePasswordKeyPress(e) {
+		if (e.key === 'Enter') {
+			this.refs.pin.getInputDOMNode().focus()
+		}
+	},
+	handlePinKeyPress(e) {
+		if (e.key === 'Enter') {
+			this.handleSubmit()
+		}
 	},
 	handleSubmit() {
 		var that = this

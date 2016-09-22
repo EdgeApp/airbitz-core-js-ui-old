@@ -46,6 +46,7 @@ var PasswordRequirementsInput = React.createClass({
 					{...this.props}
 							 onFocus={this.onFocus}
 							 onBlur={this.onBlur}
+							 onKeyPress={this.onKeyPress}
 							 onKeyUp={this.onKeyUp} />
           <span className='help-block'>
             <ul ref='dropdown' className='list-unstyled'>{
@@ -63,6 +64,11 @@ var PasswordRequirementsInput = React.createClass({
     if (this.meetsRequirements()) {
       $(this.refs.dropdown).fadeOut()
     }
+	},
+	onKeyPress (e) {
+		if (this.props.onKeyPress) {
+			this.props.onKeyPress(e)
+		}
 	},
 	onKeyUp () {
 		this.setState({'tests': PasswordRequirementsInput.testPassword(this.refs.input.value)})

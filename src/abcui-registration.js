@@ -2,6 +2,7 @@ import React from 'react'
 import { render } from 'react-dom'
 import abc from 'airbitz-core-js'
 import { Link, Router } from 'react-router'
+var ReactDOM = require('react-dom');
 
 
 // var abcc = abc.ABCConditionCode
@@ -49,24 +50,24 @@ var RegistrationView = React.createClass({
           <div className='row'>
             <div className='col-sm-12'>
               <div className={usernameClass}>
-                <BootstrapInput type='text' ref='username' placeholder='Choose a Username' className='form-control' onBlur={this.blur} onFocus={this.focus} />
+                <BootstrapInput type='text' ref='username' onKeyPress={this.handleKeypressUsername} placeholder='Choose a Username' className='form-control' onBlur={this.blur} onFocus={this.focus} />
               </div>
             </div>
             <div className='col-sm-12'>
               <div className='form-group'>
-                <PasswordRequirementsInput ref='password' placeholder='Choose a Password' className='form-control' />
+                <PasswordRequirementsInput ref='password' onKeyPress={this.handleKeypressPassword} placeholder='Choose a Password' className='form-control' />
               </div>
             </div>
             <div className='col-sm-12'>
               <div className='form-group'>
-                <PasswordRequirementsInput ref='password_repeat' placeholder='Repeat Password' className='form-control' />
+                <PasswordRequirementsInput ref='password_repeat' onKeyPress={this.handleKeypressPassword2} placeholder='Repeat Password' className='form-control' />
               </div>
             </div>
 
             <div className='col-sm-12'>
               <div className='form-group'>
                 <div className='input-group'>
-                  <input type='password' ref='pin' maxLength='4' placeholder='Choose a 4 Digit PIN' className='form-control' />
+                  <input type='password' ref='pin' onKeyPress={this.handleKeypressPin} maxLength='4' placeholder='Choose a 4 Digit PIN' className='form-control' />
                 </div>
               </div>
             </div>
@@ -128,6 +129,26 @@ var RegistrationView = React.createClass({
       })
     } else {
       that.refs.username.setState({error: null})
+    }
+  },
+  handleKeypressUsername (e) {
+    if (e.key === 'Enter') {
+      this.refs.password.setFocus()
+    }
+  },
+  handleKeypressPassword (e) {
+    if (e.key === 'Enter') {
+      this.refs.password_repeat.setFocus()
+    }
+  },
+  handleKeypressPassword2 (e) {
+    if (e.key === 'Enter') {
+      ReactDOM.findDOMNode(this.refs.pin).focus();
+    }
+  },
+  handleKeypressPin (e) {
+    if (e.key === 'Enter') {
+      this.handleSubmit()
     }
   },
   handleSubmit() {

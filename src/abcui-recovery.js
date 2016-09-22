@@ -109,6 +109,7 @@ var SetupRecoveryView = React.createClass({
                               questions={questions}
                               answers={answers}
                               questionChoices={questionChoices}
+                              requirePassword={!this.props.route.noRequirePassword}
                               callback={this.callback}/>
             </AbcUiFormView>
           </BootstrapModal>
@@ -170,12 +171,12 @@ var SetupRecoveryView = React.createClass({
     'use strict';
     this.setState({showQAModal: show})
   },
-  callback(password, questions, answers)
+  callback(questions, answers, password)
   {
     'use strict'
-    console.log(password)
     console.log(questions)
     console.log(answers)
+    console.log(password)
 
     if (questions[0] === strings.please_select_a_question ||
       questions[1] === strings.please_select_a_question) {
@@ -188,36 +189,34 @@ var SetupRecoveryView = React.createClass({
       return
     }
 
-    if (password != null)
-    {
-      var passwdOk = this.account.checkPassword(password)
-      // var passwdOk = true;
 
-      if (!passwdOk) {
+    if (!this.props.route.noRequirePassword) {
+      if (!password) {
         this.refs.form.setState({'error': ABCError(1, strings.incorrect_password_text).message})
         return
-      } else {
-        console.log('Yay. good password')
-
-        window.that = this
-        this.account.setupRecovery2Questions(questions, answers, function (error, recoveryToken) {
-
-          // ABC is erroring for some reason. Fake the recovery token for now
-
-          if (error) {
-            this.refs.form.setState({'error': ABCError(error, ).message})
-          } else
-          {
-            var that = window.that
-            // that.recoveryToken = recoveryToken
-            that.setState({recoveryToken: recoveryToken})
-            // Open another modal
-            that.showQA(true)
-            that.showEmail(true)
-          }
-        })
       }
+
+      if (!this.account.checkPassword(password)) {
+        this.refs.form.setState({'error': ABCError(1, strings.incorrect_password_text).message})
+        return
+      }
+      console.log('Yay. good password')
     }
+
+    window.that = this
+    this.account.setupRecovery2Questions(questions, answers, function (error, recoveryToken) {
+      if (error) {
+        this.refs.form.setState({'error': ABCError(error, ).message})
+      } else
+      {
+        var that = window.that
+        // that.recoveryToken = recoveryToken
+        that.setState({recoveryToken: recoveryToken})
+        // Open another modal
+        that.showQA(true)
+        that.showEmail(true)
+      }
+    })
   },
   callBackGmail () {
     var url = 'https://mail.google.com/mail/?view=cm&fs=1&to={0}&su={1}&body={2}'
@@ -306,12 +305,15 @@ var RecoveryQAView = React.createClass({
               answer={this.props.answers[1]}
               setup='1'
               questionChoices={this.props.questionChoices}/>
-            <div className='col-sm-12'>
-              <div className='form-group'>
-                <label>Current password</label>
-                <input type='password' ref='currentPassword' placeholder={strings.current_password_text} className='form-control' />
+            {this.props.requirePassword ?
+            (
+              <div className='col-sm-12'>
+                <div className='form-group'>
+                  <label>Current password</label>
+                  <input type='password' ref='currentPassword' placeholder={strings.current_password_text} className='form-control' />
+                </div>
               </div>
-            </div>
+            ) : null}
             <div className='col-sm-12'>
               <div className='form-group'>
                 <span className='input-group-btn'>
@@ -330,9 +332,12 @@ var RecoveryQAView = React.createClass({
     questions[1] = this.refs.qa2.getValue().question
     answers[0] = this.refs.qa1.getValue().answer
     answers[1] = this.refs.qa2.getValue().answer
-    password = this.refs.currentPassword.value
-
-    this.props.callback(this.refs.currentPassword.value, questions, answers)
+    if (this.props.requirePassword) {
+      password = this.refs.currentPassword.value
+      this.props.callback(questions, answers, this.refs.currentPassword.value)
+    } else {
+      this.props.callback(questions, answers)
+    }
   },
 })
 

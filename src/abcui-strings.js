@@ -19,6 +19,7 @@ let strings = new LocalizedStrings({
     password_text: 'Password',
     pin_text: 'PIN',
     sign_in_text: 'Sign In',
+    sign_up_text: 'Sign Up',
     exit_pin_login_text: 'Exit PIN Login',
     incorrect_password_text: 'Incorrect Password',
     save_recovery_token_popup:  'Save Recovery Token',
