@@ -29,15 +29,7 @@ Initialize the library
                                      'accountType': 'account:repo:com.mydomain.myapp',
                                      'bundlePath': '/path-to-abcui/'});
 
-Launch the registration UI which let's the user create a new account.
-
-    _abcUi.openRegisterWindow(function(error, account) {
-      _account = account;
-    });
-
-![Register UI](https://airbitz.co/go/wp-content/uploads/2016/08/Screen-Shot-2016-08-26-at-12.49.27-PM.png)
-
-Create an overlay popup where a user can login to a previously created account via password or PIN.
+Create an overlay popup where a user can register a new account or login to a previously created account via password or PIN.
 
     _abcUi.openLoginWindow(function(error, account) {
       _account = account;
@@ -56,7 +48,7 @@ Launch an account management window for changing password, PIN, and recovery que
 
 Get a rootkey that can be used as raw entropy for a cryptocurrency master key
 
-    _account.rootKey.toString('base64')
+	_account.repoInfo.dataKey.toString('base64')
 
 Logoff a user
 
@@ -68,4 +60,4 @@ See a sample implementation at [airbitz-core-js-sample](https://github.com/Airbi
 
 # Detailed Docs
 
-https://developer.airbitz.co/javascript
+https://developer.airbitz.co/javascript/#airbitz-account-management-ui
