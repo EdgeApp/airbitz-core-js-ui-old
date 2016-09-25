@@ -6056,6 +6056,191 @@ var abcuiloader =
 /* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
+	var require;/* WEBPACK VAR INJECTION */(function(Buffer) {'use strict';
+
+	var scryptsy = __webpack_require__(186);
+	var asmcrypto = __webpack_require__(151);
+
+	var userIdSnrp = {
+	  'salt_hex': 'b5865ffb9fa7b3bfe4b2384d47ce831ee22a4a9d5c34c7ef7d21467cc758f81b',
+	  'n': 16384,
+	  'r': 1,
+	  'p': 1
+	};
+	exports.userIdSnrp = userIdSnrp;
+	exports.passwordAuthSnrp = userIdSnrp;
+
+	var timedSnrp = null;
+
+	/**
+	 * @param data A `Buffer` or byte-array object.
+	 * @param snrp A JSON SNRP structure.
+	 * @return A Buffer with the hash.
+	 */
+	function scrypt(data, snrp) {
+	  var dklen = 32;
+	  var salt = new Buffer(snrp.salt_hex, 'hex');
+	  return scryptsy(data, salt, snrp.n, snrp.r, snrp.p, dklen);
+	}
+	exports.scrypt = scrypt;
+
+	function timeSnrp(snrp) {
+	  var startTime = 0;
+	  var endTime = 0;
+	  var useDate = false;
+	  try {
+	    startTime = window.performance.now();
+	  } catch (e) {
+	    startTime = Date.now();
+	    useDate = true;
+	  }
+
+	  scrypt('random string', snrp);
+
+	  if (!useDate) {
+	    endTime = window.performance.now();
+	  } else {
+	    endTime = Date.now();
+	  }
+
+	  var timeElapsed = endTime - startTime;
+	  return timeElapsed;
+	}
+
+	function calcSnrpOnTimeElapsed(timeElapsed, targetHashTimeMilliseconds) {
+	  var nUnPowered = 0;
+	  var estTargetTimeElapsed = timeElapsed;
+	  var snrp = {
+	    'salt_hex': random(32).toString('hex'),
+	    n: 16384, r: 1, p: 1 };
+	  var r = targetHashTimeMilliseconds / estTargetTimeElapsed;
+	  if (r > 8) {
+	    snrp.r = 8;
+
+	    estTargetTimeElapsed *= 8;
+	    var n = targetHashTimeMilliseconds / estTargetTimeElapsed;
+
+	    if (n > 4) {
+	      nUnPowered = 4;
+
+	      estTargetTimeElapsed *= 4;
+	      var p = targetHashTimeMilliseconds / estTargetTimeElapsed;
+	      snrp.p = Math.floor(p);
+	    } else {
+	      nUnPowered = Math.floor(n);
+	    }
+	  } else {
+	    snrp.r = r > 4 ? Math.floor(r) : 4;
+	  }
+	  nUnPowered = nUnPowered >= 1 ? nUnPowered : 1;
+	  snrp.n = Math.pow(2, nUnPowered + 13);
+
+	  return snrp;
+	}
+
+	function makeSnrp() {
+	  if (null == timedSnrp) {
+	    var snrp = {
+	      'salt_hex': random(32).toString('hex'),
+	      'n': 16384,
+	      'r': 1,
+	      'p': 1
+	    };
+
+	    var timeElapsed = timeSnrp(snrp);
+
+	    // Shoot for a 2s hash time
+	    snrp = calcSnrpOnTimeElapsed(timeElapsed, 2000);
+
+	    // Actually time the new snrp
+	    var newTimeElapsed = timeSnrp(snrp);
+
+	    timedSnrp = snrp;
+	    console.log('timedSnrp: ' + snrp.n + ' ' + snrp.r + ' ' + snrp.p + ' oldTime:' + timeElapsed + ' newTime:' + newTimeElapsed);
+	  }
+	  return timedSnrp;
+	}
+	exports.makeSnrp = makeSnrp;
+
+	function random(bytes) {
+	  bytes |= 0;
+	  try {
+	    var out = new Buffer(bytes);
+	    window.crypto.getRandomValues(out);
+	  } catch (e) {
+	    // Alternative using node.js crypto:
+	    var hiddenRequire = require;
+	    return __webpack_require__(52).randomBytes(bytes);
+	  }
+	  return out;
+	}
+	exports.random = random;
+
+	/**
+	 * @param box an Airbitz JSON encryption box
+	 * @param key a key, as an ArrayBuffer
+	 */
+	function decrypt(box, key) {
+	  if (box['encryptionType'] !== 0) {
+	    throw new Error('Unknown encryption type');
+	  }
+
+	  var iv = new Buffer(box['iv_hex'], 'hex');
+
+	  // Step 1: Decrypt
+	  var cyphertext = new Buffer(box['data_base64'], 'base64');
+	  var data = new Buffer(asmcrypto.AES_CBC.decrypt(cyphertext, key, true, iv));
+
+	  // Alternative using node.js crypto:
+	  // var decipher = crypto.createDecipheriv('AES-256-CBC', key, iv);
+	  // var x = decipher.update(box.data_base64, 'base64', 'hex')
+	  // x += decipher.final('hex')
+	  // var data = new Buffer(x, 'hex')
+
+	  // Step 2: Skip initial padding, then read in size.
+	  var preSize = data.readUInt8(0);
+	  var dataSize = data.readUInt32BE(preSize + 1);
+
+	  // Step 3: read sha256 and verify?
+
+	  var dataStart = preSize + 1 + 4;
+	  return data.slice(dataStart, dataStart + dataSize);
+	}
+	exports.decrypt = decrypt;
+
+	/**
+	 * @param data an ArrayBuffer of data
+	 * @param key a key, as an ArrayBuffer
+	 */
+	function encrypt(data, key) {
+	  var out = { 'encryptionType': 0 };
+
+	  var iv = random(16);
+	  out['iv_hex'] = iv.toString('hex');
+
+	  var plaintext = new Buffer(data.length + 6 + 32);
+	  plaintext.writeUInt8(0, 0);
+	  plaintext.writeUInt32BE(data.length, 1);
+	  data.copy(plaintext, 5);
+	  plaintext.writeUInt8(0, data.length + 5);
+
+	  var hashData = plaintext.slice(0, data.length + 6);
+	  var hash = new Buffer(asmcrypto.SHA256.bytes(hashData));
+	  hash.copy(plaintext, data.length + 6);
+
+	  out['data_base64'] = new Buffer(asmcrypto.AES_CBC.encrypt(plaintext, key, true, iv)).toString('base64');
+
+	  return out;
+	}
+	exports.encrypt = encrypt;
+
+	exports.hmac_sha256 = asmcrypto.HMAC_SHA256.bytes;
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1).Buffer))
+
+/***/ },
+/* 14 */
+/***/ function(module, exports, __webpack_require__) {
+
 	/* WEBPACK VAR INJECTION */(function(process) {/**
 	 * Copyright 2013-2015, Facebook, Inc.
 	 * All rights reserved.
@@ -6111,7 +6296,7 @@ var abcuiloader =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ },
-/* 14 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {// Copyright Joyent, Inc. and other Node contributors.
@@ -6207,127 +6392,12 @@ var abcuiloader =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ },
-/* 15 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var require;/* WEBPACK VAR INJECTION */(function(Buffer) {'use strict';
-
-	var scryptsy = __webpack_require__(186);
-	var asmcrypto = __webpack_require__(151);
-
-	var userIdSnrp = {
-	  'salt_hex': 'b5865ffb9fa7b3bfe4b2384d47ce831ee22a4a9d5c34c7ef7d21467cc758f81b',
-	  'n': 16384,
-	  'r': 1,
-	  'p': 1
-	};
-	exports.userIdSnrp = userIdSnrp;
-	exports.passwordAuthSnrp = userIdSnrp;
-
-	/**
-	 * @param data A `Buffer` or byte-array object.
-	 * @param snrp A JSON SNRP structure.
-	 * @return A Buffer with the hash.
-	 */
-	function scrypt(data, snrp) {
-	  var dklen = 32;
-	  var salt = new Buffer(snrp.salt_hex, 'hex');
-	  return scryptsy(data, salt, snrp.n, snrp.r, snrp.p, dklen);
-	}
-	exports.scrypt = scrypt;
-
-	function makeSnrp() {
-	  return {
-	    'salt_hex': random(32).toString('hex'),
-	    'n': 16384,
-	    'r': 2,
-	    'p': 1
-	  };
-	}
-	exports.makeSnrp = makeSnrp;
-
-	function random(bytes) {
-	  bytes |= 0;
-	  try {
-	    var out = new Buffer(bytes);
-	    window.crypto.getRandomValues(out);
-	  } catch (e) {
-	    // Alternative using node.js crypto:
-	    var hiddenRequire = require;
-	    return __webpack_require__(52).randomBytes(bytes);
-	  }
-	  return out;
-	}
-	exports.random = random;
-
-	/**
-	 * @param box an Airbitz JSON encryption box
-	 * @param key a key, as an ArrayBuffer
-	 */
-	function decrypt(box, key) {
-	  if (box['encryptionType'] !== 0) {
-	    throw new Error('Unknown encryption type');
-	  }
-
-	  var iv = new Buffer(box['iv_hex'], 'hex');
-
-	  // Step 1: Decrypt
-	  var cyphertext = new Buffer(box['data_base64'], 'base64');
-	  var data = new Buffer(asmcrypto.AES_CBC.decrypt(cyphertext, key, true, iv));
-
-	  // Alternative using node.js crypto:
-	  // var decipher = crypto.createDecipheriv('AES-256-CBC', key, iv);
-	  // var x = decipher.update(box.data_base64, 'base64', 'hex')
-	  // x += decipher.final('hex')
-	  // var data = new Buffer(x, 'hex')
-
-	  // Step 2: Skip initial padding, then read in size.
-	  var preSize = data.readUInt8(0);
-	  var dataSize = data.readUInt32BE(preSize + 1);
-
-	  // Step 3: read sha256 and verify?
-
-	  var dataStart = preSize + 1 + 4;
-	  return data.slice(dataStart, dataStart + dataSize);
-	}
-	exports.decrypt = decrypt;
-
-	/**
-	 * @param data an ArrayBuffer of data
-	 * @param key a key, as an ArrayBuffer
-	 */
-	function encrypt(data, key) {
-	  var out = { 'encryptionType': 0 };
-
-	  var iv = random(16);
-	  out['iv_hex'] = iv.toString('hex');
-
-	  var plaintext = new Buffer(data.length + 6 + 32);
-	  plaintext.writeUInt8(0, 0);
-	  plaintext.writeUInt32BE(data.length, 1);
-	  data.copy(plaintext, 5);
-	  plaintext.writeUInt8(0, data.length + 5);
-
-	  var hashData = plaintext.slice(0, data.length + 6);
-	  var hash = new Buffer(asmcrypto.SHA256.bytes(hashData));
-	  hash.copy(plaintext, data.length + 6);
-
-	  out['data_base64'] = new Buffer(asmcrypto.AES_CBC.encrypt(plaintext, key, true, iv)).toString('base64');
-
-	  return out;
-	}
-	exports.encrypt = encrypt;
-
-	exports.hmac_sha256 = asmcrypto.HMAC_SHA256.bytes;
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1).Buffer))
-
-/***/ },
 /* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var crypto = __webpack_require__(15);
+	var crypto = __webpack_require__(13);
 
 	/**
 	 * Returns the user map, which goes from usernames to userId's
@@ -8322,7 +8392,7 @@ var abcuiloader =
 
 	var BASE58 = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
 	var base58 = __webpack_require__(45)(BASE58);
-	var crypto = __webpack_require__(15);
+	var crypto = __webpack_require__(13);
 	var UserStorage = __webpack_require__(26).UserStorage;
 	var userMap = __webpack_require__(16);
 
@@ -9196,7 +9266,7 @@ var abcuiloader =
 
 	module.exports = Transform;
 
-	var Duplex = __webpack_require__(14);
+	var Duplex = __webpack_require__(15);
 
 	/*<replacement>*/
 	var util = __webpack_require__(22);
@@ -9395,7 +9465,7 @@ var abcuiloader =
 	}
 
 	function WritableState(options, stream) {
-	  var Duplex = __webpack_require__(14);
+	  var Duplex = __webpack_require__(15);
 
 	  options = options || {};
 
@@ -9483,7 +9553,7 @@ var abcuiloader =
 	}
 
 	function Writable(options) {
-	  var Duplex = __webpack_require__(14);
+	  var Duplex = __webpack_require__(15);
 
 	  // Writable ctor is applied to Duplexes, though they're not
 	  // instanceof Writable, they're instanceof Readable.
@@ -10619,7 +10689,7 @@ var abcuiloader =
 	exports.getParams = getParams;
 	exports.formatPattern = formatPattern;
 
-	var _invariant = __webpack_require__(13);
+	var _invariant = __webpack_require__(14);
 
 	var _invariant2 = _interopRequireDefault(_invariant);
 
@@ -12556,7 +12626,7 @@ var abcuiloader =
 	util.inherits(Readable, Stream);
 
 	function ReadableState(options, stream) {
-	  var Duplex = __webpack_require__(14);
+	  var Duplex = __webpack_require__(15);
 
 	  options = options || {};
 
@@ -12624,7 +12694,7 @@ var abcuiloader =
 	}
 
 	function Readable(options) {
-	  var Duplex = __webpack_require__(14);
+	  var Duplex = __webpack_require__(15);
 
 	  if (!(this instanceof Readable))
 	    return new Readable(options);
@@ -13737,7 +13807,7 @@ var abcuiloader =
 	/* WEBPACK VAR INJECTION */(function(Buffer) {'use strict';
 
 	var bip39 = __webpack_require__(155);
-	var crypto = __webpack_require__(15);
+	var crypto = __webpack_require__(13);
 	var userMap = __webpack_require__(16);
 	var UserStorage = __webpack_require__(26).UserStorage;
 	var Login = __webpack_require__(32);
@@ -13860,7 +13930,7 @@ var abcuiloader =
 
 	'use strict';
 
-	var crypto = __webpack_require__(15);
+	var crypto = __webpack_require__(13);
 	var userMap = __webpack_require__(16);
 	var UserStorage = __webpack_require__(26).UserStorage;
 	var Login = __webpack_require__(32);
@@ -13998,7 +14068,7 @@ var abcuiloader =
 
 	'use strict';
 
-	var crypto = __webpack_require__(15);
+	var crypto = __webpack_require__(13);
 	var userMap = __webpack_require__(16);
 	var UserStorage = __webpack_require__(26).UserStorage;
 	var Login = __webpack_require__(32);
@@ -14105,7 +14175,7 @@ var abcuiloader =
 
 	var BASE58 = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
 
-	var crypto = __webpack_require__(15);
+	var crypto = __webpack_require__(13);
 	var base58 = __webpack_require__(45)(BASE58);
 	var userMap = __webpack_require__(16);
 	var Login = __webpack_require__(32);
@@ -17502,7 +17572,7 @@ var abcuiloader =
 
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-	var _invariant = __webpack_require__(13);
+	var _invariant = __webpack_require__(14);
 
 	var _invariant2 = _interopRequireDefault(_invariant);
 
@@ -23237,7 +23307,7 @@ var abcuiloader =
 /* 139 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(14)
+	module.exports = __webpack_require__(15)
 
 
 /***/ },
@@ -23255,7 +23325,7 @@ var abcuiloader =
 	exports.Stream = __webpack_require__(19);
 	exports.Readable = exports;
 	exports.Writable = __webpack_require__(43);
-	exports.Duplex = __webpack_require__(14);
+	exports.Duplex = __webpack_require__(15);
 	exports.Transform = __webpack_require__(42);
 	exports.PassThrough = __webpack_require__(62);
 	if (!process.browser && process.env.READABLE_STREAM === 'disable') {
@@ -24030,6 +24100,7 @@ var abcuiloader =
 	var loginRecovery2 = __webpack_require__(69);
 	var userMap = __webpack_require__(16);
 	var UserStorage = __webpack_require__(26).UserStorage;
+	var crypto = __webpack_require__(13);
 
 	// var serverRoot = 'https://auth.airbitz.co/api'
 	var serverRoot = 'https://test-auth.airbitz.co/api';
@@ -24169,6 +24240,29 @@ var abcuiloader =
 	  return loginRecovery2.questions(this, recovery2Key, username, callback);
 	};
 
+	Context.prototype.runScryptTimingWithParameters = function (n, r, p) {
+	  var snrp = crypto.makeSnrp();
+	  // var snrp = {
+	  //   'salt_hex': crypto.random(32).toString('hex'),
+	  //   'n': 16384,
+	  //   'r': 1,
+	  //   'p': 1
+	  // }
+	  var randText = crypto.random(32).toString('hex');
+	  snrp.n = Math.pow(2, n);
+	  snrp.r = r;
+	  snrp.p = p;
+	  var startTime = window.performance.now();
+	  var hash = crypto.scrypt(randText, snrp);
+	  var endTime = window.performance.now();
+
+	  return {
+	    time: endTime - startTime,
+	    data: randText,
+	    hash: hash
+	  };
+	};
+
 	Context.prototype.checkPasswordRules = function (password) {
 	  var tooShort = password.length < 10;
 	  var noNumber = password.match(/\d/) == null;
@@ -24206,7 +24300,7 @@ var abcuiloader =
 	/* WEBPACK VAR INJECTION */(function(Buffer) {'use strict';
 
 	var loginCreate = __webpack_require__(66);
-	var crypto = __webpack_require__(15);
+	var crypto = __webpack_require__(13);
 	var Elliptic = __webpack_require__(7).ec;
 	var secp256k1 = new Elliptic('secp256k1');
 	var BASE58 = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
@@ -35604,7 +35698,7 @@ var abcuiloader =
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-	var _invariant = __webpack_require__(13);
+	var _invariant = __webpack_require__(14);
 
 	var _invariant2 = _interopRequireDefault(_invariant);
 
@@ -35654,7 +35748,7 @@ var abcuiloader =
 
 	var _warning2 = _interopRequireDefault(_warning);
 
-	var _invariant = __webpack_require__(13);
+	var _invariant = __webpack_require__(14);
 
 	var _invariant2 = _interopRequireDefault(_invariant);
 
@@ -36560,7 +36654,7 @@ var abcuiloader =
 
 	var _routerWarning2 = _interopRequireDefault(_routerWarning);
 
-	var _invariant = __webpack_require__(13);
+	var _invariant = __webpack_require__(14);
 
 	var _invariant2 = _interopRequireDefault(_invariant);
 
@@ -36736,7 +36830,7 @@ var abcuiloader =
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _invariant = __webpack_require__(13);
+	var _invariant = __webpack_require__(14);
 
 	var _invariant2 = _interopRequireDefault(_invariant);
 
@@ -42902,7 +42996,7 @@ var abcuiloader =
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-	var _invariant = __webpack_require__(13);
+	var _invariant = __webpack_require__(14);
 
 	var _invariant2 = _interopRequireDefault(_invariant);
 
@@ -43149,7 +43243,7 @@ var abcuiloader =
 
 	var _warning2 = _interopRequireDefault(_warning);
 
-	var _invariant = __webpack_require__(13);
+	var _invariant = __webpack_require__(14);
 
 	var _invariant2 = _interopRequireDefault(_invariant);
 
@@ -45950,7 +46044,7 @@ var abcuiloader =
 
 	var _routerWarning2 = _interopRequireDefault(_routerWarning);
 
-	var _invariant = __webpack_require__(13);
+	var _invariant = __webpack_require__(14);
 
 	var _invariant2 = _interopRequireDefault(_invariant);
 
@@ -46019,7 +46113,7 @@ var abcuiloader =
 
 	var _routerWarning2 = _interopRequireDefault(_routerWarning);
 
-	var _invariant = __webpack_require__(13);
+	var _invariant = __webpack_require__(14);
 
 	var _invariant2 = _interopRequireDefault(_invariant);
 
@@ -46085,7 +46179,7 @@ var abcuiloader =
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _invariant = __webpack_require__(13);
+	var _invariant = __webpack_require__(14);
 
 	var _invariant2 = _interopRequireDefault(_invariant);
 
@@ -46155,7 +46249,7 @@ var abcuiloader =
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _invariant = __webpack_require__(13);
+	var _invariant = __webpack_require__(14);
 
 	var _invariant2 = _interopRequireDefault(_invariant);
 
@@ -46275,7 +46369,7 @@ var abcuiloader =
 
 	var _useQueries2 = _interopRequireDefault(_useQueries);
 
-	var _invariant = __webpack_require__(13);
+	var _invariant = __webpack_require__(14);
 
 	var _invariant2 = _interopRequireDefault(_invariant);
 
@@ -47089,7 +47183,7 @@ var abcuiloader =
 
 	var _Actions = __webpack_require__(47);
 
-	var _invariant = __webpack_require__(13);
+	var _invariant = __webpack_require__(14);
 
 	var _invariant2 = _interopRequireDefault(_invariant);
 
@@ -47492,7 +47586,7 @@ var abcuiloader =
 
 	exports.default = withRouter;
 
-	var _invariant = __webpack_require__(13);
+	var _invariant = __webpack_require__(14);
 
 	var _invariant2 = _interopRequireDefault(_invariant);
 
