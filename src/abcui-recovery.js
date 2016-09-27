@@ -10,6 +10,8 @@ var strings = require('./abcui-strings')
 var ABCError = abc.ABCError
 var tools = require('./abcui-tools.js')
 
+var context = window.parent.abcContext
+
 var QuestionAnswerView = React.createClass({
   render () {
     if (this.props.setup) {
@@ -71,7 +73,8 @@ var SetupRecoveryView = React.createClass({
     return {
       showEmailModal: false,
       showQAModal: true,
-      showDone: false
+      showDone: false,
+      questionChoices: []
     }
   },
   render() {
@@ -90,15 +93,6 @@ var SetupRecoveryView = React.createClass({
 
     answers[0] = answers[1] = strings.answers_are_case_sensitive
 
-    // Query core for list of questions
-    // Fake for now
-    var questionChoices = [
-      'Who\'s your daddy?',
-      'Who dunit?',
-      'Dude, where\'s my car?'
-    ]
-    questionChoices = [strings.please_select_a_question].concat(questionChoices)
-
     return (
       <div>
 
@@ -108,7 +102,7 @@ var SetupRecoveryView = React.createClass({
               <RecoveryQAView setup='1'
                               questions={questions}
                               answers={answers}
-                              questionChoices={questionChoices}
+                              questionChoices={this.state.questionChoices}
                               requirePassword={!this.props.route.noRequirePassword}
                               callback={this.callback}/>
             </AbcUiFormView>
@@ -152,6 +146,25 @@ var SetupRecoveryView = React.createClass({
 
       </div>
     )
+  },
+  componentDidMount() {
+    context.listRecoveryQuestionChoices ((error, questionChoices) => {
+      if (!error) {
+
+        var questions = []
+        for (var i in questionChoices) {
+          var qc = questionChoices[i]
+          if (qc.category === 'recovery2') {
+            questions.push(qc.question)
+          }
+        }
+
+        var questionChoices = [strings.please_select_a_question].concat(questions)
+        this.setState({questionChoices})
+      } else {
+        this.setState({questionChoices: strings.error_retrieving_questions})
+      }
+    })
   },
   onCloseQA () {
     'use strict';
@@ -237,7 +250,7 @@ var SetupRecoveryView = React.createClass({
   callBackEmail (vendorEmailUrl) {
     'use strict'
     console.log(this.refs.email.value)
-    
+
     if (tools.validateEmail(this.refs.email.value)) {
       console.log('good email')
 
