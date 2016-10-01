@@ -1,4 +1,4 @@
-import React from 'react'
+import { React } from 'react'
 import { render } from 'react-dom'
 import { Router, Route, IndexRoute, Link, hashHistory } from 'react-router'
 import abc from 'airbitz-core-js'

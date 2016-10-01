@@ -41952,8 +41952,6 @@ var abcuiloader =
 
 	var _react = __webpack_require__(6);
 
-	var _react2 = _interopRequireDefault(_react);
-
 	var _reactDom = __webpack_require__(34);
 
 	var _reactRouter = __webpack_require__(75);
@@ -41978,20 +41976,20 @@ var abcuiloader =
 
 	var context = window.parent.abcContext;
 
-	var MenuItem = _react2.default.createClass({
+	var MenuItem = _react.React.createClass({
 	  displayName: 'MenuItem',
 	  render: function render() {
-	    return _react2.default.createElement(
+	    return _react.React.createElement(
 	      'li',
 	      null,
-	      _react2.default.createElement('a', _extends({}, this.props, { href: 'javascript:;' }))
+	      _react.React.createElement('a', _extends({}, this.props, { href: 'javascript:;' }))
 	    );
 	  }
 	});
-	var Index = _react2.default.createClass({
+	var Index = _react.React.createClass({
 	  displayName: 'Index',
 	  render: function render() {
-	    return _react2.default.createElement(
+	    return _react.React.createElement(
 	      'h1',
 	      null,
 	      'ABC'
@@ -41999,10 +41997,10 @@ var abcuiloader =
 	  }
 	});
 
-	var App = _react2.default.createClass({
+	var App = _react.React.createClass({
 	  displayName: 'App',
 	  render: function render() {
-	    return _react2.default.createElement(
+	    return _react.React.createElement(
 	      'div',
 	      null,
 	      this.props.children
@@ -42010,10 +42008,10 @@ var abcuiloader =
 	  }
 	});
 
-	var NotFound = _react2.default.createClass({
+	var NotFound = _react.React.createClass({
 	  displayName: 'NotFound',
 	  render: function render() {
-	    return _react2.default.createElement(
+	    return _react.React.createElement(
 	      'h1',
 	      null,
 	      'Not Found'
@@ -42021,23 +42019,23 @@ var abcuiloader =
 	  }
 	});
 
-	(0, _reactDom.render)(_react2.default.createElement(
+	(0, _reactDom.render)(_react.React.createElement(
 	  _reactRouter.Router,
 	  { history: _reactRouter.hashHistory },
-	  _react2.default.createElement(
+	  _react.React.createElement(
 	    _reactRouter.Route,
 	    { path: '/', component: App },
-	    _react2.default.createElement(_reactRouter.IndexRoute, { component: Index }),
-	    _react2.default.createElement(_reactRouter.Route, { path: 'login', component: LoginView }),
-	    _react2.default.createElement(_reactRouter.Route, { path: 'register', component: RegistrationView }),
-	    _react2.default.createElement(_reactRouter.Route, { path: 'recovery/:token', component: RecoveryView }),
-	    _react2.default.createElement(_reactRouter.Route, { path: 'recovery', component: RecoveryView }),
-	    _react2.default.createElement(_reactRouter.Route, { path: 'account', component: ManageAccountView }),
-	    _react2.default.createElement(_reactRouter.Route, { path: 'account/changepassword', component: ChangePasswordView }),
-	    _react2.default.createElement(_reactRouter.Route, { path: 'account/changepin', component: ChangePinView, title: 'Change PIN' }),
-	    _react2.default.createElement(_reactRouter.Route, { path: 'account/changepin-edge-login', component: ChangePinView, noRequirePassword: 'true', title: 'Login Successful. Please set a PIN for quick re-logins' }),
-	    _react2.default.createElement(_reactRouter.Route, { path: 'account/setuprecovery', component: SetupRecoveryView }),
-	    _react2.default.createElement(_reactRouter.Route, { path: 'account/setuprecovery-nopassword', component: SetupRecoveryView, noRequirePassword: 'true' })
+	    _react.React.createElement(_reactRouter.IndexRoute, { component: Index }),
+	    _react.React.createElement(_reactRouter.Route, { path: 'login', component: LoginView }),
+	    _react.React.createElement(_reactRouter.Route, { path: 'register', component: RegistrationView }),
+	    _react.React.createElement(_reactRouter.Route, { path: 'recovery/:token', component: RecoveryView }),
+	    _react.React.createElement(_reactRouter.Route, { path: 'recovery', component: RecoveryView }),
+	    _react.React.createElement(_reactRouter.Route, { path: 'account', component: ManageAccountView }),
+	    _react.React.createElement(_reactRouter.Route, { path: 'account/changepassword', component: ChangePasswordView }),
+	    _react.React.createElement(_reactRouter.Route, { path: 'account/changepin', component: ChangePinView, title: 'Change PIN' }),
+	    _react.React.createElement(_reactRouter.Route, { path: 'account/changepin-edge-login', component: ChangePinView, noRequirePassword: 'true', title: 'Login Successful. Please set a PIN for quick re-logins' }),
+	    _react.React.createElement(_reactRouter.Route, { path: 'account/setuprecovery', component: SetupRecoveryView }),
+	    _react.React.createElement(_reactRouter.Route, { path: 'account/setuprecovery-nopassword', component: SetupRecoveryView, noRequirePassword: 'true' })
 	  )
 	), document.getElementById('app'));
 
