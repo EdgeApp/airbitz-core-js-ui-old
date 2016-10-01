@@ -7,11 +7,11 @@ This repo implements a UI layer on top of [airbitz-core-js](https://github.com/A
 
 ## Basic usage
 
-If using NodeJS, add the following to your `Packages.json`
+If using NPM, add the following to your `Packages.json`
 
     "dependencies": {
         ...
-        "airbitz-core-js-ui": "git://github.com/Airbitz/airbitz-core-js-ui.git"
+        "airbitz-core-js-ui": "^0.0.1",
         ...
     }
 
