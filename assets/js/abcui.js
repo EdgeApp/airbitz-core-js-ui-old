@@ -5751,7 +5751,7 @@ var abcui =
 	/*</replacement>*/
 
 	var Readable = __webpack_require__(63);
-	var Writable = __webpack_require__(43);
+	var Writable = __webpack_require__(42);
 
 	util.inherits(Duplex, Readable);
 
@@ -6286,7 +6286,7 @@ var abcui =
 	/* WEBPACK VAR INJECTION */(function(Buffer) {'use strict';
 
 	var BASE58 = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
-	var base58 = __webpack_require__(45)(BASE58);
+	var base58 = __webpack_require__(44)(BASE58);
 	var crypto = __webpack_require__(13);
 	var UserStorage = __webpack_require__(26).UserStorage;
 	var userMap = __webpack_require__(16);
@@ -6477,36 +6477,13 @@ var abcui =
 
 /***/ },
 /* 34 */,
-/* 35 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var Context = __webpack_require__(151).Context;
-	var userMap = __webpack_require__(16);
-	var abcc = __webpack_require__(65);
-	var abce = __webpack_require__(148);
-
-	exports.Context = Context;
-	exports.usernameFix = userMap.normalize;
-	exports.ABCConditionCode = abcc;
-	exports.ABCError = abce.ABCError;
-
-	/**
-	 * Creates a context object.
-	 */
-	exports.makeABCContext = function makeContext(opts) {
-	  return new Context(opts);
-	};
-
-/***/ },
+/* 35 */,
 /* 36 */,
 /* 37 */,
 /* 38 */,
 /* 39 */,
 /* 40 */,
-/* 41 */,
-/* 42 */
+/* 41 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// Copyright Joyent, Inc. and other Node contributors.
@@ -6721,7 +6698,7 @@ var abcui =
 
 
 /***/ },
-/* 43 */
+/* 42 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {// Copyright Joyent, Inc. and other Node contributors.
@@ -7205,7 +7182,7 @@ var abcui =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ },
-/* 44 */
+/* 43 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global, process) {// Copyright Joyent, Inc. and other Node contributors.
@@ -7798,7 +7775,7 @@ var abcui =
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(0)))
 
 /***/ },
-/* 45 */
+/* 44 */
 /***/ function(module, exports) {
 
 	// base-x encoding
@@ -7885,6 +7862,29 @@ var abcui =
 	  }
 	}
 
+
+/***/ },
+/* 45 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var Context = __webpack_require__(151).Context;
+	var userMap = __webpack_require__(16);
+	var abcc = __webpack_require__(65);
+	var abce = __webpack_require__(148);
+
+	exports.Context = Context;
+	exports.usernameFix = userMap.normalize;
+	exports.ABCConditionCode = abcc;
+	exports.ABCError = abce.ABCError;
+
+	/**
+	 * Creates a context object.
+	 */
+	exports.makeABCContext = function makeContext(opts) {
+	  return new Context(opts);
+	};
 
 /***/ },
 /* 46 */,
@@ -8335,7 +8335,7 @@ var abcui =
 
 	module.exports = PassThrough;
 
-	var Transform = __webpack_require__(42);
+	var Transform = __webpack_require__(41);
 
 	/*<replacement>*/
 	var util = __webpack_require__(22);
@@ -9975,7 +9975,7 @@ var abcui =
 	var BASE58 = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
 
 	var crypto = __webpack_require__(13);
-	var base58 = __webpack_require__(45)(BASE58);
+	var base58 = __webpack_require__(44)(BASE58);
 	var userMap = __webpack_require__(16);
 	var Login = __webpack_require__(32);
 
@@ -13194,7 +13194,7 @@ var abcui =
 	 * See http://pajhome.org.uk/crypt/md5 for details.
 	 */
 
-	var inherits = __webpack_require__(44).inherits
+	var inherits = __webpack_require__(43).inherits
 
 	module.exports = function (Buffer, Hash) {
 
@@ -13338,7 +13338,7 @@ var abcui =
 	 *
 	 */
 
-	var inherits = __webpack_require__(44).inherits
+	var inherits = __webpack_require__(43).inherits
 
 	module.exports = function (Buffer, Hash) {
 
@@ -13482,7 +13482,7 @@ var abcui =
 /* 103 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var inherits = __webpack_require__(44).inherits
+	var inherits = __webpack_require__(43).inherits
 
 	module.exports = function (Buffer, Hash) {
 	  var K = [
@@ -14030,9 +14030,9 @@ var abcui =
 	/* WEBPACK VAR INJECTION */(function(process) {exports = module.exports = __webpack_require__(63);
 	exports.Stream = __webpack_require__(19);
 	exports.Readable = exports;
-	exports.Writable = __webpack_require__(43);
+	exports.Writable = __webpack_require__(42);
 	exports.Duplex = __webpack_require__(15);
-	exports.Transform = __webpack_require__(42);
+	exports.Transform = __webpack_require__(41);
 	exports.PassThrough = __webpack_require__(62);
 	if (!process.browser && process.env.READABLE_STREAM === 'disable') {
 	  module.exports = __webpack_require__(19);
@@ -14044,14 +14044,14 @@ var abcui =
 /* 142 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(42)
+	module.exports = __webpack_require__(41)
 
 
 /***/ },
 /* 143 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(43)
+	module.exports = __webpack_require__(42)
 
 
 /***/ },
@@ -15015,7 +15015,7 @@ var abcui =
 	var Elliptic = __webpack_require__(7).ec;
 	var secp256k1 = new Elliptic('secp256k1');
 	var BASE58 = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
-	var base58 = __webpack_require__(45)(BASE58);
+	var base58 = __webpack_require__(44)(BASE58);
 
 	function ABCEdgeLoginRequest(id) {
 	  this.id = id;
@@ -25419,7 +25419,7 @@ var abcui =
 
 	'use strict';
 
-	var abc = __webpack_require__(35);
+	var abc = __webpack_require__(45);
 	var abcc = abc.ABCConditionCode;
 	var ABCError = abc.ABCError;
 
