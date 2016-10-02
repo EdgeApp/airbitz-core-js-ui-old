@@ -2,7 +2,7 @@ var abc = require('airbitz-core-js')
 var abcc = abc.ABCConditionCode
 var ABCError = abc.ABCError
 
-function createIFrame(path) {
+function createIFrame (path) {
   var frame = document.createElement('iframe')
   var body = document.getElementsByTagName('BODY')[0]
   body.appendChild(frame, body)
@@ -13,15 +13,15 @@ function createIFrame(path) {
   return frame
 }
 
-function removeIFrame(frame) {
+function removeIFrame (frame) {
   frame.parentNode.removeChild(frame)
 }
 
-function makeABCUIContext(args) {
+function makeABCUIContext (args) {
   return new InnerAbcUi(args)
 }
 
-function InnerAbcUi(args) {
+function InnerAbcUi (args) {
   var apiKey = args.apiKey
   if (!apiKey) {
     throw Error('Missing api key')
@@ -39,10 +39,10 @@ function InnerAbcUi(args) {
   }
 }
 
-InnerAbcUi.prototype.openLoginWindow = function(callback) {
+InnerAbcUi.prototype.openLoginWindow = function (callback) {
   var frame = createIFrame(this.bundlePath + '/assets/index.html#/login')
   var that = this
-  window.loginCallback = function(error, account, opts) {
+  window.loginCallback = function (error, account, opts) {
     if (account) {
       window.abcAccount = account
       removeIFrame(frame)
@@ -55,41 +55,41 @@ InnerAbcUi.prototype.openLoginWindow = function(callback) {
       callback(error, account)
     }
   }
-  window.exitCallback = function() {
+  window.exitCallback = function () {
     removeIFrame(frame)
   }
 }
 
-InnerAbcUi.prototype.getABCContext = function() {
+InnerAbcUi.prototype.getABCContext = function () {
   return this.abcContext
 }
 
-InnerAbcUi.prototype.openRecoveryWindow = function(callback) {
+InnerAbcUi.prototype.openRecoveryWindow = function (callback) {
   var frame = createIFrame(this.bundlePath + '/assets/index.html#/recovery')
 }
 
-InnerAbcUi.prototype.openSetupRecoveryWindow = function(account, opts, callback) {
+InnerAbcUi.prototype.openSetupRecoveryWindow = function (account, opts, callback) {
   if (opts && opts.noRequirePassword) {
     var frame = createIFrame(this.bundlePath + '/assets/index.html#/account/setuprecovery-nopassword')
   } else {
     var frame = createIFrame(this.bundlePath + '/assets/index.html#/account/setuprecovery')
   }
-  window.exitCallback = function() {
+  window.exitCallback = function () {
     removeIFrame(frame)
   }
 }
 
-InnerAbcUi.prototype.openChangePinEdgeLoginWindow = function(account, callback) {
+InnerAbcUi.prototype.openChangePinEdgeLoginWindow = function (account, callback) {
   var frame = createIFrame(this.bundlePath + '/assets/index.html#/account/changepin-edge-login')
-  window.exitCallback = function() {
+  window.exitCallback = function () {
     removeIFrame(frame)
   }
 }
 
-InnerAbcUi.prototype.openManageWindow = function(account, callback) {
+InnerAbcUi.prototype.openManageWindow = function (account, callback) {
   window.abcAccount = account
   var frame = createIFrame(this.bundlePath + '/assets/index.html#/account/')
-  window.exitCallback = function() {
+  window.exitCallback = function () {
     removeIFrame(frame)
     callback(null)
   }

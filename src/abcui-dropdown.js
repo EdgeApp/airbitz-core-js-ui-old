@@ -1,6 +1,5 @@
 import React from 'react'
 
-
 var AbcUiDropDown = React.createClass({
   render () {
     var block = null
@@ -9,10 +8,10 @@ var AbcUiDropDown = React.createClass({
     var toggleInput = null
     var selectElement = (
       <select ref='selectedItem'
-              className='form-control'
-              onChange={this.handleSelection}
-              defaultValue={this.props.selectedItem}>
-        {contentList.map(function(content) {
+        className='form-control'
+        onChange={this.handleSelection}
+        defaultValue={this.props.selectedItem}>
+        {contentList.map(function (content) {
           return (<option value={content} key={content}>{content}</option>)
         })}
       </select>

@@ -17,8 +17,8 @@ var BootstrapInput = modal.BootstrapInput
 var PasswordRequirementsInput = require('./abcui-password.js')
 
 var ManageAccountView = React.createClass({
-	render() {
-		return (
+  render () {
+    return (
 			<BootstrapModal ref='modal' title='Manage Account' onClose={this.onClose}>
 				<h4>ACCOUNT: <span>{window.parent.abcAccount.username}</span></h4>
 				<ul className='list-unstyled'>
@@ -36,25 +36,25 @@ var ManageAccountView = React.createClass({
 				 </ul>
 				 */}
 			</BootstrapModal>)
-	},
-	togglePinEnabled() {
-		this.refs.pinEnabled.checked = !this.refs.pinEnabled.checked
-		this.pinEnableChanged()
-	},
-	pinEnableChanged() {
-		alert(this.refs.pinEnabled.checked)
-	},
-	onClose () {
-		'use strict';
-		if (window.parent.exitCallback) {
-			window.parent.exitCallback()
-		}
-	}
+  },
+  togglePinEnabled () {
+    this.refs.pinEnabled.checked = !this.refs.pinEnabled.checked
+    this.pinEnableChanged()
+  },
+  pinEnableChanged () {
+    alert(this.refs.pinEnabled.checked)
+  },
+  onClose () {
+    'use strict'
+    if (window.parent.exitCallback) {
+      window.parent.exitCallback()
+    }
+  }
 })
 
 var ChangePasswordView = React.createClass({
-	render() {
-		return (
+  render () {
+    return (
 			<BootstrapModal ref='modal' title='Change Password' onClose={this.onClose}>
 				<AbcUiFormView ref='form'>
 					<div className='row'>
@@ -83,54 +83,54 @@ var ChangePasswordView = React.createClass({
 					</div>
 				</AbcUiFormView>
 			</BootstrapModal>)
-	},
-	passwordsMatch() {
-		return this.refs.confirmPassword.value() == this.refs.password.value();
-	},
-	comparePasswords() {
-		var confirmPassword = this.refs.confirmPassword
-		if (this.passwordsMatch()) {
-			confirmPassword.setState({'error': null})
-		} else {
-			confirmPassword.setState({'error': 'Password mismatch'})
-		}
-	},
-	handleSubmit() {
-		var that = this
-		var account = window.parent.abcAccount
+  },
+  passwordsMatch () {
+    return this.refs.confirmPassword.value() == this.refs.password.value()
+  },
+  comparePasswords () {
+    var confirmPassword = this.refs.confirmPassword
+    if (this.passwordsMatch()) {
+      confirmPassword.setState({'error': null})
+    } else {
+      confirmPassword.setState({'error': 'Password mismatch'})
+    }
+  },
+  handleSubmit () {
+    var that = this
+    var account = window.parent.abcAccount
 
-		if (!this.refs.password.meetsRequirements()) {
-			this.refs.form.setState({'error': 'Insufficient password'})
-		} else if (!this.passwordsMatch()) {
-			this.refs.form.setState({'error': 'Password mismatch'})
-		} else if (account.passwordOk(this.refs.currentPassword.value)) {
-			this.refs.changeButton.setLoading(true)
-			window.parent.abcAccount.passwordSetup(this.refs.password.value(), function(err, result) {
-				if (err) {
-					that.refs.form.setState({'error': ABCError(err, 'Invalid Password').message})
-				} else {
-					that.refs.modal.close()
-					if (window.parent.exitCallback) {
-						window.parent.exitCallback()
-					}
-				}
-				that.refs.changeButton.setLoading(false)
-			})
-		} else {
-			that.refs.form.setState({'error': 'Incorrect current password'})
-		}
-	},
-	onClose () {
-		'use strict';
-		if (window.parent.exitCallback) {
-			window.parent.exitCallback()
-		}
-	}
+    if (!this.refs.password.meetsRequirements()) {
+      this.refs.form.setState({'error': 'Insufficient password'})
+    } else if (!this.passwordsMatch()) {
+      this.refs.form.setState({'error': 'Password mismatch'})
+    } else if (account.passwordOk(this.refs.currentPassword.value)) {
+      this.refs.changeButton.setLoading(true)
+      window.parent.abcAccount.passwordSetup(this.refs.password.value(), function (err, result) {
+        if (err) {
+          that.refs.form.setState({'error': ABCError(err, 'Invalid Password').message})
+        } else {
+          that.refs.modal.close()
+          if (window.parent.exitCallback) {
+            window.parent.exitCallback()
+          }
+        }
+        that.refs.changeButton.setLoading(false)
+      })
+    } else {
+      that.refs.form.setState({'error': 'Incorrect current password'})
+    }
+  },
+  onClose () {
+    'use strict'
+    if (window.parent.exitCallback) {
+      window.parent.exitCallback()
+    }
+  }
 })
 
 var ChangePinView = React.createClass({
-	render() {
-		return (
+  render () {
+    return (
 			<BootstrapModal ref='modal' title={this.props.route.title} onClose={this.onClose}>
 				<AbcUiFormView ref='form'>
 					<div className='row'>
@@ -160,44 +160,44 @@ var ChangePinView = React.createClass({
 					</div>
 				</AbcUiFormView>
 			</BootstrapModal>)
-	},
-	handlePasswordKeyPress(e) {
-		if (e.key === 'Enter') {
-			this.refs.pin.getInputDOMNode().focus()
-		}
-	},
-	handlePinKeyPress(e) {
-		if (e.key === 'Enter') {
-			this.handleSubmit()
-		}
-	},
-	handleSubmit() {
-		var that = this
-		var account = window.parent.abcAccount
-		
-		if (this.props.route.noRequirePassword || account.passwordOk(this.refs.currentPassword.value)) {
-			this.refs.changeButton.setLoading(true)
-			window.parent.abcAccount.pinSetup(this.refs.pin.value, function(err, result) {
-				if (err) {
-					that.refs.form.setState({'error': ABCError(err, strings.error_setting_pin_text).message})
-				} else {
-					that.refs.modal.close()
-					if (window.parent.exitCallback) {
-						window.parent.exitCallback()
-					}
-				}
-				that.refs.changeButton.setLoading(false)
-			})
-		} else {
-			that.refs.form.setState({'error': 'Incorrect current password'})
-		}
-	},
-	onClose () {
-		'use strict';
-		if (window.parent.exitCallback) {
-			window.parent.exitCallback()
-		}
-	}
+  },
+  handlePasswordKeyPress (e) {
+    if (e.key === 'Enter') {
+      this.refs.pin.getInputDOMNode().focus()
+    }
+  },
+  handlePinKeyPress (e) {
+    if (e.key === 'Enter') {
+      this.handleSubmit()
+    }
+  },
+  handleSubmit () {
+    var that = this
+    var account = window.parent.abcAccount
+
+    if (this.props.route.noRequirePassword || account.passwordOk(this.refs.currentPassword.value)) {
+      this.refs.changeButton.setLoading(true)
+      window.parent.abcAccount.pinSetup(this.refs.pin.value, function (err, result) {
+        if (err) {
+          that.refs.form.setState({'error': ABCError(err, strings.error_setting_pin_text).message})
+        } else {
+          that.refs.modal.close()
+          if (window.parent.exitCallback) {
+            window.parent.exitCallback()
+          }
+        }
+        that.refs.changeButton.setLoading(false)
+      })
+    } else {
+      that.refs.form.setState({'error': 'Incorrect current password'})
+    }
+  },
+  onClose () {
+    'use strict'
+    if (window.parent.exitCallback) {
+      window.parent.exitCallback()
+    }
+  }
 })
 
 exports.ManageAccountView = ManageAccountView

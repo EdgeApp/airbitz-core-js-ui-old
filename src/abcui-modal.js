@@ -2,31 +2,31 @@ import React from 'react'
 import { render } from 'react-dom'
 
 var BootstrapButton = React.createClass({
-  getInitialState() {
+  getInitialState () {
     return {'loading': false}
   },
-  render() {
+  render () {
     if (this.state.loading) {
       return (<button type='button' className='btn btn-primary' disabled='disabled'>
-        <span className='glyphicon glyphicon-refresh glyphicon-refresh-animate'></span>
+        <span className='glyphicon glyphicon-refresh glyphicon-refresh-animate' />
       </button>)
     } else {
       return (<button type='button' {...this.props} className='btn btn-primary'>{this.props.children}</button>)
     }
   },
-  setLoading(isLoading, callback) {
+  setLoading (isLoading, callback) {
     this.setState({'loading': isLoading})
   }
 })
 
 var BootstrapInput = React.createClass({
   getInitialState () {
-    return { error:null, loading:null }
+    return { error: null, loading: null }
   },
   render () {
     var classes = 'form-group '
     if (this.state.loading) {
-      var subView = (<span className='help-block'><span className='glyphicon glyphicon-refresh glyphicon-refresh-animate'></span> {this.state.loading}</span>)
+      var subView = (<span className='help-block'><span className='glyphicon glyphicon-refresh glyphicon-refresh-animate' /> {this.state.loading}</span>)
     } else if (this.state.error) {
       var subView = (<span className='help-block'>{this.state.error}</span>)
       classes += 'has-error'
@@ -47,25 +47,24 @@ var BootstrapInput = React.createClass({
   }
 })
 
-
 var BootstrapModal = React.createClass({
-  getInitialState() {
+  getInitialState () {
     return {'title': this.props.title}
   },
-  componentDidMount() {
+  componentDidMount () {
     $(this.refs.root).modal({backdrop: 'static', keyboard: false, show: true})
     $(this.refs.root).on('hidden.bs.modal', this.handleHidden)
   },
-  componentWillUnmount() {
+  componentWillUnmount () {
     $(this.refs.root).off('hidden.bs.modal', this.handleHidden)
   },
-  close() {
+  close () {
     $(this.refs.root).modal('hide')
   },
-  open() {
+  open () {
     $(this.refs.root).modal('show')
   },
-  render() {
+  render () {
     return (
       <div className='modal fade' ref='root'>
         <div className='modal-dialog modal-lg'>
@@ -87,7 +86,7 @@ var BootstrapModal = React.createClass({
       </div>
     )
   },
-  handleCancel() {
+  handleCancel () {
     if (this.props.onClose) {
       // Parent will take care of closing the modal
       this.props.onClose()
@@ -95,7 +94,7 @@ var BootstrapModal = React.createClass({
       this.close()
     }
   },
-  handleHidden() {
+  handleHidden () {
     if (this.props.onHidden) {
       this.props.onHidden()
     }

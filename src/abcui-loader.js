@@ -16,26 +16,25 @@ var ChangePasswordView = manageAccount.ChangePasswordView
 
 var context = window.parent.abcContext
 
-
 var MenuItem = React.createClass({
-  render() {
+  render () {
     return (<li><a {...this.props} href='javascript:;' /></li>)
   }
 })
 const Index = React.createClass({
-  render() {
+  render () {
     return <h1>ABC</h1>
   }
 })
 
 const App = React.createClass({
-  render() {
+  render () {
     return (<div>{this.props.children}</div>)
   }
 })
 
 const NotFound = React.createClass({
-  render() {
+  render () {
     return (<h1>Not Found</h1>)
   }
 })
@@ -50,8 +49,8 @@ render((
       <Route path='recovery' component={RecoveryView} />
       <Route path='account' component={ManageAccountView} />
       <Route path='account/changepassword' component={ChangePasswordView} />
-      <Route path='account/changepin' component={ChangePinView} title='Change PIN'/>
-      <Route path='account/changepin-edge-login' component={ChangePinView} noRequirePassword='true' title='Login Successful. Please set a PIN for quick re-logins'/>
+      <Route path='account/changepin' component={ChangePinView} title='Change PIN' />
+      <Route path='account/changepin-edge-login' component={ChangePinView} noRequirePassword='true' title='Login Successful. Please set a PIN for quick re-logins' />
       <Route path='account/setuprecovery' component={SetupRecoveryView} />
       <Route path='account/setuprecovery-nopassword' component={SetupRecoveryView} noRequirePassword='true' />
     </Route>

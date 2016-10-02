@@ -2,15 +2,14 @@ import React from 'react'
 import { render } from 'react-dom'
 import abc from 'airbitz-core-js'
 import { Link, Router } from 'react-router'
-var ReactDOM = require('react-dom');
-
+var ReactDOM = require('react-dom')
 
 // var abcc = abc.ABCConditionCode
 var ABCError = abc.ABCError
 
 var AbcUiFormView = require('./abcui-formview')
 var LoginWithAirbitz = require('./abcui-loginwithairbitz')
-var classNames = require('classnames');
+var classNames = require('classnames')
 
 var strings = require('./abcui-strings')
 var modal = require('./abcui-modal.js')
@@ -24,15 +23,14 @@ var PasswordRequirementsInput = require('./abcui-password')
 var context = window.parent.abcContext
 
 var RegistrationView = React.createClass({
-  getInitialState() {
+  getInitialState () {
     return {
       showSuccess: false,
       account: null,
       usernameError: false
     }
   },
-  render() {
-
+  render () {
     var usernameClass = classNames({
       'form-group': true,
       'has-error': this.state.usernameError
@@ -46,7 +44,7 @@ var RegistrationView = React.createClass({
         onClose={this.onClose}>
 
         <AbcUiFormView ref='form'>
-          <LoginWithAirbitz onLogin={this.onLogin} register='true' ref='loginWithAirbitz'/>
+          <LoginWithAirbitz onLogin={this.onLogin} register='true' ref='loginWithAirbitz' />
           <div className='row'>
             <div className='col-sm-12'>
               <div className={usernameClass}>
@@ -81,19 +79,18 @@ var RegistrationView = React.createClass({
           </div>
         </AbcUiFormView>
 
-
       </BootstrapModal>
     )
-    
+
     var successMessage = (
       <div>
         <BootstrapModal ref='regModal' title={strings.account_created_text} onClose={this.onClose}>
           {String.format(strings.account_created_message, window.parent.abcuiContext.vendorName)}
-          <br/><br/>
+          <br /><br />
           {String.format(strings.account_created_zero_knowledge, window.parent.abcuiContext.vendorName)}
-          <br/><br/>
+          <br /><br />
           {String.format(strings.account_created_write_it_down, window.parent.abcuiContext.vendorName)}
-          <br/><br/>
+          <br /><br />
           <span className='input-group-btn'>
             <BootstrapButton onClick={this.onSuccessSetupRecovery}>{strings.setup_recovery_text}</BootstrapButton>
           </span>
@@ -110,21 +107,21 @@ var RegistrationView = React.createClass({
       return regForm
     }
   },
-  focus() {
-    this.refs.username.setState({error:null, loading:null})
+  focus () {
+    this.refs.username.setState({error: null, loading: null})
   },
-  blur() {
+  blur () {
     var that = this
     var username = that.refs.username.value()
     if (username) {
-      that.refs.username.setState({error:null, loading:'Checking availability...'})
-      context.usernameAvailable(username, function(err) {
+      that.refs.username.setState({error: null, loading: 'Checking availability...'})
+      context.usernameAvailable(username, function (err) {
         if (err) {
           that.setState({usernameError: true})
-          that.refs.username.setState({error:strings.username_already_taken, loading:null})
+          that.refs.username.setState({error: strings.username_already_taken, loading: null})
         } else {
           that.setState({usernameError: false})
-          that.refs.username.setState({error:null, loading:null})
+          that.refs.username.setState({error: null, loading: null})
         }
       })
     } else {
@@ -143,7 +140,7 @@ var RegistrationView = React.createClass({
   },
   handleKeypressPassword2 (e) {
     if (e.key === 'Enter') {
-      ReactDOM.findDOMNode(this.refs.pin).focus();
+      ReactDOM.findDOMNode(this.refs.pin).focus()
     }
   },
   handleKeypressPin (e) {
@@ -151,7 +148,7 @@ var RegistrationView = React.createClass({
       this.handleSubmit()
     }
   },
-  handleSubmit() {
+  handleSubmit () {
     var that = this
     if (this.refs.password.value() != this.refs.password_repeat.value()) {
       that.refs.form.setState({ 'error': 'Passwords do not match' })
@@ -174,7 +171,7 @@ var RegistrationView = React.createClass({
 
     this.refs.register.setLoading(true)
     var username = this.refs.username.value()
-    context.createAccount(username, this.refs.password.value(), this.refs.pin.value, function(err, result) {
+    context.createAccount(username, this.refs.password.value(), this.refs.pin.value, function (err, result) {
       that.refs.register.setLoading(false)
       if (err) {
         that.refs.form.setState({'error': ABCError(err, 'Unable to register at this time.').message})

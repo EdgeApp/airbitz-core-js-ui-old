@@ -1,10 +1,10 @@
 import React from 'react'
 
 var AbcUiFormView = React.createClass({
-  getInitialState() {
+  getInitialState () {
     return { error: null }
   },
-  render() {
+  render () {
     var errorView = null
     if (this.state.error) {
       errorView = (

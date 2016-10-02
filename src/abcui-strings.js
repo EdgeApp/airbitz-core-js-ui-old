@@ -1,7 +1,7 @@
-import LocalizedStrings from 'react-localization';
+import LocalizedStrings from 'react-localization'
 
 let strings = new LocalizedStrings({
-  en:{
+  en: {
     ok_button_text: 'OK',
     later_button_text: 'Later',
     current_password_text: 'Current Password',
@@ -22,10 +22,10 @@ let strings = new LocalizedStrings({
     sign_up_text: 'Sign Up',
     exit_pin_login_text: 'Exit PIN Login',
     incorrect_password_text: 'Incorrect Password',
-    save_recovery_token_popup:  'Save Recovery Token',
+    save_recovery_token_popup: 'Save Recovery Token',
     change_pin_text: 'Change PIN',
     error_setting_pin_text: 'Error setting PIN',
-    save_recovery_token_popup_message: "To complete account recovery setup you MUST save an account recovery token. This will be required to recover your account in addition to your username and recovery answers. Please enter your email below to send yourself the recovery token.",
+    save_recovery_token_popup_message: 'To complete account recovery setup you MUST save an account recovery token. This will be required to recover your account in addition to your username and recovery answers. Please enter your email below to send yourself the recovery token.',
     email_address_text: 'Email address',
     email_text: 'Email',
     send_using_xx: 'Send using {0}',
@@ -45,10 +45,10 @@ let strings = new LocalizedStrings({
     account_created_write_it_down: 'Would you like to setup password recovery questions to reset your account in case of a forgotten password?',
     username_already_taken: 'Username already taken',
     error_retrieving_questions: 'Server Error: Unable to retrieve question choices',
-    
+
     dummy_entry_to_keep_json_happy: ''
 
   }
-});
+})
 
 module.exports = strings
