@@ -1,6 +1,6 @@
 import React from 'react'
 import { render } from 'react-dom'
-import { Router, Route, IndexRoute, Link, hashHistory } from 'react-router'
+import { Router, Route, IndexRoute, hashHistory } from 'react-router'
 
 var recovery = require('./abcui-recovery.jsx')
 var RecoveryView = recovery.RecoveryView
@@ -14,13 +14,6 @@ var ManageAccountView = manageAccount.ManageAccountView
 var ChangePinView = manageAccount.ChangePinView
 var ChangePasswordView = manageAccount.ChangePasswordView
 
-var context = window.parent.abcContext
-
-var MenuItem = React.createClass({
-  render () {
-    return (<li><a {...this.props} href="javascript:;" /></li>)
-  }
-})
 const Index = React.createClass({
   render () {
     return <h1>ABC</h1>
@@ -30,12 +23,6 @@ const Index = React.createClass({
 const App = React.createClass({
   render () {
     return (<div>{this.props.children}</div>)
-  }
-})
-
-const NotFound = React.createClass({
-  render () {
-    return (<h1>Not Found</h1>)
   }
 })
 

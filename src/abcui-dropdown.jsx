@@ -2,10 +2,7 @@ import React from 'react'
 
 var AbcUiDropDown = React.createClass({
   render () {
-    var block = null
-    var that = this
     var contentList = this.props.contentList
-    var toggleInput = null
     var selectElement = (
       <select ref="selectedItem"
         className="form-control"
