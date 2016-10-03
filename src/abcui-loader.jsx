@@ -18,7 +18,7 @@ var context = window.parent.abcContext
 
 var MenuItem = React.createClass({
   render () {
-    return (<li><a {...this.props} href='javascript:;' /></li>)
+    return (<li><a {...this.props} href="javascript:;" /></li>)
   }
 })
 const Index = React.createClass({
@@ -41,18 +41,18 @@ const NotFound = React.createClass({
 
 render((
   <Router history={hashHistory}>
-    <Route path='/' component={App}>
+    <Route path="/" component={App}>
       <IndexRoute component={Index} />
-      <Route path='login' component={LoginView} />
-      <Route path='register' component={RegistrationView} />
-      <Route path='recovery/:token' component={RecoveryView} />
-      <Route path='recovery' component={RecoveryView} />
-      <Route path='account' component={ManageAccountView} />
-      <Route path='account/changepassword' component={ChangePasswordView} />
-      <Route path='account/changepin' component={ChangePinView} title='Change PIN' />
-      <Route path='account/changepin-edge-login' component={ChangePinView} noRequirePassword='true' title='Login Successful. Please set a PIN for quick re-logins' />
-      <Route path='account/setuprecovery' component={SetupRecoveryView} />
-      <Route path='account/setuprecovery-nopassword' component={SetupRecoveryView} noRequirePassword='true' />
+      <Route path="login" component={LoginView} />
+      <Route path="register" component={RegistrationView} />
+      <Route path="recovery/:token" component={RecoveryView} />
+      <Route path="recovery" component={RecoveryView} />
+      <Route path="account" component={ManageAccountView} />
+      <Route path="account/changepassword" component={ChangePasswordView} />
+      <Route path="account/changepin" component={ChangePinView} title="Change PIN" />
+      <Route path="account/changepin-edge-login" component={ChangePinView} noRequirePassword="true" title="Login Successful. Please set a PIN for quick re-logins" />
+      <Route path="account/setuprecovery" component={SetupRecoveryView} />
+      <Route path="account/setuprecovery-nopassword" component={SetupRecoveryView} noRequirePassword="true" />
     </Route>
   </Router>
 ), document.getElementById('app'))

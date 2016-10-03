@@ -7,8 +7,8 @@ var AbcUiDropDown = React.createClass({
     var contentList = this.props.contentList
     var toggleInput = null
     var selectElement = (
-      <select ref='selectedItem'
-        className='form-control'
+      <select ref="selectedItem"
+        className="form-control"
         onChange={this.handleSelection}
         defaultValue={this.props.selectedItem}>
         {contentList.map(function (content) {

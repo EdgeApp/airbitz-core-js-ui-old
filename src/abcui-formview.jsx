@@ -8,12 +8,12 @@ var AbcUiFormView = React.createClass({
     var errorView = null
     if (this.state.error) {
       errorView = (
-        <div className='form-group has-error text-center'>
-          <span className='help-block'>{this.state.error}</span>
+        <div className="form-group has-error text-center">
+          <span className="help-block">{this.state.error}</span>
         </div>)
     }
     return (
-      <form className='form'>
+      <form className="form">
         {errorView}
         {this.props.children}
       </form>

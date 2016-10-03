@@ -37,42 +37,42 @@ var RegistrationView = React.createClass({
     })
     var regForm = (
       <BootstrapModal
-        ref='regModal'
-        key='regModal'
-        cancel='Cancel'
-        title='Register'
+        ref="regModal"
+        key="regModal"
+        cancel="Cancel"
+        title="Register"
         onClose={this.onClose}>
 
-        <AbcUiFormView ref='form'>
-          <LoginWithAirbitz onLogin={this.onLogin} register='true' ref='loginWithAirbitz' />
-          <div className='row'>
-            <div className='col-sm-12'>
+        <AbcUiFormView ref="form">
+          <LoginWithAirbitz onLogin={this.onLogin} register="true" ref="loginWithAirbitz" />
+          <div className="row">
+            <div className="col-sm-12">
               <div className={usernameClass}>
-                <BootstrapInput type='text' ref='username' onKeyPress={this.handleKeypressUsername} placeholder='Choose a Username' className='form-control' onBlur={this.blur} onFocus={this.focus} />
+                <BootstrapInput type="text" ref="username" onKeyPress={this.handleKeypressUsername} placeholder="Choose a Username" className="form-control" onBlur={this.blur} onFocus={this.focus} />
               </div>
             </div>
-            <div className='col-sm-12'>
-              <div className='form-group'>
-                <PasswordRequirementsInput ref='password' onKeyPress={this.handleKeypressPassword} placeholder='Choose a Password' className='form-control' />
+            <div className="col-sm-12">
+              <div className="form-group">
+                <PasswordRequirementsInput ref="password" onKeyPress={this.handleKeypressPassword} placeholder="Choose a Password" className="form-control" />
               </div>
             </div>
-            <div className='col-sm-12'>
-              <div className='form-group'>
-                <PasswordRequirementsInput ref='password_repeat' onKeyPress={this.handleKeypressPassword2} placeholder='Repeat Password' className='form-control' />
+            <div className="col-sm-12">
+              <div className="form-group">
+                <PasswordRequirementsInput ref="password_repeat" onKeyPress={this.handleKeypressPassword2} placeholder="Repeat Password" className="form-control" />
               </div>
             </div>
 
-            <div className='col-sm-12'>
-              <div className='form-group'>
-                <div className='input-group'>
-                  <input type='password' ref='pin' onKeyPress={this.handleKeypressPin} maxLength='4' placeholder='Choose a 4 Digit PIN' className='form-control' />
+            <div className="col-sm-12">
+              <div className="form-group">
+                <div className="input-group">
+                  <input type="password" ref="pin" onKeyPress={this.handleKeypressPin} maxLength="4" placeholder="Choose a 4 Digit PIN" className="form-control" />
                 </div>
               </div>
             </div>
-            <div className='col-sm-12'>
-              <div className='form-group'>
-                <span className='input-group-btn'>
-                  <BootstrapButton ref='register' onClick={this.handleSubmit}>Register</BootstrapButton>
+            <div className="col-sm-12">
+              <div className="form-group">
+                <span className="input-group-btn">
+                  <BootstrapButton ref="register" onClick={this.handleSubmit}>Register</BootstrapButton>
                 </span>
               </div>
             </div>
@@ -84,17 +84,17 @@ var RegistrationView = React.createClass({
 
     var successMessage = (
       <div>
-        <BootstrapModal ref='regModal' title={strings.account_created_text} onClose={this.onClose}>
+        <BootstrapModal ref="regModal" title={strings.account_created_text} onClose={this.onClose}>
           {String.format(strings.account_created_message, window.parent.abcuiContext.vendorName)}
           <br /><br />
           {String.format(strings.account_created_zero_knowledge, window.parent.abcuiContext.vendorName)}
           <br /><br />
           {String.format(strings.account_created_write_it_down, window.parent.abcuiContext.vendorName)}
           <br /><br />
-          <span className='input-group-btn'>
+          <span className="input-group-btn">
             <BootstrapButton onClick={this.onSuccessSetupRecovery}>{strings.setup_recovery_text}</BootstrapButton>
           </span>
-          <span className='input-group-btn'>
+          <span className="input-group-btn">
             <BootstrapButton onClick={this.onSuccessClose}>{strings.later_button_text}</BootstrapButton>
           </span>
         </BootstrapModal>

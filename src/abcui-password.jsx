@@ -6,11 +6,11 @@ var PasswordRuleRow = React.createClass({
   render () {
     let imageIcon
     if (this.props.passed) {
-      imageIcon = (<span className='pull-right glyphicon glyphicon-ok' style={{color: 'green'}} aria-hidden='true' />)
+      imageIcon = (<span className="pull-right glyphicon glyphicon-ok" style={{color: 'green'}} aria-hidden="true" />)
     } else {
-      imageIcon = (<span className='pull-right glyphicon glyphicon-remove' aria-hidden='true' />)
+      imageIcon = (<span className="pull-right glyphicon glyphicon-remove" aria-hidden="true" />)
     }
-    return (<li>{ this.props.name } {imageIcon}</li>)
+    return (<li>{this.props.name} {imageIcon}</li>)
   }
 })
 
@@ -41,14 +41,14 @@ var PasswordRequirementsInput = React.createClass({
   render () {
     return (
 			<div>
-				<input ref='input' type='password'
+				<input ref="input" type="password"
   {...this.props}
   onFocus={this.onFocus}
   onBlur={this.onBlur}
   onKeyPress={this.onKeyPress}
   onKeyUp={this.onKeyUp} />
-          <span className='help-block'>
-            <ul ref='dropdown' className='list-unstyled'>{
+          <span className="help-block">
+            <ul ref="dropdown" className="list-unstyled">{
 							this.state.tests.map(r => {
   return (<PasswordRuleRow key={r.name} name={r.name} passed={r.passed} />)
 })

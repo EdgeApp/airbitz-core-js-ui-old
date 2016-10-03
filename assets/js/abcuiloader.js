@@ -16833,7 +16833,7 @@ var abcuiloader =
 /* 76 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	"use strict";
 
 	var _react = __webpack_require__(6);
 
@@ -16842,7 +16842,7 @@ var abcuiloader =
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var AbcUiFormView = _react2.default.createClass({
-	  displayName: 'AbcUiFormView',
+	  displayName: "AbcUiFormView",
 	  getInitialState: function getInitialState() {
 	    return { error: null };
 	  },
@@ -16850,18 +16850,18 @@ var abcuiloader =
 	    var errorView = null;
 	    if (this.state.error) {
 	      errorView = _react2.default.createElement(
-	        'div',
-	        { className: 'form-group has-error text-center' },
+	        "div",
+	        { className: "form-group has-error text-center" },
 	        _react2.default.createElement(
-	          'span',
-	          { className: 'help-block' },
+	          "span",
+	          { className: "help-block" },
 	          this.state.error
 	        )
 	      );
 	    }
 	    return _react2.default.createElement(
-	      'form',
-	      { className: 'form' },
+	      "form",
+	      { className: "form" },
 	      errorView,
 	      this.props.children
 	    );
@@ -41896,7 +41896,7 @@ var abcuiloader =
 /* 247 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	"use strict";
 
 	var _react = __webpack_require__(6);
 
@@ -41905,21 +41905,21 @@ var abcuiloader =
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var AbcUiDropDown = _react2.default.createClass({
-	  displayName: 'AbcUiDropDown',
+	  displayName: "AbcUiDropDown",
 	  render: function render() {
 	    var block = null;
 	    var that = this;
 	    var contentList = this.props.contentList;
 	    var toggleInput = null;
 	    var selectElement = _react2.default.createElement(
-	      'select',
-	      { ref: 'selectedItem',
-	        className: 'form-control',
+	      "select",
+	      { ref: "selectedItem",
+	        className: "form-control",
 	        onChange: this.handleSelection,
 	        defaultValue: this.props.selectedItem },
 	      contentList.map(function (content) {
 	        return _react2.default.createElement(
-	          'option',
+	          "option",
 	          { value: content, key: content },
 	          content
 	        );

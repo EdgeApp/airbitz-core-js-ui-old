@@ -24,18 +24,18 @@ var LoginWithAirbitz = React.createClass({
     this.buttonBouncerUrl = 'https://airbitz.co/blf/?address=' + buttonUrl
 
     return (
-			<div className='row'>
-				<div className='col-sm-12 text-center'>
-					<div className='form-group center-block' style={{'width': '320px'}}>
-						<a className='btn btn-block btn-social btn-facebook' onClick={this.onClick}>
-							<img src='Airbitz-icon-white-transparent.png' style={{'width': '28px', 'padding': '4px'}} />
-							{this.props.register ? strings.scan_barcode_to_register : strings.scan_barcode_to_signin }
+			<div className="row">
+				<div className="col-sm-12 text-center">
+					<div className="form-group center-block" style={{'width': '320px'}}>
+						<a className="btn btn-block btn-social btn-facebook" onClick={this.onClick}>
+							<img src="Airbitz-icon-white-transparent.png" style={{'width': '28px', 'padding': '4px'}} />
+							{this.props.register ? strings.scan_barcode_to_register : strings.scan_barcode_to_signin}
 						</a>
 					</div>
-					<div className='form-group center-block' style={{'width': '240px'}}>
-						<img id='barcode' style={{'width': '240px'}} />
+					<div className="form-group center-block" style={{'width': '240px'}}>
+						<img id="barcode" style={{'width': '240px'}} />
 					</div>
-					<div className='form-group center-block' >
+					<div className="form-group center-block" >
 						<label>OR</label>
 					</div>
 				</div>
