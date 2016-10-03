@@ -1,5 +1,4 @@
 import React from 'react'
-import { render } from 'react-dom'
 
 var BootstrapButton = React.createClass({
   getInitialState () {
@@ -25,10 +24,11 @@ var BootstrapInput = React.createClass({
   },
   render () {
     var classes = 'form-group '
+    let subView
     if (this.state.loading) {
-      var subView = (<span className="help-block"><span className="glyphicon glyphicon-refresh glyphicon-refresh-animate" /> {this.state.loading}</span>)
+      subView = (<span className="help-block"><span className="glyphicon glyphicon-refresh glyphicon-refresh-animate" /> {this.state.loading}</span>)
     } else if (this.state.error) {
-      var subView = (<span className="help-block">{this.state.error}</span>)
+      subView = (<span className="help-block">{this.state.error}</span>)
       classes += 'has-error'
     }
     return (
