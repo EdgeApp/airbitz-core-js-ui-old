@@ -10598,7 +10598,7 @@ var abcuiloader =
 	    save_recovery_token_popup: 'Save Recovery Token',
 	    change_pin_text: 'Change PIN',
 	    error_setting_pin_text: 'Error setting PIN',
-	    save_recovery_token_popup_message: "To complete account recovery setup you MUST save an account recovery token. This will be required to recover your account in addition to your username and recovery answers. Please enter your email below to send yourself the recovery token.",
+	    save_recovery_token_popup_message: 'To complete account recovery setup you MUST save an account recovery token. This will be required to recover your account in addition to your username and recovery answers. Please enter your email below to send yourself the recovery token.',
 	    email_address_text: 'Email address',
 	    email_text: 'Email',
 	    send_using_xx: 'Send using {0}',
@@ -18783,101 +18783,101 @@ var abcuiloader =
 	var strings = __webpack_require__(46);
 
 	var PasswordRuleRow = _react2.default.createClass({
-		displayName: 'PasswordRuleRow',
-		render: function render() {
-			var imageIcon = void 0;
-			if (this.props.passed) {
-				imageIcon = _react2.default.createElement('span', { className: 'pull-right glyphicon glyphicon-ok', style: { color: 'green' }, 'aria-hidden': 'true' });
-			} else {
-				imageIcon = _react2.default.createElement('span', { className: 'pull-right glyphicon glyphicon-remove', 'aria-hidden': 'true' });
-			}
-			return _react2.default.createElement(
-				'li',
-				null,
-				this.props.name,
-				' ',
-				imageIcon
-			);
-		}
+	  displayName: 'PasswordRuleRow',
+	  render: function render() {
+	    var imageIcon = void 0;
+	    if (this.props.passed) {
+	      imageIcon = _react2.default.createElement('span', { className: 'pull-right glyphicon glyphicon-ok', style: { color: 'green' }, 'aria-hidden': 'true' });
+	    } else {
+	      imageIcon = _react2.default.createElement('span', { className: 'pull-right glyphicon glyphicon-remove', 'aria-hidden': 'true' });
+	    }
+	    return _react2.default.createElement(
+	      'li',
+	      null,
+	      this.props.name,
+	      ' ',
+	      imageIcon
+	    );
+	  }
 	});
 
 	var PasswordRequirementsInput = _react2.default.createClass({
-		displayName: 'PasswordRequirementsInput',
-		getInitialState: function getInitialState() {
-			return {
-				tests: PasswordRequirementsInput.testPassword('')
-			};
-		},
-		componentDidMount: function componentDidMount() {
-			$(this.refs.dropdown).hide();
-		},
-		componentWillUnmount: function componentWillUnmount() {},
+	  displayName: 'PasswordRequirementsInput',
+	  getInitialState: function getInitialState() {
+	    return {
+	      tests: PasswordRequirementsInput.testPassword('')
+	    };
+	  },
+	  componentDidMount: function componentDidMount() {
+	    $(this.refs.dropdown).hide();
+	  },
+	  componentWillUnmount: function componentWillUnmount() {},
 
-		statics: {
-			testPassword: function testPassword(password) {
-				if (!password) {
-					password = '';
-				}
-				return [{ name: strings.must_have_one_upper, test: function test(s) {
-						return password.match(/[A-Z]/) != null;
-					} }, { name: strings.must_have_one_lower, test: function test(s) {
-						return password.match(/[a-z]/) != null;
-					} }, { name: strings.must_have_one_number, test: function test(s) {
-						return password.match(/\d/) != null;
-					} }, { name: strings.must_have_10_char, test: function test(s) {
-						return password.length >= 10;
-					} }].map(function (r) {
-					return { name: r.name, passed: r.test(password) };
-				});
-			}
-		},
-		render: function render() {
-			return _react2.default.createElement(
-				'div',
-				null,
-				_react2.default.createElement('input', _extends({ ref: 'input', type: 'password'
-				}, this.props, {
-					onFocus: this.onFocus,
-					onBlur: this.onBlur,
-					onKeyPress: this.onKeyPress,
-					onKeyUp: this.onKeyUp })),
-				_react2.default.createElement(
-					'span',
-					{ className: 'help-block' },
-					_react2.default.createElement(
-						'ul',
-						{ ref: 'dropdown', className: 'list-unstyled' },
-						this.state.tests.map(function (r) {
-							return _react2.default.createElement(PasswordRuleRow, { key: r.name, name: r.name, passed: r.passed });
-						})
-					)
-				)
-			);
-		},
-		onFocus: function onFocus() {
-			$(this.refs.dropdown).fadeIn();
-		},
-		onBlur: function onBlur() {
-			if (this.meetsRequirements()) {
-				$(this.refs.dropdown).fadeOut();
-			}
-		},
-		onKeyPress: function onKeyPress(e) {
-			if (this.props.onKeyPress) {
-				this.props.onKeyPress(e);
-			}
-		},
-		onKeyUp: function onKeyUp() {
-			this.setState({ 'tests': PasswordRequirementsInput.testPassword(this.refs.input.value) });
-		},
-		meetsRequirements: function meetsRequirements() {
-			return PasswordRequirementsInput.testPassword(this.refs.input.value).reduce(function (p, c) {
-				return p && c.passed;
-			}, true);
-		},
-		value: function value() {
-			return this.refs.input.value;
-		}
+	  statics: {
+	    testPassword: function testPassword(password) {
+	      if (!password) {
+	        password = '';
+	      }
+	      return [{ name: strings.must_have_one_upper, test: function test(s) {
+	          return password.match(/[A-Z]/) != null;
+	        } }, { name: strings.must_have_one_lower, test: function test(s) {
+	          return password.match(/[a-z]/) != null;
+	        } }, { name: strings.must_have_one_number, test: function test(s) {
+	          return password.match(/\d/) != null;
+	        } }, { name: strings.must_have_10_char, test: function test(s) {
+	          return password.length >= 10;
+	        } }].map(function (r) {
+	        return { name: r.name, passed: r.test(password) };
+	      });
+	    }
+	  },
+	  render: function render() {
+	    return _react2.default.createElement(
+	      'div',
+	      null,
+	      _react2.default.createElement('input', _extends({ ref: 'input', type: 'password'
+	      }, this.props, {
+	        onFocus: this.onFocus,
+	        onBlur: this.onBlur,
+	        onKeyPress: this.onKeyPress,
+	        onKeyUp: this.onKeyUp })),
+	      _react2.default.createElement(
+	        'span',
+	        { className: 'help-block' },
+	        _react2.default.createElement(
+	          'ul',
+	          { ref: 'dropdown', className: 'list-unstyled' },
+	          this.state.tests.map(function (r) {
+	            return _react2.default.createElement(PasswordRuleRow, { key: r.name, name: r.name, passed: r.passed });
+	          })
+	        )
+	      )
+	    );
+	  },
+	  onFocus: function onFocus() {
+	    $(this.refs.dropdown).fadeIn();
+	  },
+	  onBlur: function onBlur() {
+	    if (this.meetsRequirements()) {
+	      $(this.refs.dropdown).fadeOut();
+	    }
+	  },
+	  onKeyPress: function onKeyPress(e) {
+	    if (this.props.onKeyPress) {
+	      this.props.onKeyPress(e);
+	    }
+	  },
+	  onKeyUp: function onKeyUp() {
+	    this.setState({ 'tests': PasswordRequirementsInput.testPassword(this.refs.input.value) });
+	  },
+	  meetsRequirements: function meetsRequirements() {
+	    return PasswordRequirementsInput.testPassword(this.refs.input.value).reduce(function (p, c) {
+	      return p && c.passed;
+	    }, true);
+	  },
+	  value: function value() {
+	    return this.refs.input.value;
+	  }
 	});
 
 	module.exports = PasswordRequirementsInput;
@@ -34688,607 +34688,606 @@ var abcuiloader =
 	var context = window.parent.abcContext;
 
 	var AbcUserList = _react2.default.createClass({
-		displayName: 'AbcUserList',
-		getInitialState: function getInitialState() {
-			return { showInput: false };
-		},
-		render: function render() {
-			var block = null;
-			var that = this;
-			var userList = context ? context.usernameList().sort() : [];
-			var toggleInput = null;
-			if (this.props.allowInput) {
-				toggleInput = _react2.default.createElement(
-					'span',
-					{ className: 'input-group-btn' },
-					_react2.default.createElement(
-						'button',
-						{ type: 'button', onClick: this.toggleInput, className: 'btn btn-primary' },
-						'X'
-					)
-				);
-			}
-			if (this.props.allowInput && (userList.length == 0 || this.state.showInput)) {
-				block = _react2.default.createElement(
-					'div',
-					{ className: 'input-group' },
-					_react2.default.createElement('input', { autoFocus: true, ref: 'username', type: 'text', placeholder: 'username', className: 'form-control' }),
-					_react2.default.createElement(
-						'span',
-						{ className: 'input-group-btn' },
-						_react2.default.createElement(
-							'button',
-							{ type: 'button', onClick: this.toggleInput, className: 'btn btn-primary' },
-							'X'
-						)
-					)
-				);
-			} else {
-				var selectElement = _react2.default.createElement(
-					'select',
-					{ ref: 'username',
-						className: 'form-control',
-						onChange: this.handleSelection,
-						defaultValue: this.props.username },
-					userList.map(function (username) {
-						return _react2.default.createElement(
-							'option',
-							{ value: username, key: username },
-							username
-						);
-					})
-				);
-				if (this.props.allowInput) {
-					return _react2.default.createElement(
-						'div',
-						{ className: 'input-group' },
-						selectElement,
-						toggleInput
-					);
-				} else {
-					return selectElement;
-				}
-			}
-			return block;
-		},
-		toggleInput: function toggleInput() {
-			this.setState({ 'showInput': !this.state.showInput });
-			if (this.state.showInput) {
-				this.setState({ username: '' });
-				this.refs.username.focus();
-			}
-		},
-		handleSelection: function handleSelection() {
-			this.props.onUserChange(this.refs.username.value);
-		},
-		getValue: function getValue() {
-			return this.refs.username.value;
-		}
+	  displayName: 'AbcUserList',
+	  getInitialState: function getInitialState() {
+	    return { showInput: false };
+	  },
+	  render: function render() {
+	    var block = null;
+	    var that = this;
+	    var userList = context ? context.usernameList().sort() : [];
+	    var toggleInput = null;
+	    if (this.props.allowInput) {
+	      toggleInput = _react2.default.createElement(
+	        'span',
+	        { className: 'input-group-btn' },
+	        _react2.default.createElement(
+	          'button',
+	          { type: 'button', onClick: this.toggleInput, className: 'btn btn-primary' },
+	          'X'
+	        )
+	      );
+	    }
+	    if (this.props.allowInput && (userList.length == 0 || this.state.showInput)) {
+	      block = _react2.default.createElement(
+	        'div',
+	        { className: 'input-group' },
+	        _react2.default.createElement('input', { autoFocus: true, ref: 'username', type: 'text', placeholder: 'username', className: 'form-control' }),
+	        _react2.default.createElement(
+	          'span',
+	          { className: 'input-group-btn' },
+	          _react2.default.createElement(
+	            'button',
+	            { type: 'button', onClick: this.toggleInput, className: 'btn btn-primary' },
+	            'X'
+	          )
+	        )
+	      );
+	    } else {
+	      var selectElement = _react2.default.createElement(
+	        'select',
+	        { ref: 'username',
+	          className: 'form-control',
+	          onChange: this.handleSelection,
+	          defaultValue: this.props.username },
+	        userList.map(function (username) {
+	          return _react2.default.createElement(
+	            'option',
+	            { value: username, key: username },
+	            username
+	          );
+	        })
+	      );
+	      if (this.props.allowInput) {
+	        return _react2.default.createElement(
+	          'div',
+	          { className: 'input-group' },
+	          selectElement,
+	          toggleInput
+	        );
+	      } else {
+	        return selectElement;
+	      }
+	    }
+	    return block;
+	  },
+	  toggleInput: function toggleInput() {
+	    this.setState({ 'showInput': !this.state.showInput });
+	    if (this.state.showInput) {
+	      this.setState({ username: '' });
+	      this.refs.username.focus();
+	    }
+	  },
+	  handleSelection: function handleSelection() {
+	    this.props.onUserChange(this.refs.username.value);
+	  },
+	  getValue: function getValue() {
+	    return this.refs.username.value;
+	  }
 	});
 
 	var AbcPasswordLoginForm = _react2.default.createClass({
-		displayName: 'AbcPasswordLoginForm',
-		render: function render() {
-			return _react2.default.createElement(
-				AbcUiFormView,
-				{ ref: 'form' },
-				_react2.default.createElement(
-					'div',
-					{ className: 'row' },
-					_react2.default.createElement(
-						'div',
-						{ className: 'col-sm-12' },
-						_react2.default.createElement(
-							'div',
-							{ className: 'form-group' },
-							_react2.default.createElement(AbcUserList, {
-								ref: 'username',
-								allowInput: true,
-								username: this.props.username,
-								onUserChange: this.props.onUserChange })
-						)
-					)
-				),
-				_react2.default.createElement(
-					'div',
-					{ className: 'row' },
-					_react2.default.createElement(
-						'div',
-						{ className: 'col-sm-12' },
-						_react2.default.createElement(
-							'div',
-							{ className: 'form-group' },
-							_react2.default.createElement('input', { ref: 'password', type: 'password', onKeyPress: this.handlePasswordKeyPress, placeholder: strings.password_text, className: 'form-control' })
-						)
-					)
-				),
-				_react2.default.createElement(
-					'div',
-					{ className: 'row' },
-					_react2.default.createElement(
-						'div',
-						{ className: 'col-sm-12 text-center' },
-						_react2.default.createElement(
-							'div',
-							{ className: 'form-group' },
-							_react2.default.createElement(
-								BootstrapButton,
-								{ ref: 'signin', onClick: this.handleSubmit },
-								'Sign In'
-							)
-						)
-					)
-				),
-				_react2.default.createElement(
-					'div',
-					{ className: 'row' },
-					_react2.default.createElement(
-						'div',
-						{ className: 'col-sm-12 text-center' },
-						_react2.default.createElement(
-							'div',
-							{ className: 'form-group' },
-							_react2.default.createElement(
-								_reactRouter.Link,
-								{ className: 'btn btn-link', to: '/recovery' },
-								'Forgot Password'
-							)
-						)
-					)
-				)
-			);
-		},
-		onClose: function onClose() {},
-		handlePasswordKeyPress: function handlePasswordKeyPress(e) {
-			if (e.key === 'Enter') {
-				this.handleSubmit();
-			}
-		},
-		handleSubmit: function handleSubmit() {
-			var that = this;
-			this.refs.signin.setLoading(true);
-			this.refs.form.setState({ 'error': null });
-			context.loginWithPassword(this.refs.username.getValue(), this.refs.password.value, null, null, function (err, result) {
-				if (err) {
-					that.refs.form.setState({ 'error': ABCError(err, strings.invalid_password_text).message });
-				} else {
-					that.props.onSuccess(result);
-				}
-				that.refs.signin.setLoading(false);
-			});
-			return false;
-		}
+	  displayName: 'AbcPasswordLoginForm',
+	  render: function render() {
+	    return _react2.default.createElement(
+	      AbcUiFormView,
+	      { ref: 'form' },
+	      _react2.default.createElement(
+	        'div',
+	        { className: 'row' },
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'col-sm-12' },
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'form-group' },
+	            _react2.default.createElement(AbcUserList, {
+	              ref: 'username',
+	              allowInput: true,
+	              username: this.props.username,
+	              onUserChange: this.props.onUserChange })
+	          )
+	        )
+	      ),
+	      _react2.default.createElement(
+	        'div',
+	        { className: 'row' },
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'col-sm-12' },
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'form-group' },
+	            _react2.default.createElement('input', { ref: 'password', type: 'password', onKeyPress: this.handlePasswordKeyPress, placeholder: strings.password_text, className: 'form-control' })
+	          )
+	        )
+	      ),
+	      _react2.default.createElement(
+	        'div',
+	        { className: 'row' },
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'col-sm-12 text-center' },
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'form-group' },
+	            _react2.default.createElement(
+	              BootstrapButton,
+	              { ref: 'signin', onClick: this.handleSubmit },
+	              'Sign In'
+	            )
+	          )
+	        )
+	      ),
+	      _react2.default.createElement(
+	        'div',
+	        { className: 'row' },
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'col-sm-12 text-center' },
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'form-group' },
+	            _react2.default.createElement(
+	              _reactRouter.Link,
+	              { className: 'btn btn-link', to: '/recovery' },
+	              'Forgot Password'
+	            )
+	          )
+	        )
+	      )
+	    );
+	  },
+	  onClose: function onClose() {},
+	  handlePasswordKeyPress: function handlePasswordKeyPress(e) {
+	    if (e.key === 'Enter') {
+	      this.handleSubmit();
+	    }
+	  },
+	  handleSubmit: function handleSubmit() {
+	    var that = this;
+	    this.refs.signin.setLoading(true);
+	    this.refs.form.setState({ 'error': null });
+	    context.loginWithPassword(this.refs.username.getValue(), this.refs.password.value, null, null, function (err, result) {
+	      if (err) {
+	        that.refs.form.setState({ 'error': ABCError(err, strings.invalid_password_text).message });
+	      } else {
+	        that.props.onSuccess(result);
+	      }
+	      that.refs.signin.setLoading(false);
+	    });
+	    return false;
+	  }
 	});
 
 	var AbcPinLoginForm = _react2.default.createClass({
-		displayName: 'AbcPinLoginForm',
-		render: function render() {
-			return _react2.default.createElement(
-				AbcUiFormView,
-				{ ref: 'form' },
-				_react2.default.createElement(
-					'div',
-					{ className: 'row' },
-					_react2.default.createElement(
-						'div',
-						{ className: 'col-sm-12 text-center' },
-						_react2.default.createElement(
-							'div',
-							{ className: 'form-group center-block', style: { 'width': '240px' } },
-							_react2.default.createElement(AbcUserList, { ref: 'username',
-								allowInput: false,
-								username: this.props.username,
-								onUserChange: this.props.onUserChange })
-						)
-					),
-					_react2.default.createElement(
-						'div',
-						{ className: 'col-sm-12 text-center' },
-						_react2.default.createElement(
-							'div',
-							{ className: 'form-group center-block', style: { 'width': '100px' } },
-							_react2.default.createElement('input', { ref: 'pin', type: 'password', placeholder: strings.pin_text, onKeyPress: this.handlePinKeyPress, className: 'form-control', maxLength: '4' })
-						)
-					)
-				),
-				_react2.default.createElement(
-					'div',
-					{ className: 'row' },
-					_react2.default.createElement(
-						'div',
-						{ className: 'col-sm-12 text-center' },
-						_react2.default.createElement(
-							'div',
-							{ className: 'form-group center-block', style: { 'width': '240px' } },
-							_react2.default.createElement(
-								BootstrapButton,
-								{ ref: 'signin', onClick: this.handleSubmit },
-								strings.sign_in_text
-							)
-						)
-					)
-				),
-				_react2.default.createElement(
-					'div',
-					{ className: 'row' },
-					_react2.default.createElement(
-						'div',
-						{ className: 'col-sm-12 text-center' },
-						_react2.default.createElement(
-							'div',
-							{ className: 'form-group center-block', style: { 'width': '240px' } },
-							_react2.default.createElement(
-								'button',
-								{ type: 'button', onClick: this.handleExit, className: 'btn-link' },
-								strings.exit_pin_login_text
-							)
-						)
-					)
-				)
-			);
-		},
-		onClose: function onClose() {},
-		handleExit: function handleExit() {
-			this.props.onExit();
-			return false;
-		},
-		handlePinKeyPress: function handlePinKeyPress(e) {
-			if (e.key === 'Enter') {
-				this.handleSubmit();
-			}
-		},
-		handleSubmit: function handleSubmit() {
-			var that = this;
-			this.refs.signin.setLoading(true);
-			context.loginWithPIN(this.refs.username.getValue(), this.refs.pin.value, function (err, result) {
-				if (err) {
-					that.refs.form.setState({ 'error': ABCError(err, 'Failed to login with PIN.').message });
-				} else {
-					that.props.onSuccess(result);
-				}
-				that.refs.signin.setLoading(false);
-			});
-			return false;
-		}
+	  displayName: 'AbcPinLoginForm',
+	  render: function render() {
+	    return _react2.default.createElement(
+	      AbcUiFormView,
+	      { ref: 'form' },
+	      _react2.default.createElement(
+	        'div',
+	        { className: 'row' },
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'col-sm-12 text-center' },
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'form-group center-block', style: { 'width': '240px' } },
+	            _react2.default.createElement(AbcUserList, { ref: 'username',
+	              allowInput: false,
+	              username: this.props.username,
+	              onUserChange: this.props.onUserChange })
+	          )
+	        ),
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'col-sm-12 text-center' },
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'form-group center-block', style: { 'width': '100px' } },
+	            _react2.default.createElement('input', { ref: 'pin', type: 'password', placeholder: strings.pin_text, onKeyPress: this.handlePinKeyPress, className: 'form-control', maxLength: '4' })
+	          )
+	        )
+	      ),
+	      _react2.default.createElement(
+	        'div',
+	        { className: 'row' },
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'col-sm-12 text-center' },
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'form-group center-block', style: { 'width': '240px' } },
+	            _react2.default.createElement(
+	              BootstrapButton,
+	              { ref: 'signin', onClick: this.handleSubmit },
+	              strings.sign_in_text
+	            )
+	          )
+	        )
+	      ),
+	      _react2.default.createElement(
+	        'div',
+	        { className: 'row' },
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'col-sm-12 text-center' },
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'form-group center-block', style: { 'width': '240px' } },
+	            _react2.default.createElement(
+	              'button',
+	              { type: 'button', onClick: this.handleExit, className: 'btn-link' },
+	              strings.exit_pin_login_text
+	            )
+	          )
+	        )
+	      )
+	    );
+	  },
+	  onClose: function onClose() {},
+	  handleExit: function handleExit() {
+	    this.props.onExit();
+	    return false;
+	  },
+	  handlePinKeyPress: function handlePinKeyPress(e) {
+	    if (e.key === 'Enter') {
+	      this.handleSubmit();
+	    }
+	  },
+	  handleSubmit: function handleSubmit() {
+	    var that = this;
+	    this.refs.signin.setLoading(true);
+	    context.loginWithPIN(this.refs.username.getValue(), this.refs.pin.value, function (err, result) {
+	      if (err) {
+	        that.refs.form.setState({ 'error': ABCError(err, 'Failed to login with PIN.').message });
+	      } else {
+	        that.props.onSuccess(result);
+	      }
+	      that.refs.signin.setLoading(false);
+	    });
+	    return false;
+	  }
 	});
 
 	var LoginView = _react2.default.createClass({
-		displayName: 'LoginView',
-		getInitialState: function getInitialState() {
-			var doRegistration = context.usernameList().sort().length == 0 ? true : false;
-			return {
-				forcePasswordLogin: false,
-				showRegistration: doRegistration
-			};
-		},
+	  displayName: 'LoginView',
+	  getInitialState: function getInitialState() {
+	    var doRegistration = context.usernameList().sort().length == 0 ? true : false;
+	    return {
+	      forcePasswordLogin: false,
+	      showRegistration: doRegistration
+	    };
+	  },
 
-		statics: {
-			currentUser: function currentUser() {
-				return localStorage.getItem('airbitz.current_user');
-			},
-			updateCurrentUser: function updateCurrentUser(username) {
-				localStorage.setItem('airbitz.current_user', username);
-			}
-		},
-		render: function render() {
-			var block = null;
-			var currentUser = LoginView.currentUser();
-			var showPinLogin = context && currentUser && context.pinExists(currentUser);
-			if (this.state.forcePasswordLogin) {
-				showPinLogin = false;
-			}
-			if (this.state.showRegistration) {
-				block = _react2.default.createElement(
-					'div',
-					null,
-					_react2.default.createElement(RegistrationForm, null),
-					_react2.default.createElement(
-						'button',
-						{ type: 'button', onClick: this.handleSignIn, className: 'btn-link' },
-						strings.sign_in_text
-					)
-				);
-			} else if (showPinLogin) {
-				block = _react2.default.createElement(
-					'div',
-					null,
-					_react2.default.createElement(AbcPinLoginForm, { ref: 'pinPasswordForm',
-						username: currentUser,
-						onSuccess: this.handleSuccess,
-						onError: this.handleError,
-						onUserChange: this.handleUserChange,
-						onExit: this.handlePinExit }),
-					_react2.default.createElement(
-						'button',
-						{ type: 'button', onClick: this.handleSignUp, className: 'btn-link' },
-						strings.sign_up_text
-					)
-				);
-			} else {
-				block = _react2.default.createElement(
-					'div',
-					null,
-					_react2.default.createElement(AbcPasswordLoginForm, { ref: 'pinPasswordForm',
-						username: currentUser,
-						onSuccess: this.handleSuccess,
-						onError: this.handleError,
-						onUserChange: this.handleUserChange }),
-					_react2.default.createElement(
-						'button',
-						{ type: 'button', onClick: this.handleSignUp, className: 'btn-link' },
-						strings.sign_up_text
-					)
-				);
-			}
-			return _react2.default.createElement(
-				BootstrapModal,
-				{
-					ref: 'loginModal',
-					key: 'loginModal',
-					cancel: 'Cancel',
-					title: 'Airbitz Edge Login',
-					onClose: this.onClose },
-				_react2.default.createElement(LoginWithAirbitz, { onLogin: this.handleSuccess, ref: 'loginWithAirbitz' }),
-				block
-			);
-		},
-		handlePinExit: function handlePinExit() {
-			this.setState({ 'forcePasswordLogin': true });
-		},
-		handleUserChange: function handleUserChange(newUsername) {
-			LoginView.updateCurrentUser(newUsername);
-			this.setState({ 'forcePasswordLogin': false });
-		},
-		handleSuccess: function handleSuccess(account) {
-			this.refs.loginWithAirbitz.cancelRequest();
-			this.setState({ 'forcePasswordLogin': false });
-			LoginView.updateCurrentUser(account.username);
-			if (window.parent.loginCallback) {
-				this.refs.loginModal.close();
-				window.parent.loginCallback(null, account);
-			}
-		},
-		handleSignIn: function handleSignIn() {
-			this.setState({ showRegistration: false });
-		},
-		handleSignUp: function handleSignUp() {
-			this.setState({ showRegistration: true });
-		},
-		onClose: function onClose() {
-			this.refs.loginWithAirbitz.cancelRequest();
-			if (this.refs.pinPasswordForm) this.refs.pinPasswordForm.onClose();
-			if (window.parent.exitCallback) {
-				window.parent.exitCallback();
-			}
-		}
+	  statics: {
+	    currentUser: function currentUser() {
+	      return localStorage.getItem('airbitz.current_user');
+	    },
+	    updateCurrentUser: function updateCurrentUser(username) {
+	      localStorage.setItem('airbitz.current_user', username);
+	    }
+	  },
+	  render: function render() {
+	    var block = null;
+	    var currentUser = LoginView.currentUser();
+	    var showPinLogin = context && currentUser && context.pinExists(currentUser);
+	    if (this.state.forcePasswordLogin) {
+	      showPinLogin = false;
+	    }
+	    if (this.state.showRegistration) {
+	      block = _react2.default.createElement(
+	        'div',
+	        null,
+	        _react2.default.createElement(RegistrationForm, null),
+	        _react2.default.createElement(
+	          'button',
+	          { type: 'button', onClick: this.handleSignIn, className: 'btn-link' },
+	          strings.sign_in_text
+	        )
+	      );
+	    } else if (showPinLogin) {
+	      block = _react2.default.createElement(
+	        'div',
+	        null,
+	        _react2.default.createElement(AbcPinLoginForm, { ref: 'pinPasswordForm',
+	          username: currentUser,
+	          onSuccess: this.handleSuccess,
+	          onError: this.handleError,
+	          onUserChange: this.handleUserChange,
+	          onExit: this.handlePinExit }),
+	        _react2.default.createElement(
+	          'button',
+	          { type: 'button', onClick: this.handleSignUp, className: 'btn-link' },
+	          strings.sign_up_text
+	        )
+	      );
+	    } else {
+	      block = _react2.default.createElement(
+	        'div',
+	        null,
+	        _react2.default.createElement(AbcPasswordLoginForm, { ref: 'pinPasswordForm',
+	          username: currentUser,
+	          onSuccess: this.handleSuccess,
+	          onError: this.handleError,
+	          onUserChange: this.handleUserChange }),
+	        _react2.default.createElement(
+	          'button',
+	          { type: 'button', onClick: this.handleSignUp, className: 'btn-link' },
+	          strings.sign_up_text
+	        )
+	      );
+	    }
+	    return _react2.default.createElement(
+	      BootstrapModal,
+	      {
+	        ref: 'loginModal',
+	        key: 'loginModal',
+	        cancel: 'Cancel',
+	        title: 'Airbitz Edge Login',
+	        onClose: this.onClose },
+	      _react2.default.createElement(LoginWithAirbitz, { onLogin: this.handleSuccess, ref: 'loginWithAirbitz' }),
+	      block
+	    );
+	  },
+	  handlePinExit: function handlePinExit() {
+	    this.setState({ 'forcePasswordLogin': true });
+	  },
+	  handleUserChange: function handleUserChange(newUsername) {
+	    LoginView.updateCurrentUser(newUsername);
+	    this.setState({ 'forcePasswordLogin': false });
+	  },
+	  handleSuccess: function handleSuccess(account) {
+	    this.refs.loginWithAirbitz.cancelRequest();
+	    this.setState({ 'forcePasswordLogin': false });
+	    LoginView.updateCurrentUser(account.username);
+	    if (window.parent.loginCallback) {
+	      this.refs.loginModal.close();
+	      window.parent.loginCallback(null, account);
+	    }
+	  },
+	  handleSignIn: function handleSignIn() {
+	    this.setState({ showRegistration: false });
+	  },
+	  handleSignUp: function handleSignUp() {
+	    this.setState({ showRegistration: true });
+	  },
+	  onClose: function onClose() {
+	    this.refs.loginWithAirbitz.cancelRequest();
+	    if (this.refs.pinPasswordForm) this.refs.pinPasswordForm.onClose();
+	    if (window.parent.exitCallback) {
+	      window.parent.exitCallback();
+	    }
+	  }
 	});
 
 	var RegistrationForm = _react2.default.createClass({
-		displayName: 'RegistrationForm',
-		getInitialState: function getInitialState() {
-			return {
-				showSuccess: false,
-				account: null,
-				usernameError: false
-			};
-		},
-		render: function render() {
+	  displayName: 'RegistrationForm',
+	  getInitialState: function getInitialState() {
+	    return {
+	      showSuccess: false,
+	      account: null,
+	      usernameError: false
+	    };
+	  },
+	  render: function render() {
+	    var usernameClass = classNames({
+	      'form-group': true,
+	      'has-error': this.state.usernameError
+	    });
+	    var regForm = _react2.default.createElement(
+	      AbcUiFormView,
+	      { ref: 'form' },
+	      _react2.default.createElement(
+	        'div',
+	        { className: 'row' },
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'col-sm-12' },
+	          _react2.default.createElement(
+	            'div',
+	            { className: usernameClass },
+	            _react2.default.createElement(BootstrapInput, { type: 'text', ref: 'username', onKeyPress: this.handleKeypressUsername, placeholder: 'Choose a Username', className: 'form-control', onBlur: this.blur, onFocus: this.focus })
+	          )
+	        ),
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'col-sm-12' },
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'form-group' },
+	            _react2.default.createElement(PasswordRequirementsInput, { ref: 'password', onKeyPress: this.handleKeypressPassword, placeholder: 'Choose a Password', className: 'form-control' })
+	          )
+	        ),
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'col-sm-12' },
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'form-group' },
+	            _react2.default.createElement(PasswordRequirementsInput, { ref: 'password_repeat', onKeyPress: this.handleKeypressPassword2, placeholder: 'Repeat Password', className: 'form-control' })
+	          )
+	        ),
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'col-sm-12' },
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'form-group' },
+	            _react2.default.createElement(
+	              'div',
+	              { className: 'input-group' },
+	              _react2.default.createElement('input', { type: 'password', ref: 'pin', onKeyPress: this.handleKeypressPin, maxLength: '4', placeholder: 'Choose a 4 Digit PIN', className: 'form-control' })
+	            )
+	          )
+	        ),
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'col-sm-12' },
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'form-group' },
+	            _react2.default.createElement(
+	              'span',
+	              { className: 'input-group-btn' },
+	              _react2.default.createElement(
+	                BootstrapButton,
+	                { ref: 'register', onClick: this.handleSubmit },
+	                'Register'
+	              )
+	            )
+	          )
+	        )
+	      )
+	    );
 
-			var usernameClass = classNames({
-				'form-group': true,
-				'has-error': this.state.usernameError
-			});
-			var regForm = _react2.default.createElement(
-				AbcUiFormView,
-				{ ref: 'form' },
-				_react2.default.createElement(
-					'div',
-					{ className: 'row' },
-					_react2.default.createElement(
-						'div',
-						{ className: 'col-sm-12' },
-						_react2.default.createElement(
-							'div',
-							{ className: usernameClass },
-							_react2.default.createElement(BootstrapInput, { type: 'text', ref: 'username', onKeyPress: this.handleKeypressUsername, placeholder: 'Choose a Username', className: 'form-control', onBlur: this.blur, onFocus: this.focus })
-						)
-					),
-					_react2.default.createElement(
-						'div',
-						{ className: 'col-sm-12' },
-						_react2.default.createElement(
-							'div',
-							{ className: 'form-group' },
-							_react2.default.createElement(PasswordRequirementsInput, { ref: 'password', onKeyPress: this.handleKeypressPassword, placeholder: 'Choose a Password', className: 'form-control' })
-						)
-					),
-					_react2.default.createElement(
-						'div',
-						{ className: 'col-sm-12' },
-						_react2.default.createElement(
-							'div',
-							{ className: 'form-group' },
-							_react2.default.createElement(PasswordRequirementsInput, { ref: 'password_repeat', onKeyPress: this.handleKeypressPassword2, placeholder: 'Repeat Password', className: 'form-control' })
-						)
-					),
-					_react2.default.createElement(
-						'div',
-						{ className: 'col-sm-12' },
-						_react2.default.createElement(
-							'div',
-							{ className: 'form-group' },
-							_react2.default.createElement(
-								'div',
-								{ className: 'input-group' },
-								_react2.default.createElement('input', { type: 'password', ref: 'pin', onKeyPress: this.handleKeypressPin, maxLength: '4', placeholder: 'Choose a 4 Digit PIN', className: 'form-control' })
-							)
-						)
-					),
-					_react2.default.createElement(
-						'div',
-						{ className: 'col-sm-12' },
-						_react2.default.createElement(
-							'div',
-							{ className: 'form-group' },
-							_react2.default.createElement(
-								'span',
-								{ className: 'input-group-btn' },
-								_react2.default.createElement(
-									BootstrapButton,
-									{ ref: 'register', onClick: this.handleSubmit },
-									'Register'
-								)
-							)
-						)
-					)
-				)
-			);
+	    var successMessage = _react2.default.createElement(
+	      'div',
+	      null,
+	      _react2.default.createElement(
+	        BootstrapModal,
+	        { ref: 'regModal', title: strings.account_created_text, onClose: this.onClose },
+	        String.format(strings.account_created_message, window.parent.abcuiContext.vendorName),
+	        _react2.default.createElement('br', null),
+	        _react2.default.createElement('br', null),
+	        String.format(strings.account_created_zero_knowledge, window.parent.abcuiContext.vendorName),
+	        _react2.default.createElement('br', null),
+	        _react2.default.createElement('br', null),
+	        String.format(strings.account_created_write_it_down, window.parent.abcuiContext.vendorName),
+	        _react2.default.createElement('br', null),
+	        _react2.default.createElement('br', null),
+	        _react2.default.createElement(
+	          'span',
+	          { className: 'input-group-btn' },
+	          _react2.default.createElement(
+	            BootstrapButton,
+	            { onClick: this.onSuccessSetupRecovery },
+	            strings.setup_recovery_text
+	          )
+	        ),
+	        _react2.default.createElement(
+	          'span',
+	          { className: 'input-group-btn' },
+	          _react2.default.createElement(
+	            BootstrapButton,
+	            { onClick: this.onSuccessClose },
+	            strings.later_button_text
+	          )
+	        )
+	      )
+	    );
 
-			var successMessage = _react2.default.createElement(
-				'div',
-				null,
-				_react2.default.createElement(
-					BootstrapModal,
-					{ ref: 'regModal', title: strings.account_created_text, onClose: this.onClose },
-					String.format(strings.account_created_message, window.parent.abcuiContext.vendorName),
-					_react2.default.createElement('br', null),
-					_react2.default.createElement('br', null),
-					String.format(strings.account_created_zero_knowledge, window.parent.abcuiContext.vendorName),
-					_react2.default.createElement('br', null),
-					_react2.default.createElement('br', null),
-					String.format(strings.account_created_write_it_down, window.parent.abcuiContext.vendorName),
-					_react2.default.createElement('br', null),
-					_react2.default.createElement('br', null),
-					_react2.default.createElement(
-						'span',
-						{ className: 'input-group-btn' },
-						_react2.default.createElement(
-							BootstrapButton,
-							{ onClick: this.onSuccessSetupRecovery },
-							strings.setup_recovery_text
-						)
-					),
-					_react2.default.createElement(
-						'span',
-						{ className: 'input-group-btn' },
-						_react2.default.createElement(
-							BootstrapButton,
-							{ onClick: this.onSuccessClose },
-							strings.later_button_text
-						)
-					)
-				)
-			);
+	    if (this.state.showSuccess) {
+	      return successMessage;
+	    } else {
+	      return regForm;
+	    }
+	  },
+	  focus: function focus() {
+	    this.refs.username.setState({ error: null, loading: null });
+	  },
+	  blur: function blur() {
+	    var that = this;
+	    var username = that.refs.username.value();
+	    if (username) {
+	      that.refs.username.setState({ error: null, loading: 'Checking availability...' });
+	      context.usernameAvailable(username, function (err) {
+	        if (err) {
+	          that.setState({ usernameError: true });
+	          that.refs.username.setState({ error: strings.username_already_taken, loading: null });
+	        } else {
+	          that.setState({ usernameError: false });
+	          that.refs.username.setState({ error: null, loading: null });
+	        }
+	      });
+	    } else {
+	      that.refs.username.setState({ error: null });
+	    }
+	  },
+	  handleKeypressUsername: function handleKeypressUsername(e) {
+	    if (e.key === 'Enter') {
+	      this.refs.password.setFocus();
+	    }
+	  },
+	  handleKeypressPassword: function handleKeypressPassword(e) {
+	    if (e.key === 'Enter') {
+	      this.refs.password_repeat.setFocus();
+	    }
+	  },
+	  handleKeypressPassword2: function handleKeypressPassword2(e) {
+	    if (e.key === 'Enter') {
+	      ReactDOM.findDOMNode(this.refs.pin).focus();
+	    }
+	  },
+	  handleKeypressPin: function handleKeypressPin(e) {
+	    if (e.key === 'Enter') {
+	      this.handleSubmit();
+	    }
+	  },
+	  handleSubmit: function handleSubmit() {
+	    var that = this;
+	    if (this.refs.password.value() != this.refs.password_repeat.value()) {
+	      that.refs.form.setState({ 'error': 'Passwords do not match' });
+	      return false;
+	    }
+	    var checkPasswdResults = context.checkPasswordRules(this.refs.password.value());
+	    if (!checkPasswdResults.passed) {
+	      that.refs.form.setState({ 'error': 'Insufficient Password' });
+	      return false;
+	    }
+	    if (4 != this.refs.pin.value.length) {
+	      that.refs.form.setState({ 'error': 'PIN Must be 4 digits long' });
+	      return false;
+	    }
+	    var onlyNumbers = /^\d+$/.test(that.refs.pin.value);
+	    if (!onlyNumbers) {
+	      that.refs.form.setState({ 'error': 'PIN must only have numbers' });
+	      return false;
+	    }
 
-			if (this.state.showSuccess) {
-				return successMessage;
-			} else {
-				return regForm;
-			}
-		},
-		focus: function focus() {
-			this.refs.username.setState({ error: null, loading: null });
-		},
-		blur: function blur() {
-			var that = this;
-			var username = that.refs.username.value();
-			if (username) {
-				that.refs.username.setState({ error: null, loading: 'Checking availability...' });
-				context.usernameAvailable(username, function (err) {
-					if (err) {
-						that.setState({ usernameError: true });
-						that.refs.username.setState({ error: strings.username_already_taken, loading: null });
-					} else {
-						that.setState({ usernameError: false });
-						that.refs.username.setState({ error: null, loading: null });
-					}
-				});
-			} else {
-				that.refs.username.setState({ error: null });
-			}
-		},
-		handleKeypressUsername: function handleKeypressUsername(e) {
-			if (e.key === 'Enter') {
-				this.refs.password.setFocus();
-			}
-		},
-		handleKeypressPassword: function handleKeypressPassword(e) {
-			if (e.key === 'Enter') {
-				this.refs.password_repeat.setFocus();
-			}
-		},
-		handleKeypressPassword2: function handleKeypressPassword2(e) {
-			if (e.key === 'Enter') {
-				ReactDOM.findDOMNode(this.refs.pin).focus();
-			}
-		},
-		handleKeypressPin: function handleKeypressPin(e) {
-			if (e.key === 'Enter') {
-				this.handleSubmit();
-			}
-		},
-		handleSubmit: function handleSubmit() {
-			var that = this;
-			if (this.refs.password.value() != this.refs.password_repeat.value()) {
-				that.refs.form.setState({ 'error': 'Passwords do not match' });
-				return false;
-			}
-			var checkPasswdResults = context.checkPasswordRules(this.refs.password.value());
-			if (!checkPasswdResults.passed) {
-				that.refs.form.setState({ 'error': 'Insufficient Password' });
-				return false;
-			}
-			if (4 != this.refs.pin.value.length) {
-				that.refs.form.setState({ 'error': 'PIN Must be 4 digits long' });
-				return false;
-			}
-			var onlyNumbers = /^\d+$/.test(that.refs.pin.value);
-			if (!onlyNumbers) {
-				that.refs.form.setState({ 'error': 'PIN must only have numbers' });
-				return false;
-			}
-
-			this.refs.register.setLoading(true);
-			var username = this.refs.username.value();
-			context.createAccount(username, this.refs.password.value(), this.refs.pin.value, function (err, result) {
-				that.refs.register.setLoading(false);
-				if (err) {
-					that.refs.form.setState({ 'error': ABCError(err, 'Unable to register at this time.').message });
-				} else {
-					var account = result;
-					LoginView.updateCurrentUser(account.username);
-					that.setState({ account: account });
-					that.setState({ showSuccess: true });
-				}
-			});
-			return false;
-		},
-		onLogin: function onLogin(account) {
-			LoginView.updateCurrentUser(account.username);
-			// Need to Add UI to ask for a PIN
-			// account.pinSetup(that.refs.pin.value, function(err, result) {
-			if (window.parent.loginCallback) {
-				window.parent.loginCallback(null, account);
-			}
-			that.refs.regModal.close();
-			that.refs.register.setLoading(false);
-			// })
-		},
-		onClose: function onClose() {
-			if (window.parent.exitCallback) {
-				window.parent.exitCallback();
-			}
-		},
-		onSuccessClose: function onSuccessClose() {
-			if (window.parent.loginCallback) {
-				window.parent.loginCallback(null, this.state.account);
-			}
-		},
-		onSuccessSetupRecovery: function onSuccessSetupRecovery() {
-			if (window.parent.loginCallback) {
-				window.parent.loginCallback(null, this.state.account, { setupRecovery: true });
-			}
-		}
+	    this.refs.register.setLoading(true);
+	    var username = this.refs.username.value();
+	    context.createAccount(username, this.refs.password.value(), this.refs.pin.value, function (err, result) {
+	      that.refs.register.setLoading(false);
+	      if (err) {
+	        that.refs.form.setState({ 'error': ABCError(err, 'Unable to register at this time.').message });
+	      } else {
+	        var account = result;
+	        LoginView.updateCurrentUser(account.username);
+	        that.setState({ account: account });
+	        that.setState({ showSuccess: true });
+	      }
+	    });
+	    return false;
+	  },
+	  onLogin: function onLogin(account) {
+	    LoginView.updateCurrentUser(account.username);
+	    // Need to Add UI to ask for a PIN
+	    // account.pinSetup(that.refs.pin.value, function(err, result) {
+	    if (window.parent.loginCallback) {
+	      window.parent.loginCallback(null, account);
+	    }
+	    that.refs.regModal.close();
+	    that.refs.register.setLoading(false);
+	    // })
+	  },
+	  onClose: function onClose() {
+	    if (window.parent.exitCallback) {
+	      window.parent.exitCallback();
+	    }
+	  },
+	  onSuccessClose: function onSuccessClose() {
+	    if (window.parent.loginCallback) {
+	      window.parent.loginCallback(null, this.state.account);
+	    }
+	  },
+	  onSuccessSetupRecovery: function onSuccessSetupRecovery() {
+	    if (window.parent.loginCallback) {
+	      window.parent.loginCallback(null, this.state.account, { setupRecovery: true });
+	    }
+	  }
 	});
 
 	module.exports = LoginView;
@@ -35314,83 +35313,82 @@ var abcuiloader =
 	var vendorName = window.parent.abcuiContext.vendorName;
 
 	var LoginWithAirbitz = _react2.default.createClass({
-		displayName: 'LoginWithAirbitz',
-		getInitialState: function getInitialState() {
-			return {
-				barcode: '',
-				showLogin: false
-			};
-		},
-		cancelRequest: function cancelRequest() {
-			if (this.state.edgeLoginRequest) this.state.edgeLoginRequest.cancelRequest();
-		},
-		render: function render() {
+	  displayName: 'LoginWithAirbitz',
+	  getInitialState: function getInitialState() {
+	    return {
+	      barcode: '',
+	      showLogin: false
+	    };
+	  },
+	  cancelRequest: function cancelRequest() {
+	    if (this.state.edgeLoginRequest) this.state.edgeLoginRequest.cancelRequest();
+	  },
+	  render: function render() {
+	    var buttonUrl = 'airbitz-ret://x-callback-uri/edgelogin/[EDGELOGINTOKEN]';
+	    buttonUrl = encodeURI(buttonUrl);
+	    this.buttonBouncerUrl = 'https://airbitz.co/blf/?address=' + buttonUrl;
 
-			var buttonUrl = 'airbitz-ret://x-callback-uri/edgelogin/[EDGELOGINTOKEN]';
-			buttonUrl = encodeURI(buttonUrl);
-			this.buttonBouncerUrl = 'https://airbitz.co/blf/?address=' + buttonUrl;
-
-			return _react2.default.createElement(
-				'div',
-				{ className: 'row' },
-				_react2.default.createElement(
-					'div',
-					{ className: 'col-sm-12 text-center' },
-					_react2.default.createElement(
-						'div',
-						{ className: 'form-group center-block', style: { 'width': '320px' } },
-						_react2.default.createElement(
-							'a',
-							{ className: 'btn btn-block btn-social btn-facebook', onClick: this.onClick },
-							_react2.default.createElement('img', { src: 'Airbitz-icon-white-transparent.png', style: { 'width': '28px', "padding": "4px" } }),
-							this.props.register ? strings.scan_barcode_to_register : strings.scan_barcode_to_signin
-						)
-					),
-					_react2.default.createElement(
-						'div',
-						{ className: 'form-group center-block', style: { 'width': '240px' } },
-						_react2.default.createElement('img', { id: 'barcode', style: { 'width': '240px' } })
-					),
-					_react2.default.createElement(
-						'div',
-						{ className: 'form-group center-block' },
-						_react2.default.createElement(
-							'label',
-							null,
-							'OR'
-						)
-					)
-				)
-			);
-		},
-		componentDidMount: function componentDidMount() {
-			var that = this;
-			context.requestEdgeLogin({ displayName: vendorName, onLogin: this.handleEdgeLogin }, function (error, results) {
-				if (results) {
-					JsBarcode("#barcode", results.id, {
-						format: "CODE128A",
-						lineColor: "#333333",
-						width: 6,
-						height: 140,
-						fontSize: 36,
-						displayValue: true
-					});
-					that.setState({ edgeLoginRequest: results });
-				} else {
-					// XXX
-				}
-			});
-		},
-		handleEdgeLogin: function handleEdgeLogin(error, account) {
-			if (error) {
-				console.log('Error on Edge Login');
-			} else {
-				this.props.onLogin(account);
-			}
-		},
-		onClick: function onClick() {
-			window.open(this.buttonBouncerUrl, '_blank');
-		}
+	    return _react2.default.createElement(
+	      'div',
+	      { className: 'row' },
+	      _react2.default.createElement(
+	        'div',
+	        { className: 'col-sm-12 text-center' },
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'form-group center-block', style: { 'width': '320px' } },
+	          _react2.default.createElement(
+	            'a',
+	            { className: 'btn btn-block btn-social btn-facebook', onClick: this.onClick },
+	            _react2.default.createElement('img', { src: 'Airbitz-icon-white-transparent.png', style: { 'width': '28px', 'padding': '4px' } }),
+	            this.props.register ? strings.scan_barcode_to_register : strings.scan_barcode_to_signin
+	          )
+	        ),
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'form-group center-block', style: { 'width': '240px' } },
+	          _react2.default.createElement('img', { id: 'barcode', style: { 'width': '240px' } })
+	        ),
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'form-group center-block' },
+	          _react2.default.createElement(
+	            'label',
+	            null,
+	            'OR'
+	          )
+	        )
+	      )
+	    );
+	  },
+	  componentDidMount: function componentDidMount() {
+	    var that = this;
+	    context.requestEdgeLogin({ displayName: vendorName, onLogin: this.handleEdgeLogin }, function (error, results) {
+	      if (results) {
+	        JsBarcode('#barcode', results.id, {
+	          format: 'CODE128A',
+	          lineColor: '#333333',
+	          width: 6,
+	          height: 140,
+	          fontSize: 36,
+	          displayValue: true
+	        });
+	        that.setState({ edgeLoginRequest: results });
+	      } else {
+	        // XXX
+	      }
+	    });
+	  },
+	  handleEdgeLogin: function handleEdgeLogin(error, account) {
+	    if (error) {
+	      console.log('Error on Edge Login');
+	    } else {
+	      this.props.onLogin(account);
+	    }
+	  },
+	  onClick: function onClick() {
+	    window.open(this.buttonBouncerUrl, '_blank');
+	  }
 	});
 
 	module.exports = LoginWithAirbitz;
@@ -40917,272 +40915,272 @@ var abcuiloader =
 	var PasswordRequirementsInput = __webpack_require__(93);
 
 	var ManageAccountView = _react2.default.createClass({
-		displayName: 'ManageAccountView',
-		render: function render() {
-			return _react2.default.createElement(
-				BootstrapModal,
-				{ ref: 'modal', title: 'Manage Account', onClose: this.onClose },
-				_react2.default.createElement(
-					'h4',
-					null,
-					'ACCOUNT: ',
-					_react2.default.createElement(
-						'span',
-						null,
-						window.parent.abcAccount.username
-					)
-				),
-				_react2.default.createElement(
-					'ul',
-					{ className: 'list-unstyled' },
-					_react2.default.createElement(
-						'li',
-						null,
-						_react2.default.createElement(
-							_reactRouter.Link,
-							{ className: 'btn', to: '/account/changepassword' },
-							'Change Password'
-						)
-					),
-					_react2.default.createElement(
-						'li',
-						null,
-						_react2.default.createElement(
-							_reactRouter.Link,
-							{ className: 'btn', to: '/account/changepin' },
-							'Change Pin'
-						)
-					),
-					_react2.default.createElement(
-						'li',
-						null,
-						_react2.default.createElement(
-							_reactRouter.Link,
-							{ className: 'btn', to: '/account/setuprecovery' },
-							'Setup/Change Recovery'
-						)
-					)
-				)
-			);
-		},
-		togglePinEnabled: function togglePinEnabled() {
-			this.refs.pinEnabled.checked = !this.refs.pinEnabled.checked;
-			this.pinEnableChanged();
-		},
-		pinEnableChanged: function pinEnableChanged() {
-			alert(this.refs.pinEnabled.checked);
-		},
-		onClose: function onClose() {
-			'use strict';
+	  displayName: 'ManageAccountView',
+	  render: function render() {
+	    return _react2.default.createElement(
+	      BootstrapModal,
+	      { ref: 'modal', title: 'Manage Account', onClose: this.onClose },
+	      _react2.default.createElement(
+	        'h4',
+	        null,
+	        'ACCOUNT: ',
+	        _react2.default.createElement(
+	          'span',
+	          null,
+	          window.parent.abcAccount.username
+	        )
+	      ),
+	      _react2.default.createElement(
+	        'ul',
+	        { className: 'list-unstyled' },
+	        _react2.default.createElement(
+	          'li',
+	          null,
+	          _react2.default.createElement(
+	            _reactRouter.Link,
+	            { className: 'btn', to: '/account/changepassword' },
+	            'Change Password'
+	          )
+	        ),
+	        _react2.default.createElement(
+	          'li',
+	          null,
+	          _react2.default.createElement(
+	            _reactRouter.Link,
+	            { className: 'btn', to: '/account/changepin' },
+	            'Change Pin'
+	          )
+	        ),
+	        _react2.default.createElement(
+	          'li',
+	          null,
+	          _react2.default.createElement(
+	            _reactRouter.Link,
+	            { className: 'btn', to: '/account/setuprecovery' },
+	            'Setup/Change Recovery'
+	          )
+	        )
+	      )
+	    );
+	  },
+	  togglePinEnabled: function togglePinEnabled() {
+	    this.refs.pinEnabled.checked = !this.refs.pinEnabled.checked;
+	    this.pinEnableChanged();
+	  },
+	  pinEnableChanged: function pinEnableChanged() {
+	    alert(this.refs.pinEnabled.checked);
+	  },
+	  onClose: function onClose() {
+	    'use strict';
 
-			if (window.parent.exitCallback) {
-				window.parent.exitCallback();
-			}
-		}
+	    if (window.parent.exitCallback) {
+	      window.parent.exitCallback();
+	    }
+	  }
 	});
 
 	var ChangePasswordView = _react2.default.createClass({
-		displayName: 'ChangePasswordView',
-		render: function render() {
-			return _react2.default.createElement(
-				BootstrapModal,
-				{ ref: 'modal', title: 'Change Password', onClose: this.onClose },
-				_react2.default.createElement(
-					AbcUiFormView,
-					{ ref: 'form' },
-					_react2.default.createElement(
-						'div',
-						{ className: 'row' },
-						_react2.default.createElement(
-							'div',
-							{ className: 'col-sm-12' },
-							_react2.default.createElement(
-								'div',
-								{ className: 'form-group' },
-								_react2.default.createElement('input', { type: 'password', ref: 'currentPassword', placeholder: 'Current Password', className: 'form-control' })
-							)
-						),
-						_react2.default.createElement(
-							'div',
-							{ className: 'col-sm-12' },
-							_react2.default.createElement(
-								'div',
-								{ className: 'form-group' },
-								_react2.default.createElement(PasswordRequirementsInput, { ref: 'password', placeholder: 'Password', className: 'form-control' })
-							)
-						),
-						_react2.default.createElement(
-							'div',
-							{ className: 'col-sm-12' },
-							_react2.default.createElement(
-								'div',
-								{ className: 'form-group' },
-								_react2.default.createElement(BootstrapInput, { type: 'password', ref: 'confirmPassword', placeholder: 'Confirm Password', className: 'form-control', onChange: this.comparePasswords })
-							)
-						),
-						_react2.default.createElement(
-							'div',
-							{ className: 'col-sm-12' },
-							_react2.default.createElement(
-								'div',
-								{ className: 'form-group' },
-								_react2.default.createElement(
-									'span',
-									{ className: 'input-group-btn' },
-									_react2.default.createElement(
-										BootstrapButton,
-										{ ref: 'changeButton', onClick: this.handleSubmit },
-										'Save'
-									)
-								)
-							)
-						)
-					)
-				)
-			);
-		},
-		passwordsMatch: function passwordsMatch() {
-			return this.refs.confirmPassword.value() == this.refs.password.value();
-		},
-		comparePasswords: function comparePasswords() {
-			var confirmPassword = this.refs.confirmPassword;
-			if (this.passwordsMatch()) {
-				confirmPassword.setState({ 'error': null });
-			} else {
-				confirmPassword.setState({ 'error': 'Password mismatch' });
-			}
-		},
-		handleSubmit: function handleSubmit() {
-			var that = this;
-			var account = window.parent.abcAccount;
+	  displayName: 'ChangePasswordView',
+	  render: function render() {
+	    return _react2.default.createElement(
+	      BootstrapModal,
+	      { ref: 'modal', title: 'Change Password', onClose: this.onClose },
+	      _react2.default.createElement(
+	        AbcUiFormView,
+	        { ref: 'form' },
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'row' },
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'col-sm-12' },
+	            _react2.default.createElement(
+	              'div',
+	              { className: 'form-group' },
+	              _react2.default.createElement('input', { type: 'password', ref: 'currentPassword', placeholder: 'Current Password', className: 'form-control' })
+	            )
+	          ),
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'col-sm-12' },
+	            _react2.default.createElement(
+	              'div',
+	              { className: 'form-group' },
+	              _react2.default.createElement(PasswordRequirementsInput, { ref: 'password', placeholder: 'Password', className: 'form-control' })
+	            )
+	          ),
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'col-sm-12' },
+	            _react2.default.createElement(
+	              'div',
+	              { className: 'form-group' },
+	              _react2.default.createElement(BootstrapInput, { type: 'password', ref: 'confirmPassword', placeholder: 'Confirm Password', className: 'form-control', onChange: this.comparePasswords })
+	            )
+	          ),
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'col-sm-12' },
+	            _react2.default.createElement(
+	              'div',
+	              { className: 'form-group' },
+	              _react2.default.createElement(
+	                'span',
+	                { className: 'input-group-btn' },
+	                _react2.default.createElement(
+	                  BootstrapButton,
+	                  { ref: 'changeButton', onClick: this.handleSubmit },
+	                  'Save'
+	                )
+	              )
+	            )
+	          )
+	        )
+	      )
+	    );
+	  },
+	  passwordsMatch: function passwordsMatch() {
+	    return this.refs.confirmPassword.value() == this.refs.password.value();
+	  },
+	  comparePasswords: function comparePasswords() {
+	    var confirmPassword = this.refs.confirmPassword;
+	    if (this.passwordsMatch()) {
+	      confirmPassword.setState({ 'error': null });
+	    } else {
+	      confirmPassword.setState({ 'error': 'Password mismatch' });
+	    }
+	  },
+	  handleSubmit: function handleSubmit() {
+	    var that = this;
+	    var account = window.parent.abcAccount;
 
-			if (!this.refs.password.meetsRequirements()) {
-				this.refs.form.setState({ 'error': 'Insufficient password' });
-			} else if (!this.passwordsMatch()) {
-				this.refs.form.setState({ 'error': 'Password mismatch' });
-			} else if (account.passwordOk(this.refs.currentPassword.value)) {
-				this.refs.changeButton.setLoading(true);
-				window.parent.abcAccount.passwordSetup(this.refs.password.value(), function (err, result) {
-					if (err) {
-						that.refs.form.setState({ 'error': ABCError(err, 'Invalid Password').message });
-					} else {
-						that.refs.modal.close();
-						if (window.parent.exitCallback) {
-							window.parent.exitCallback();
-						}
-					}
-					that.refs.changeButton.setLoading(false);
-				});
-			} else {
-				that.refs.form.setState({ 'error': 'Incorrect current password' });
-			}
-		},
-		onClose: function onClose() {
-			'use strict';
+	    if (!this.refs.password.meetsRequirements()) {
+	      this.refs.form.setState({ 'error': 'Insufficient password' });
+	    } else if (!this.passwordsMatch()) {
+	      this.refs.form.setState({ 'error': 'Password mismatch' });
+	    } else if (account.passwordOk(this.refs.currentPassword.value)) {
+	      this.refs.changeButton.setLoading(true);
+	      window.parent.abcAccount.passwordSetup(this.refs.password.value(), function (err, result) {
+	        if (err) {
+	          that.refs.form.setState({ 'error': ABCError(err, 'Invalid Password').message });
+	        } else {
+	          that.refs.modal.close();
+	          if (window.parent.exitCallback) {
+	            window.parent.exitCallback();
+	          }
+	        }
+	        that.refs.changeButton.setLoading(false);
+	      });
+	    } else {
+	      that.refs.form.setState({ 'error': 'Incorrect current password' });
+	    }
+	  },
+	  onClose: function onClose() {
+	    'use strict';
 
-			if (window.parent.exitCallback) {
-				window.parent.exitCallback();
-			}
-		}
+	    if (window.parent.exitCallback) {
+	      window.parent.exitCallback();
+	    }
+	  }
 	});
 
 	var ChangePinView = _react2.default.createClass({
-		displayName: 'ChangePinView',
-		render: function render() {
-			return _react2.default.createElement(
-				BootstrapModal,
-				{ ref: 'modal', title: this.props.route.title, onClose: this.onClose },
-				_react2.default.createElement(
-					AbcUiFormView,
-					{ ref: 'form' },
-					_react2.default.createElement(
-						'div',
-						{ className: 'row' },
-						!this.props.route.noRequirePassword ? _react2.default.createElement(
-							'div',
-							{ className: 'col-sm-12' },
-							_react2.default.createElement(
-								'div',
-								{ className: 'form-group' },
-								_react2.default.createElement(
-									'div',
-									{ className: 'input-group' },
-									_react2.default.createElement('input', { type: 'password', ref: 'currentPassword', onKeyPress: this.handlePasswordKeyPress, placeholder: 'Current Password', className: 'form-control' })
-								)
-							)
-						) : null,
-						_react2.default.createElement(
-							'div',
-							{ className: 'col-sm-12' },
-							_react2.default.createElement(
-								'div',
-								{ className: 'form-group' },
-								_react2.default.createElement(
-									'div',
-									{ className: 'input-group' },
-									_react2.default.createElement('input', { type: 'password', ref: 'pin', onKeyPress: this.handlePinKeyPress, placeholder: 'New PIN', className: 'form-control', maxLength: '4' })
-								)
-							)
-						),
-						_react2.default.createElement(
-							'div',
-							{ className: 'col-sm-12' },
-							_react2.default.createElement(
-								'div',
-								{ className: 'form-group' },
-								_react2.default.createElement(
-									'span',
-									{ className: 'input-group-btn' },
-									_react2.default.createElement(
-										BootstrapButton,
-										{ ref: 'changeButton', onClick: this.handleSubmit },
-										'Save'
-									)
-								)
-							)
-						)
-					)
-				)
-			);
-		},
-		handlePasswordKeyPress: function handlePasswordKeyPress(e) {
-			if (e.key === 'Enter') {
-				this.refs.pin.getInputDOMNode().focus();
-			}
-		},
-		handlePinKeyPress: function handlePinKeyPress(e) {
-			if (e.key === 'Enter') {
-				this.handleSubmit();
-			}
-		},
-		handleSubmit: function handleSubmit() {
-			var that = this;
-			var account = window.parent.abcAccount;
+	  displayName: 'ChangePinView',
+	  render: function render() {
+	    return _react2.default.createElement(
+	      BootstrapModal,
+	      { ref: 'modal', title: this.props.route.title, onClose: this.onClose },
+	      _react2.default.createElement(
+	        AbcUiFormView,
+	        { ref: 'form' },
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'row' },
+	          !this.props.route.noRequirePassword ? _react2.default.createElement(
+	            'div',
+	            { className: 'col-sm-12' },
+	            _react2.default.createElement(
+	              'div',
+	              { className: 'form-group' },
+	              _react2.default.createElement(
+	                'div',
+	                { className: 'input-group' },
+	                _react2.default.createElement('input', { type: 'password', ref: 'currentPassword', onKeyPress: this.handlePasswordKeyPress, placeholder: 'Current Password', className: 'form-control' })
+	              )
+	            )
+	          ) : null,
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'col-sm-12' },
+	            _react2.default.createElement(
+	              'div',
+	              { className: 'form-group' },
+	              _react2.default.createElement(
+	                'div',
+	                { className: 'input-group' },
+	                _react2.default.createElement('input', { type: 'password', ref: 'pin', onKeyPress: this.handlePinKeyPress, placeholder: 'New PIN', className: 'form-control', maxLength: '4' })
+	              )
+	            )
+	          ),
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'col-sm-12' },
+	            _react2.default.createElement(
+	              'div',
+	              { className: 'form-group' },
+	              _react2.default.createElement(
+	                'span',
+	                { className: 'input-group-btn' },
+	                _react2.default.createElement(
+	                  BootstrapButton,
+	                  { ref: 'changeButton', onClick: this.handleSubmit },
+	                  'Save'
+	                )
+	              )
+	            )
+	          )
+	        )
+	      )
+	    );
+	  },
+	  handlePasswordKeyPress: function handlePasswordKeyPress(e) {
+	    if (e.key === 'Enter') {
+	      this.refs.pin.getInputDOMNode().focus();
+	    }
+	  },
+	  handlePinKeyPress: function handlePinKeyPress(e) {
+	    if (e.key === 'Enter') {
+	      this.handleSubmit();
+	    }
+	  },
+	  handleSubmit: function handleSubmit() {
+	    var that = this;
+	    var account = window.parent.abcAccount;
 
-			if (this.props.route.noRequirePassword || account.passwordOk(this.refs.currentPassword.value)) {
-				this.refs.changeButton.setLoading(true);
-				window.parent.abcAccount.pinSetup(this.refs.pin.value, function (err, result) {
-					if (err) {
-						that.refs.form.setState({ 'error': ABCError(err, strings.error_setting_pin_text).message });
-					} else {
-						that.refs.modal.close();
-						if (window.parent.exitCallback) {
-							window.parent.exitCallback();
-						}
-					}
-					that.refs.changeButton.setLoading(false);
-				});
-			} else {
-				that.refs.form.setState({ 'error': 'Incorrect current password' });
-			}
-		},
-		onClose: function onClose() {
-			'use strict';
+	    if (this.props.route.noRequirePassword || account.passwordOk(this.refs.currentPassword.value)) {
+	      this.refs.changeButton.setLoading(true);
+	      window.parent.abcAccount.pinSetup(this.refs.pin.value, function (err, result) {
+	        if (err) {
+	          that.refs.form.setState({ 'error': ABCError(err, strings.error_setting_pin_text).message });
+	        } else {
+	          that.refs.modal.close();
+	          if (window.parent.exitCallback) {
+	            window.parent.exitCallback();
+	          }
+	        }
+	        that.refs.changeButton.setLoading(false);
+	      });
+	    } else {
+	      that.refs.form.setState({ 'error': 'Incorrect current password' });
+	    }
+	  },
+	  onClose: function onClose() {
+	    'use strict';
 
-			if (window.parent.exitCallback) {
-				window.parent.exitCallback();
-			}
-		}
+	    if (window.parent.exitCallback) {
+	      window.parent.exitCallback();
+	    }
+	  }
 	});
 
 	exports.ManageAccountView = ManageAccountView;
@@ -41663,7 +41661,6 @@ var abcuiloader =
 	    };
 	  },
 	  render: function render() {
-
 	    var usernameClass = classNames({
 	      'form-group': true,
 	      'has-error': this.state.usernameError

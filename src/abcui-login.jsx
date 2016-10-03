@@ -7,16 +7,16 @@ import abc from 'airbitz-core-js'
 var ABCError = abc.ABCError
 var strings = require('./abcui-strings')
 
-var AbcUiFormView = require('./abcui-formview')
-var LoginWithAirbitz = require('./abcui-loginwithairbitz')
+var AbcUiFormView = require('./abcui-formview.jsx')
+var LoginWithAirbitz = require('./abcui-loginwithairbitz.jsx')
 var classNames = require('classnames')
 
-var modal = require('./abcui-modal.js')
+var modal = require('./abcui-modal.jsx')
 var BootstrapButton = modal.BootstrapButton
 var BootstrapModal = modal.BootstrapModal
 var BootstrapInput = modal.BootstrapInput
 
-var PasswordRequirementsInput = require('./abcui-password')
+var PasswordRequirementsInput = require('./abcui-password.jsx')
 
 var context = window.parent.abcContext
 

@@ -2,14 +2,14 @@ import React from 'react'
 import { render } from 'react-dom'
 import { Router, Route, IndexRoute, Link, hashHistory } from 'react-router'
 
-var recovery = require('./abcui-recovery')
+var recovery = require('./abcui-recovery.jsx')
 var RecoveryView = recovery.RecoveryView
 var SetupRecoveryView = recovery.SetupRecoveryView
 
-var LoginView = require('./abcui-login')
-var RegistrationView = require('./abcui-registration')
+var LoginView = require('./abcui-login.jsx')
+var RegistrationView = require('./abcui-registration.jsx')
 
-var manageAccount = require('./abcui-manageaccount')
+var manageAccount = require('./abcui-manageaccount.jsx')
 var ManageAccountView = manageAccount.ManageAccountView
 var ChangePinView = manageAccount.ChangePinView
 var ChangePasswordView = manageAccount.ChangePasswordView

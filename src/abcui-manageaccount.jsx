@@ -7,14 +7,14 @@ import abc from 'airbitz-core-js'
 var ABCError = abc.ABCError
 var strings = require('./abcui-strings')
 
-var AbcUiFormView = require('./abcui-formview')
+var AbcUiFormView = require('./abcui-formview.jsx')
 
-var modal = require('./abcui-modal.js')
+var modal = require('./abcui-modal.jsx')
 var BootstrapButton = modal.BootstrapButton
 var BootstrapModal = modal.BootstrapModal
 var BootstrapInput = modal.BootstrapInput
 
-var PasswordRequirementsInput = require('./abcui-password.js')
+var PasswordRequirementsInput = require('./abcui-password.jsx')
 
 var ManageAccountView = React.createClass({
   render () {

@@ -6,7 +6,7 @@ var webpack = require('webpack');
 
 module.exports = {
   entry: {
-    abcuiloader: './src/abcui-loader.js',
+    abcuiloader: './src/abcui-loader.jsx',
     abcui: './src/abcui.js'
   },
   output: {
@@ -24,9 +24,14 @@ module.exports = {
         loader: 'babel',
         query: { presets: [ 'es2015', 'react' ] }
       },
-      { 
-        test: /\.json$/, 
-        loader: 'json' 
+      { test: /\.jsx$/,
+        exclude: /node_modules/,
+        loader: 'babel',
+        query: { presets: [ 'es2015', 'react' ] }
+      },
+      {
+        test: /\.json$/,
+        loader: 'json'
       }
     ]
   },
