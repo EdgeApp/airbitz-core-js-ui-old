@@ -25420,8 +25420,6 @@ var abcui =
 	'use strict';
 
 	var abc = __webpack_require__(45);
-	var abcc = abc.ABCConditionCode;
-	var ABCError = abc.ABCError;
 
 	function createIFrame(path) {
 	  var frame = document.createElement('iframe');
@@ -25485,14 +25483,15 @@ var abcui =
 	};
 
 	InnerAbcUi.prototype.openRecoveryWindow = function (callback) {
-	  var frame = createIFrame(this.bundlePath + '/assets/index.html#/recovery');
+	  createIFrame(this.bundlePath + '/assets/index.html#/recovery');
 	};
 
 	InnerAbcUi.prototype.openSetupRecoveryWindow = function (account, opts, callback) {
+	  var frame;
 	  if (opts && opts.noRequirePassword) {
-	    var frame = createIFrame(this.bundlePath + '/assets/index.html#/account/setuprecovery-nopassword');
+	    frame = createIFrame(this.bundlePath + '/assets/index.html#/account/setuprecovery-nopassword');
 	  } else {
-	    var frame = createIFrame(this.bundlePath + '/assets/index.html#/account/setuprecovery');
+	    frame = createIFrame(this.bundlePath + '/assets/index.html#/account/setuprecovery');
 	  }
 	  window.exitCallback = function () {
 	    removeIFrame(frame);

@@ -16,12 +16,12 @@ var QuestionAnswerView = React.createClass({
   render () {
     if (this.props.setup) {
       return (
-        <div className='col-sm-12'>
-          <div className='form-group'>
-            <AbcUiDropDown ref='question' contentList={this.props.questionChoices} selectedItem={this.props.question}/>
+        <div className="col-sm-12">
+          <div className="form-group">
+            <AbcUiDropDown ref="question" contentList={this.props.questionChoices} selectedItem={this.props.question} />
           </div>
-          <div className='form-group'>
-            <input type='text' ref='answer' placeholder={this.props.answer} className='form-control' />
+          <div className="form-group">
+            <input type="text" ref="answer" placeholder={this.props.answer} className="form-control" />
           </div>
         </div>
       )
@@ -29,7 +29,7 @@ var QuestionAnswerView = React.createClass({
       // XXX todo
     }
   },
-  getValue() {
+  getValue () {
     return {
       'question': this.refs.question.getValue(),
       'answer': this.refs.answer.value
@@ -38,30 +38,25 @@ var QuestionAnswerView = React.createClass({
 
 })
 
-
 // Popup dialog asking for username and redirecting to RecoveryQAView with proper
 // props setup
 var RecoveryView = React.createClass({
-  render() {
-    'use strict'
-
-    var bodyText = String.format(strings.if_recovery_setup, '')
-
+  render () {
     return (
       <div>
         <BootstrapModal title={strings.password_recovery_text} onClose={this.onClose}>
-          {strings.if_recovery_setup}<br/><br/>
-          <a href='https://airbitz.co/app' target='_blank'>https://airbitz.co/app</a><br/><br/>
-          {strings.if_recovery_setup2}<br/><br/>
-          <span className='input-group-btn'>
-            <BootstrapButton ref='btn-close' onClick={this.onClose}>{strings.ok_button_text}</BootstrapButton>
+          {strings.if_recovery_setup}<br /><br />
+          <a href="https://airbitz.co/app" target="_blank">https://airbitz.co/app</a><br /><br />
+          {strings.if_recovery_setup2}<br /><br />
+          <span className="input-group-btn">
+            <BootstrapButton ref="btn-close" onClick={this.onClose}>{strings.ok_button_text}</BootstrapButton>
           </span>
         </BootstrapModal>
       </div>
     )
   },
   onClose () {
-    'use strict';
+    'use strict'
     if (window.parent.exitCallback) {
       window.parent.exitCallback()
     }
@@ -69,7 +64,7 @@ var RecoveryView = React.createClass({
 })
 
 var SetupRecoveryView = React.createClass({
-  getInitialState: function() {
+  getInitialState: function () {
     return {
       showEmailModal: false,
       showQAModal: true,
@@ -77,7 +72,7 @@ var SetupRecoveryView = React.createClass({
       questionChoices: []
     }
   },
-  render() {
+  render () {
     'use strict'
 
     this.recoveryToken = ''
@@ -97,49 +92,45 @@ var SetupRecoveryView = React.createClass({
       <div>
 
         {this.state.showQAModal ? (
-          <BootstrapModal id='recoverymodal' ref='modal' title={strings.password_recovery_text} onClose={this.onCloseQA}>
-            <AbcUiFormView ref='form'>
-              <RecoveryQAView setup='1'
-                              questions={questions}
-                              answers={answers}
-                              questionChoices={this.state.questionChoices}
-                              requirePassword={!this.props.route.noRequirePassword}
-                              callback={this.callback}/>
+          <BootstrapModal id="recoverymodal" ref="modal" title={strings.password_recovery_text} onClose={this.onCloseQA}>
+            <AbcUiFormView ref="form">
+              <RecoveryQAView setup="1"
+                questions={questions}
+                answers={answers}
+                questionChoices={this.state.questionChoices}
+                requirePassword={!this.props.route.noRequirePassword}
+                callback={this.callback} />
             </AbcUiFormView>
           </BootstrapModal>
         ) : null}
 
         {this.state.showEmailModal ? (
-          <BootstrapModal id='emailmodal' ref='emailmodal' title={strings.save_recovery_token_popup} onClose={this.onCloseEmail}>
-            <AbcUiFormView ref='emailform'>
+          <BootstrapModal id="emailmodal" ref="emailmodal" title={strings.save_recovery_token_popup} onClose={this.onCloseEmail}>
+            <AbcUiFormView ref="emailform">
               <label>{strings.save_recovery_token_popup_message}</label>
-              <input type='text' ref='email' placeholder={strings.email_address_text} className='form-control' /><br/>
+              <input type="text" ref="email" placeholder={strings.email_address_text} className="form-control" /><br />
+              <a className="btn btn-block btn-social btn-google" onClick={this.callBackGmail}>
+                <span className="fa fa-google"></span>
+                {String.format(strings.send_using_xx, 'Gmail')}
+              </a>
+              <a className="btn btn-block btn-social btn-yahoo" onClick={this.callBackYahoo}>
+                <span className="fa fa-yahoo"></span>
+                {String.format(strings.send_using_xx, 'Yahoo')}
+              </a>
+              <a className="btn btn-block btn-social btn-microsoft" onClick={this.callBackYahoo}>
+                <span className="fa fa-windows"></span>
+                {String.format(strings.send_using_xx, 'Hotmail, Outlook, Live Mail')}
+              </a>
+              <a className="btn btn-block btn-social btn-reddit" onClick={this.callBackEmail}>
+                <span className="fa fa-envelope"></span>
+                {String.format(strings.send_using_xx, 'Email App')}
+              </a><br />
 
-                <a className="btn btn-block btn-social btn-google" onClick={this.callBackGmail}>
-                  <span className="fa fa-google"></span>
-                  {String.format(strings.send_using_xx, 'Gmail')}
+              {this.state.showDone ? (
+                <a className="btn btn-block btn-primary" onClick={this.callBackEmailDone}>
+                  {strings.done_text}
                 </a>
-
-                <a className="btn btn-block btn-social btn-yahoo" onClick={this.callBackYahoo}>
-                  <span className="fa fa-yahoo"></span>
-                  {String.format(strings.send_using_xx, 'Yahoo')}
-                </a>
-
-                <a className="btn btn-block btn-social btn-microsoft" onClick={this.callBackYahoo}>
-                  <span className="fa fa-windows"></span>
-                  {String.format(strings.send_using_xx, 'Hotmail, Outlook, Live Mail')}
-                </a>
-
-                <a className="btn btn-block btn-social btn-reddit" onClick={this.callBackEmail}>
-                  <span className="fa fa-envelope"></span>
-                  {String.format(strings.send_using_xx, 'Email App')}
-                </a><br/>
-
-                {this.state.showDone ? (
-                  <a className="btn btn-block btn-primary" onClick={this.callBackEmailDone}>
-                    {strings.done_text}
-                  </a>
-                ) : null}
+              ) : null}
             </AbcUiFormView>
           </BootstrapModal>
         ) : null}
@@ -147,10 +138,9 @@ var SetupRecoveryView = React.createClass({
       </div>
     )
   },
-  componentDidMount() {
-    context.listRecoveryQuestionChoices ((error, questionChoices) => {
+  componentDidMount () {
+    context.listRecoveryQuestionChoices((error, questionChoices) => {
       if (!error) {
-
         var questions = []
         for (var i in questionChoices) {
           var qc = questionChoices[i]
@@ -159,34 +149,32 @@ var SetupRecoveryView = React.createClass({
           }
         }
 
-        var questionChoices = [strings.please_select_a_question].concat(questions)
-        this.setState({questionChoices})
+        questions = [strings.please_select_a_question].concat(questions)
+        this.setState({questionChoices: questions})
       } else {
         this.setState({questionChoices: strings.error_retrieving_questions})
       }
     })
   },
   onCloseQA () {
-    'use strict';
+    'use strict'
     if (window.parent.exitCallback) {
       window.parent.exitCallback()
     }
   },
   onCloseEmail () {
-    'use strict';
+    'use strict'
     this.showEmail(false)
   },
   showEmail (show) {
-    'use strict';
+    'use strict'
     this.setState({showEmailModal: show})
   },
   showQA (show) {
-    'use strict';
+    'use strict'
     this.setState({showQAModal: show})
   },
-  callback(questions, answers, password)
-  {
-    'use strict'
+  callback (questions, answers, password) {
     console.log(questions)
     console.log(answers)
     console.log(password)
@@ -201,7 +189,6 @@ var SetupRecoveryView = React.createClass({
       this.refs.form.setState({'error': ABCError(1, strings.please_choose_answers_with_4_char).message})
       return
     }
-
 
     if (!this.props.route.noRequirePassword) {
       if (!password) {
@@ -219,9 +206,8 @@ var SetupRecoveryView = React.createClass({
     window.that = this
     this.account.setupRecovery2Questions(questions, answers, function (error, recoveryToken) {
       if (error) {
-        this.refs.form.setState({'error': ABCError(error, ).message})
-      } else
-      {
+        this.refs.form.setState({'error': ABCError(error, 'Error setting up recovery questions').message})
+      } else {
         var that = window.that
         // that.recoveryToken = recoveryToken
         that.setState({recoveryToken: recoveryToken})
@@ -254,10 +240,6 @@ var SetupRecoveryView = React.createClass({
     if (tools.validateEmail(this.refs.email.value)) {
       console.log('good email')
 
-      var regex = /.*\/assets\/index.html#/
-      var results = regex.exec(window.location.href)
-      var link = results[0]
-      var recoveryLink = link + '/recovery/' + this.state.recoveryToken
       var username = 'NoName'
 
       if (this.account) {
@@ -278,80 +260,77 @@ var SetupRecoveryView = React.createClass({
 
       var urlFinal = String.format(vendorEmailUrl, emailTo, emailSubject, emailBody)
       this.setState({'showDone': true})
-      window.open(urlFinal, '_blank');
+      window.open(urlFinal, '_blank')
     } else {
       this.refs.emailform.setState({'error': ABCError(1, strings.invalid_email_address).message})
     }
   },
   callBackEmailDone () {
-    'use strict';
+    'use strict'
     if (window.parent.exitCallback) {
       window.parent.exitCallback()
     }
   }
 })
 
-String.format = function(format) {
+String.format = function (format) {
   var args = Array.prototype.slice.call(arguments, 1)
-  return format.replace(/{(\d+)}/g, function(match, number) {
-    return typeof args[number] != 'undefined'
+  return format.replace(/{(\d+)}/g, function (match, number) {
+    return typeof args[number] !== 'undefined'
       ? args[number]
       : match
   })
 }
 
 var RecoveryQAView = React.createClass({
-  render() {
+  render () {
     'use strict'
 
     return (
-          <div className='row'>
-            <QuestionAnswerView
-              ref='qa1'
-              question={this.props.questions[0]}
-              answer={this.props.answers[0]}
-              setup='1'
-              questionChoices={this.props.questionChoices}/>
-            <QuestionAnswerView
-              ref='qa2'
-              question={this.props.questions[1]}
-              answer={this.props.answers[1]}
-              setup='1'
-              questionChoices={this.props.questionChoices}/>
-            {this.props.requirePassword ?
-            (
-              <div className='col-sm-12'>
-                <div className='form-group'>
-                  <label>Current password</label>
-                  <input type='password' ref='currentPassword' placeholder={strings.current_password_text} className='form-control' />
-                </div>
-              </div>
-            ) : null}
-            <div className='col-sm-12'>
-              <div className='form-group'>
-                <span className='input-group-btn'>
-                  <BootstrapButton ref='register' onClick={this.handleSubmit}>{strings.save_button_text}</BootstrapButton>
-                </span>
-              </div>
+      <div className="row">
+        <QuestionAnswerView
+          ref="qa1"
+          question={this.props.questions[0]}
+          answer={this.props.answers[0]}
+          setup="1"
+          questionChoices={this.props.questionChoices} />
+        <QuestionAnswerView
+          ref="qa2"
+          question={this.props.questions[1]}
+          answer={this.props.answers[1]}
+          setup="1"
+          questionChoices={this.props.questionChoices} />
+        {this.props.requirePassword ? (
+          <div className="col-sm-12">
+            <div className="form-group">
+              <label>Current password</label>
+              <input type="password" ref="currentPassword" placeholder={strings.current_password_text} className="form-control" />
             </div>
           </div>
+        ) : null}
+        <div className="col-sm-12">
+          <div className="form-group">
+            <span className="input-group-btn">
+              <BootstrapButton ref="register" onClick={this.handleSubmit}>{strings.save_button_text}</BootstrapButton>
+            </span>
+          </div>
+        </div>
+      </div>
     )
   },
-  handleSubmit() {
+  handleSubmit () {
     let questions = []
     let answers = []
-    let password = ''
     questions[0] = this.refs.qa1.getValue().question
     questions[1] = this.refs.qa2.getValue().question
     answers[0] = this.refs.qa1.getValue().answer
     answers[1] = this.refs.qa2.getValue().answer
     if (this.props.requirePassword) {
-      password = this.refs.currentPassword.value
       this.props.callback(questions, answers, this.refs.currentPassword.value)
     } else {
       this.props.callback(questions, answers)
     }
-  },
+  }
 })
 
 module.exports.RecoveryView = RecoveryView

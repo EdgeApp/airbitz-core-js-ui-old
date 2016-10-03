@@ -18,7 +18,8 @@
     "bootstrap-social": "^5.0.0",
     "classnames": "^2.2.5",
     "jquery": "^3.1.0",
-    "jsbarcode": "^3.3.20"
+    "jsbarcode": "^3.3.20",
+    "standard-jsx": "^8.0.0"
   },
   "devDependencies": {
     "airbitz-core-js": "^0.0.1",

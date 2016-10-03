@@ -1,7 +1,5 @@
 import React from 'react'
-import { render } from 'react-dom'
 import abc from 'airbitz-core-js'
-import { Link, Router } from 'react-router'
 var ReactDOM = require('react-dom')
 
 // var abcc = abc.ABCConditionCode
@@ -150,7 +148,7 @@ var RegistrationView = React.createClass({
   },
   handleSubmit () {
     var that = this
-    if (this.refs.password.value() != this.refs.password_repeat.value()) {
+    if (this.refs.password.value() !== this.refs.password_repeat.value()) {
       that.refs.form.setState({ 'error': 'Passwords do not match' })
       return false
     }
@@ -159,7 +157,7 @@ var RegistrationView = React.createClass({
       that.refs.form.setState({ 'error': 'Insufficient Password' })
       return false
     }
-    if (4 != this.refs.pin.value.length) {
+    if (this.refs.pin.value.length !== 4) {
       that.refs.form.setState({ 'error': 'PIN Must be 4 digits long' })
       return false
     }
@@ -192,9 +190,8 @@ var RegistrationView = React.createClass({
     if (window.parent.registrationCallback) {
       window.parent.registrationCallback(null, account)
     }
-    that.refs.regModal.close()
-    that.refs.register.setLoading(false)
-    // })
+    this.refs.regModal.close()
+    this.refs.register.setLoading(false)
   },
   onClose () {
     this.refs.loginWithAirbitz.cancelRequest()
