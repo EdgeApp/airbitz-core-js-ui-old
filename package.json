@@ -1,6 +1,6 @@
 {
   "name": "airbitz-core-js-ui",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Airbitz core javascript UI tools",
   "author": "Airbitz, Inc.",
   "contributors": [
@@ -9,14 +9,8 @@
     "Tim Horton <tim@airbitz.co>"
   ],
   "license": "SEE LICENSE IN LICENSE",
-  "keywords": [
-    "bitcoin",
-    "blockchain",
-    "ethereum",
-    "key management",
-    "security"
-  ],
-  "main": "assets/js/abcui.js",
+  "keywords": ["bitcoin", "blockchain", "ethereum", "key management", "security"],
+  "main": "src/abcui.js",
   "bin": "cli.js",
   "repository": "http://github.com/airbitz/airbitz-core-js-ui",
   "dependencies": {
@@ -42,8 +36,6 @@
     "babel-preset-stage-1": "^6.5.0",
     "babel-register": "^6.9.0",
     "express": "^4.14.0",
-    "flow-bin": "^0.33.0",
-    "flow-remove-types": "^1.0.4",
     "json-loader": "^0.5.4",
     "mocha": "^2.4.0",
     "react": "^15.2.1",
@@ -62,15 +54,6 @@
   "scripts": {
     "start": "node samples/server.js",
     "prebuild": "/bin/sh prebuild.sh",
-    "build": "npm run -s build:flow && npm run -s build:standard && npm run -s build:webpack && npm run -s build:success",
-    "build:flow": "flow && flow-remove-types src/*js src/*jsx --out-dir build/",
-    "build:standard": "standard-jsx build/*js && standard-jsx build/*jsx",
-    "build:webpack": "webpack",
-    "build:success": "echo '*** Build Succeeded ***'"
-  },
-  "standard": {
-    "plugins": [
-      "flowtype"
-    ]
+    "build": "standard-jsx src/*js && standard-jsx src/*jsx && webpack"
   }
 }

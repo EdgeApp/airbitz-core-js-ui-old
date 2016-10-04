@@ -1,4 +1,3 @@
-//@flow
 import React from 'react'
 
 var AbcUiDropDown = React.createClass({

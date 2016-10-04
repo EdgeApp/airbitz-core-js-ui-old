@@ -41935,8 +41935,7 @@ var abcuiloader =
 	  getValue: function getValue() {
 	    return this.refs.selectedItem.value;
 	  }
-	}); //     
-
+	});
 
 	module.exports = AbcUiDropDown;
 
@@ -41956,8 +41955,7 @@ var abcuiloader =
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var recovery = __webpack_require__(245); //     
-
+	var recovery = __webpack_require__(245);
 	var RecoveryView = recovery.RecoveryView;
 	var SetupRecoveryView = recovery.SetupRecoveryView;
 

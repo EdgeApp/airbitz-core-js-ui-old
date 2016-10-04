@@ -25443,8 +25443,6 @@ var abcui =
 
 	'use strict';
 
-	//     
-
 	var abc = __webpack_require__(45);
 
 	function createIFrame(path) {
@@ -25459,9 +25457,7 @@ var abcui =
 	}
 
 	function removeIFrame(frame) {
-	  if (frame.parentNode) {
-	    frame.parentNode.removeChild(frame);
-	  }
+	  frame.parentNode.removeChild(frame);
 	}
 
 	function makeABCUIContext(args) {
