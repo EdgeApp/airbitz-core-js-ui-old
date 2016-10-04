@@ -16,7 +16,7 @@
     "key management",
     "security"
   ],
-  "main": "src/abcui.js",
+  "main": "assets/js/abcui.js",
   "bin": "cli.js",
   "repository": "http://github.com/airbitz/airbitz-core-js-ui",
   "dependencies": {
