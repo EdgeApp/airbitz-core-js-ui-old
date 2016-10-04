@@ -9,6 +9,16 @@ This repo implements a UI layer on top of [airbitz-core-js](https://github.com/A
 
 ## Basic usage
 
+Get an API key from
+
+https://developer.airbitz.co
+
+You'll need an account on the Airbitz Mobile App which you can download for iOS and Android at
+
+https://airbitz.co/app
+
+On the `developer.airbitz.co` page, scan the QR code using the Airbitz Mobile App after signing in and register an email address.
+
 Install from npm
 
     npm install airbitz-core-js-ui --save
