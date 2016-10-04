@@ -6,8 +6,8 @@ var webpack = require('webpack');
 
 module.exports = {
   entry: {
-    abcuiloader: './src/abcui-loader.jsx',
-    abcui: './src/abcui.js'
+    abcuiloader: './build/src/abcui-loader.jsx',
+    abcui: './build/src/abcui.js'
   },
   output: {
     filename: 'assets/js/[name].js',

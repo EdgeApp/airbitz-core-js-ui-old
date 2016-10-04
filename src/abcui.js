@@ -1,3 +1,5 @@
+//@flow
+
 var abc = require('airbitz-core-js')
 
 function createIFrame (path) {
@@ -12,10 +14,19 @@ function createIFrame (path) {
 }
 
 function removeIFrame (frame) {
-  frame.parentNode.removeChild(frame)
+  if (frame.parentNode) {
+    frame.parentNode.removeChild(frame)
+  }
 }
 
-function makeABCUIContext (args) {
+type MakeABCUiContextArgs = {
+  apiKey: string,
+  accountType: string,
+  bundlePath: string,
+  vendorName: string
+}
+
+function makeABCUIContext (args: MakeABCUiContextArgs) {
   return new InnerAbcUi(args)
 }
 
