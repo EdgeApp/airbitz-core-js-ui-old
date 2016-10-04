@@ -27,7 +27,7 @@ or just include this repo somewhere in your server's path.
 
 Include the `abcui.js` file in your code
 
-    <script src="/path-to-abcui/abcui.js"></script>
+    <script src="/path-to-abcui/assets/js/abcui.js"></script>
 
 where `/path-to-abcui/` leads to the root directory of this repo when accessed via HTTP.
 
