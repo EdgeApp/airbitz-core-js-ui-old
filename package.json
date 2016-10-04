@@ -9,7 +9,7 @@
     "Tim Horton <tim@airbitz.co>"
   ],
   "license": "SEE LICENSE IN LICENSE",
-  "keywords": "bitcoin, blockchain, ethereum, key management, security",
+  "keywords": ["bitcoin", "blockchain", "ethereum", "key management", "security"],
   "main": "src/abcui.js",
   "bin": "cli.js",
   "repository": "http://github.com/airbitz/airbitz-core-js-ui",
@@ -52,9 +52,8 @@
     "css/abc.css"
   ],
   "scripts": {
-    "pretest": "standard src/*js",
     "start": "node samples/server.js",
     "prebuild": "/bin/sh prebuild.sh",
-    "build": "webpack"
+    "build": "standard-jsx src/*js && standard-jsx src/*jsx && webpack"
   }
 }

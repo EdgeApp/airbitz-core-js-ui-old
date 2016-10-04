@@ -5636,7 +5636,7 @@ var abcui =
 	  } catch (e) {
 	    // Alternative using node.js crypto:
 	    var hiddenRequire = require;
-	    return __webpack_require__(51).randomBytes(bytes);
+	    return __webpack_require__(52).randomBytes(bytes);
 	  }
 	  return out;
 	}
@@ -5750,7 +5750,7 @@ var abcui =
 	util.inherits = __webpack_require__(18);
 	/*</replacement>*/
 
-	var Readable = __webpack_require__(62);
+	var Readable = __webpack_require__(63);
 	var Writable = __webpack_require__(41);
 
 	util.inherits(Duplex, Readable);
@@ -5934,7 +5934,7 @@ var abcui =
 
 	module.exports = Stream;
 
-	var EE = __webpack_require__(52).EventEmitter;
+	var EE = __webpack_require__(53).EventEmitter;
 	var inherits = __webpack_require__(18);
 
 	inherits(Stream, EE);
@@ -6286,7 +6286,7 @@ var abcui =
 	/* WEBPACK VAR INJECTION */(function(Buffer) {'use strict';
 
 	var BASE58 = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
-	var base58 = __webpack_require__(43)(BASE58);
+	var base58 = __webpack_require__(44)(BASE58);
 	var crypto = __webpack_require__(13);
 	var UserStorage = __webpack_require__(26).UserStorage;
 	var userMap = __webpack_require__(16);
@@ -7775,6 +7775,111 @@ var abcui =
 
 /***/ },
 /* 43 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var crypto = __webpack_require__(13);
+	var userMap = __webpack_require__(16);
+	var UserStorage = __webpack_require__(26).UserStorage;
+	var Login = __webpack_require__(32);
+
+	/**
+	 * Returns true if the local device has what is needed for a PIN login.
+	 */
+	function exists(ctx, username) {
+	  username = userMap.normalize(username);
+
+	  // Extract stuff from storage:
+	  var userStorage = new UserStorage(ctx.localStorage, username);
+	  var pinAuthId = userStorage.getItem('pinAuthId');
+	  var pinBox = userStorage.getJson('pinBox');
+	  if (!pinAuthId || !pinBox) {
+	    return false;
+	  }
+
+	  return true;
+	}
+	exports.exists = exists;
+
+	/**
+	 * Logs the user in using a PIN number.
+	 */
+	function login(ctx, username, pin, callback) {
+	  username = userMap.normalize(username);
+
+	  // Extract stuff from storage:
+	  var userStorage = new UserStorage(ctx.localStorage, username);
+	  var passwordKeySnrp = userStorage.getJson('passwordKeySnrp');
+	  var pinAuthId = userStorage.getItem('pinAuthId');
+	  var pinBox = userStorage.getJson('pinBox');
+	  if (!passwordKeySnrp || !pinAuthId || !pinBox) {
+	    return callback(Error('Missing data for PIN login'));
+	  }
+
+	  var pinAuth = crypto.scrypt(username + pin, crypto.userIdSnrp);
+	  var request = {
+	    'did': pinAuthId,
+	    'lpin1': pinAuth.toString('base64')
+	  };
+	  ctx.authRequest('POST', '/v1/account/pinpackage/get', request, function (err, reply) {
+	    if (err) return callback(err);
+	    try {
+	      var pinKeyBox = JSON.parse(reply['pin_package']);
+
+	      // Extract the data key:
+	      var pinKeyKey = crypto.scrypt(username + pin, passwordKeySnrp);
+	      var pinKey = crypto.decrypt(pinKeyBox, pinKeyKey);
+	      var dataKey = crypto.decrypt(pinBox, pinKey);
+	    } catch (e) {
+	      return callback(e);
+	    }
+	    return callback(null, Login.offline(ctx.localStorage, username, dataKey));
+	  });
+	}
+	exports.login = login;
+
+	/**
+	 * Sets up a device-local PIN login.
+	 */
+	function setup(ctx, login, pin, callback) {
+	  // Set up a device ID:
+	  var pinAuthId = login.userStorage.getItem('pinAuthId');
+	  if (!pinAuthId) {
+	    pinAuthId = crypto.random(32);
+	  }
+
+	  // Derive keys:
+	  var passwordKeySnrp = login.userStorage.getJson('passwordKeySnrp');
+	  var pinKey = crypto.random(32);
+	  var pinKeyKey = crypto.scrypt(login.username + pin, passwordKeySnrp);
+	  var pinAuth = crypto.scrypt(login.username + pin, crypto.userIdSnrp);
+
+	  // Encrypt:
+	  var pinBox = crypto.encrypt(login.dataKey, pinKey);
+	  var pinKeyBox = crypto.encrypt(pinKey, pinKeyKey);
+
+	  var request = {
+	    'l1': login.userId,
+	    'lp1': login.passwordAuth.toString('base64'),
+	    'lpin1': pinAuth.toString('base64'),
+	    'did': pinAuthId.toString('base64'),
+	    'pin_package': JSON.stringify(pinKeyBox),
+	    'ali': '2300-01-01T01:01:01' // 300 years in the future should be enough
+	  };
+	  ctx.authRequest('POST', '/v1/account/pinpackage/update', request, function (err, reply) {
+	    if (err) return callback(err);
+
+	    login.userStorage.setItem('pinAuthId', pinAuthId.toString('base64'));
+	    login.userStorage.setJson('pinBox', pinBox);
+
+	    return callback(null);
+	  });
+	}
+	exports.setup = setup;
+
+/***/ },
+/* 44 */
 /***/ function(module, exports) {
 
 	// base-x encoding
@@ -7863,14 +7968,14 @@ var abcui =
 
 
 /***/ },
-/* 44 */
+/* 45 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var Context = __webpack_require__(151).Context;
 	var userMap = __webpack_require__(16);
-	var abcc = __webpack_require__(64);
+	var abcc = __webpack_require__(65);
 	var abce = __webpack_require__(148);
 
 	exports.Context = Context;
@@ -7886,12 +7991,12 @@ var abcui =
 	};
 
 /***/ },
-/* 45 */,
 /* 46 */,
 /* 47 */,
 /* 48 */,
 /* 49 */,
-/* 50 */
+/* 50 */,
+/* 51 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {var createHash = __webpack_require__(100)
@@ -7928,7 +8033,7 @@ var abcui =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1).Buffer))
 
 /***/ },
-/* 51 */
+/* 52 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {var rng = __webpack_require__(105)
@@ -7942,7 +8047,7 @@ var abcui =
 	    ].join('\n'))
 	}
 
-	exports.createHash = __webpack_require__(50)
+	exports.createHash = __webpack_require__(51)
 
 	exports.createHmac = __webpack_require__(95)
 
@@ -7988,7 +8093,7 @@ var abcui =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1).Buffer))
 
 /***/ },
-/* 52 */
+/* 53 */
 /***/ function(module, exports) {
 
 	// Copyright Joyent, Inc. and other Node contributors.
@@ -8296,7 +8401,6 @@ var abcui =
 
 
 /***/ },
-/* 53 */,
 /* 54 */,
 /* 55 */,
 /* 56 */,
@@ -8304,7 +8408,8 @@ var abcui =
 /* 58 */,
 /* 59 */,
 /* 60 */,
-/* 61 */
+/* 61 */,
+/* 62 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// Copyright Joyent, Inc. and other Node contributors.
@@ -8356,7 +8461,7 @@ var abcui =
 
 
 /***/ },
-/* 62 */
+/* 63 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {// Copyright Joyent, Inc. and other Node contributors.
@@ -8393,7 +8498,7 @@ var abcui =
 
 	Readable.ReadableState = ReadableState;
 
-	var EE = __webpack_require__(52).EventEmitter;
+	var EE = __webpack_require__(53).EventEmitter;
 
 	/*<replacement>*/
 	if (!EE.listenerCount) EE.listenerCount = function(emitter, type) {
@@ -8485,7 +8590,7 @@ var abcui =
 	  this.encoding = null;
 	  if (options.encoding) {
 	    if (!StringDecoder)
-	      StringDecoder = __webpack_require__(63).StringDecoder;
+	      StringDecoder = __webpack_require__(64).StringDecoder;
 	    this.decoder = new StringDecoder(options.encoding);
 	    this.encoding = options.encoding;
 	  }
@@ -8595,7 +8700,7 @@ var abcui =
 	// backwards compatibility.
 	Readable.prototype.setEncoding = function(enc) {
 	  if (!StringDecoder)
-	    StringDecoder = __webpack_require__(63).StringDecoder;
+	    StringDecoder = __webpack_require__(64).StringDecoder;
 	  this._readableState.decoder = new StringDecoder(enc);
 	  this._readableState.encoding = enc;
 	  return this;
@@ -9314,7 +9419,7 @@ var abcui =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ },
-/* 63 */
+/* 64 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// Copyright Joyent, Inc. and other Node contributors.
@@ -9541,7 +9646,7 @@ var abcui =
 
 
 /***/ },
-/* 64 */
+/* 65 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -9599,7 +9704,7 @@ var abcui =
 	exports = abcc;
 
 /***/ },
-/* 65 */
+/* 66 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {'use strict';
@@ -9723,7 +9828,7 @@ var abcui =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1).Buffer))
 
 /***/ },
-/* 66 */
+/* 67 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -9861,111 +9966,6 @@ var abcui =
 	exports.setup = setup;
 
 /***/ },
-/* 67 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var crypto = __webpack_require__(13);
-	var userMap = __webpack_require__(16);
-	var UserStorage = __webpack_require__(26).UserStorage;
-	var Login = __webpack_require__(32);
-
-	/**
-	 * Returns true if the local device has what is needed for a PIN login.
-	 */
-	function exists(ctx, username) {
-	  username = userMap.normalize(username);
-
-	  // Extract stuff from storage:
-	  var userStorage = new UserStorage(ctx.localStorage, username);
-	  var pinAuthId = userStorage.getItem('pinAuthId');
-	  var pinBox = userStorage.getJson('pinBox');
-	  if (!pinAuthId || !pinBox) {
-	    return false;
-	  }
-
-	  return true;
-	}
-	exports.exists = exists;
-
-	/**
-	 * Logs the user in using a PIN number.
-	 */
-	function login(ctx, username, pin, callback) {
-	  username = userMap.normalize(username);
-
-	  // Extract stuff from storage:
-	  var userStorage = new UserStorage(ctx.localStorage, username);
-	  var passwordKeySnrp = userStorage.getJson('passwordKeySnrp');
-	  var pinAuthId = userStorage.getItem('pinAuthId');
-	  var pinBox = userStorage.getJson('pinBox');
-	  if (!passwordKeySnrp || !pinAuthId || !pinBox) {
-	    return callback(Error('Missing data for PIN login'));
-	  }
-
-	  var pinAuth = crypto.scrypt(username + pin, crypto.userIdSnrp);
-	  var request = {
-	    'did': pinAuthId,
-	    'lpin1': pinAuth.toString('base64')
-	  };
-	  ctx.authRequest('POST', '/v1/account/pinpackage/get', request, function (err, reply) {
-	    if (err) return callback(err);
-	    try {
-	      var pinKeyBox = JSON.parse(reply['pin_package']);
-
-	      // Extract the data key:
-	      var pinKeyKey = crypto.scrypt(username + pin, passwordKeySnrp);
-	      var pinKey = crypto.decrypt(pinKeyBox, pinKeyKey);
-	      var dataKey = crypto.decrypt(pinBox, pinKey);
-	    } catch (e) {
-	      return callback(e);
-	    }
-	    return callback(null, Login.offline(ctx.localStorage, username, dataKey));
-	  });
-	}
-	exports.login = login;
-
-	/**
-	 * Sets up a device-local PIN login.
-	 */
-	function setup(ctx, login, pin, callback) {
-	  // Set up a device ID:
-	  var pinAuthId = login.userStorage.getItem('pinAuthId');
-	  if (!pinAuthId) {
-	    pinAuthId = crypto.random(32);
-	  }
-
-	  // Derive keys:
-	  var passwordKeySnrp = login.userStorage.getJson('passwordKeySnrp');
-	  var pinKey = crypto.random(32);
-	  var pinKeyKey = crypto.scrypt(login.username + pin, passwordKeySnrp);
-	  var pinAuth = crypto.scrypt(login.username + pin, crypto.userIdSnrp);
-
-	  // Encrypt:
-	  var pinBox = crypto.encrypt(login.dataKey, pinKey);
-	  var pinKeyBox = crypto.encrypt(pinKey, pinKeyKey);
-
-	  var request = {
-	    'l1': login.userId,
-	    'lp1': login.passwordAuth.toString('base64'),
-	    'lpin1': pinAuth.toString('base64'),
-	    'did': pinAuthId.toString('base64'),
-	    'pin_package': JSON.stringify(pinKeyBox),
-	    'ali': '2300-01-01T01:01:01' // 300 years in the future should be enough
-	  };
-	  ctx.authRequest('POST', '/v1/account/pinpackage/update', request, function (err, reply) {
-	    if (err) return callback(err);
-
-	    login.userStorage.setItem('pinAuthId', pinAuthId.toString('base64'));
-	    login.userStorage.setJson('pinBox', pinBox);
-
-	    return callback(null);
-	  });
-	}
-	exports.setup = setup;
-
-/***/ },
 /* 68 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -9974,7 +9974,7 @@ var abcui =
 	var BASE58 = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
 
 	var crypto = __webpack_require__(13);
-	var base58 = __webpack_require__(43)(BASE58);
+	var base58 = __webpack_require__(44)(BASE58);
 	var userMap = __webpack_require__(16);
 	var Login = __webpack_require__(32);
 
@@ -12620,7 +12620,7 @@ var abcui =
 /* 95 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(Buffer) {var createHash = __webpack_require__(50)
+	/* WEBPACK VAR INJECTION */(function(Buffer) {var createHash = __webpack_require__(51)
 
 	var zeroBuffer = new Buffer(128)
 	zeroBuffer.fill(0)
@@ -14020,20 +14020,20 @@ var abcui =
 /* 140 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(61)
+	module.exports = __webpack_require__(62)
 
 
 /***/ },
 /* 141 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(process) {exports = module.exports = __webpack_require__(62);
+	/* WEBPACK VAR INJECTION */(function(process) {exports = module.exports = __webpack_require__(63);
 	exports.Stream = __webpack_require__(19);
 	exports.Readable = exports;
 	exports.Writable = __webpack_require__(41);
 	exports.Duplex = __webpack_require__(15);
 	exports.Transform = __webpack_require__(40);
-	exports.PassThrough = __webpack_require__(61);
+	exports.PassThrough = __webpack_require__(62);
 	if (!process.browser && process.env.READABLE_STREAM === 'disable') {
 	  module.exports = __webpack_require__(19);
 	}
@@ -14613,7 +14613,7 @@ var abcui =
 
 	'use strict';
 
-	var abcc = __webpack_require__(64);
+	var abcc = __webpack_require__(65);
 
 	/**
 	 * ABCError
@@ -14717,8 +14717,8 @@ var abcui =
 
 	'use strict';
 
-	var loginPassword = __webpack_require__(66);
-	var loginPin = __webpack_require__(67);
+	var loginPassword = __webpack_require__(67);
+	var loginPin = __webpack_require__(43);
 	var loginRecovery2 = __webpack_require__(68);
 
 	/**
@@ -14784,16 +14784,16 @@ var abcui =
 
 	var Account = __webpack_require__(149).Account;
 	var loginEdge = __webpack_require__(152);
-	var loginCreate = __webpack_require__(65);
-	var loginPassword = __webpack_require__(66);
-	var loginPin = __webpack_require__(67);
+	var loginCreate = __webpack_require__(66);
+	var loginPassword = __webpack_require__(67);
+	var loginPin = __webpack_require__(43);
 	var loginRecovery2 = __webpack_require__(68);
 	var userMap = __webpack_require__(16);
 	var UserStorage = __webpack_require__(26).UserStorage;
 	var crypto = __webpack_require__(13);
 
-	// var serverRoot = 'https://auth.airbitz.co/api'
-	var serverRoot = 'https://test-auth.airbitz.co/api';
+	var serverRoot = 'https://auth.airbitz.co/api';
+	// var serverRoot = 'https://test-auth.airbitz.co/api'
 
 	/**
 	 * @param authRequest function (method, uri, body, callback (err, status, body))
@@ -15010,12 +15010,14 @@ var abcui =
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {'use strict';
 
-	var loginCreate = __webpack_require__(65);
+	var loginCreate = __webpack_require__(66);
 	var crypto = __webpack_require__(13);
+	var loginPin = __webpack_require__(43);
+
 	var Elliptic = __webpack_require__(7).ec;
 	var secp256k1 = new Elliptic('secp256k1');
 	var BASE58 = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
-	var base58 = __webpack_require__(43)(BASE58);
+	var base58 = __webpack_require__(44)(BASE58);
 
 	function ABCEdgeLoginRequest(id) {
 	  this.id = id;
@@ -15032,6 +15034,7 @@ var abcui =
 	function createLogin(ctx, accountReply, callback) {
 	  var username = accountReply.username + '-' + base58.encode(crypto.random(4));
 	  var password = base58.encode(crypto.random(24));
+	  var pin = accountReply.pin;
 
 	  var opts = {};
 	  if (accountReply.type === 'account:repo:co.airbitz.wallet') {
@@ -15042,6 +15045,18 @@ var abcui =
 	    if (err) return callback(err);
 	    login.accountAttach(ctx, accountReply.type, accountReply.info, function (err) {
 	      if (err) return callback(err);
+
+	      if (typeof pin === 'string' && pin.length === 4) {
+	        if (!loginPin.exists(ctx, username)) {
+	          loginPin.setup(ctx, login, pin, function (err) {
+	            if (err) {
+	              // Do nothing
+	            }
+	            callback(null, login);
+	          });
+	          return;
+	        }
+	      }
 	      callback(null, login);
 	    });
 	  });
@@ -15069,8 +15084,12 @@ var abcui =
 
 	  var info = reply['info'];
 	  var username = reply['username'];
+	  var pin = null;
+	  if (typeof reply.pinString === 'string') {
+	    pin = reply.pinString;
+	  }
 
-	  return { type: type, info: info, username: username };
+	  return { type: type, info: info, username: username, pin: pin };
 	}
 	exports.decodeAccountReply = decodeAccountReply;
 
@@ -15432,7 +15451,7 @@ var abcui =
 	} else {
 	  // Node.js or Web worker
 	  try {
-	    var crypto = __webpack_require__(51);
+	    var crypto = __webpack_require__(52);
 
 	    Rand.prototype._rand = function _rand(n) {
 	      return crypto.randomBytes(n);
@@ -25419,7 +25438,7 @@ var abcui =
 
 	'use strict';
 
-	var abc = __webpack_require__(44);
+	var abc = __webpack_require__(45);
 
 	function createIFrame(path) {
 	  var frame = document.createElement('iframe');
@@ -25460,6 +25479,7 @@ var abcui =
 	InnerAbcUi.prototype.openLoginWindow = function (callback) {
 	  var frame = createIFrame(this.bundlePath + '/assets/index.html#/login');
 	  var that = this;
+	  var abcContext = window.abcContext;
 	  window.loginCallback = function (error, account, opts) {
 	    if (account) {
 	      window.abcAccount = account;
@@ -25467,7 +25487,7 @@ var abcui =
 	      if (opts && opts.setupRecovery) {
 	        opts.noRequirePassword = true;
 	        that.openSetupRecoveryWindow(account, opts, function () {});
-	      } else if (account.edgeLogin || account.passwordLogin) {
+	      } else if (!abcContext.pinExists(account.username)) {
 	        that.openChangePinEdgeLoginWindow(account, opts, function () {});
 	      }
 	      callback(error, account);

@@ -1,3 +1,5 @@
+/* global $ */
+
 import React from 'react'
 var strings = require('./abcui-strings')
 

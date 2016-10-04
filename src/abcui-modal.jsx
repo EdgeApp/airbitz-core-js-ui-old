@@ -1,3 +1,5 @@
+/* global $ */
+
 import React from 'react'
 
 var BootstrapButton = React.createClass({

@@ -6172,7 +6172,7 @@ var abcuiloader =
 	  } catch (e) {
 	    // Alternative using node.js crypto:
 	    var hiddenRequire = require;
-	    return __webpack_require__(51).randomBytes(bytes);
+	    return __webpack_require__(52).randomBytes(bytes);
 	  }
 	  return out;
 	}
@@ -6343,7 +6343,7 @@ var abcuiloader =
 	util.inherits = __webpack_require__(18);
 	/*</replacement>*/
 
-	var Readable = __webpack_require__(62);
+	var Readable = __webpack_require__(63);
 	var Writable = __webpack_require__(41);
 
 	util.inherits(Duplex, Readable);
@@ -6527,7 +6527,7 @@ var abcuiloader =
 
 	module.exports = Stream;
 
-	var EE = __webpack_require__(52).EventEmitter;
+	var EE = __webpack_require__(53).EventEmitter;
 	var inherits = __webpack_require__(18);
 
 	inherits(Stream, EE);
@@ -7741,8 +7741,8 @@ var abcuiloader =
 	var CallbackQueue = __webpack_require__(219);
 	var PooledClass = __webpack_require__(36);
 	var ReactFeatureFlags = __webpack_require__(227);
-	var ReactReconciler = __webpack_require__(49);
-	var Transaction = __webpack_require__(60);
+	var ReactReconciler = __webpack_require__(50);
+	var Transaction = __webpack_require__(61);
 
 	var invariant = __webpack_require__(2);
 
@@ -8393,7 +8393,7 @@ var abcuiloader =
 	/* WEBPACK VAR INJECTION */(function(Buffer) {'use strict';
 
 	var BASE58 = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
-	var base58 = __webpack_require__(43)(BASE58);
+	var base58 = __webpack_require__(44)(BASE58);
 	var crypto = __webpack_require__(13);
 	var UserStorage = __webpack_require__(26).UserStorage;
 	var userMap = __webpack_require__(16);
@@ -10442,6 +10442,111 @@ var abcuiloader =
 
 /***/ },
 /* 43 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var crypto = __webpack_require__(13);
+	var userMap = __webpack_require__(16);
+	var UserStorage = __webpack_require__(26).UserStorage;
+	var Login = __webpack_require__(32);
+
+	/**
+	 * Returns true if the local device has what is needed for a PIN login.
+	 */
+	function exists(ctx, username) {
+	  username = userMap.normalize(username);
+
+	  // Extract stuff from storage:
+	  var userStorage = new UserStorage(ctx.localStorage, username);
+	  var pinAuthId = userStorage.getItem('pinAuthId');
+	  var pinBox = userStorage.getJson('pinBox');
+	  if (!pinAuthId || !pinBox) {
+	    return false;
+	  }
+
+	  return true;
+	}
+	exports.exists = exists;
+
+	/**
+	 * Logs the user in using a PIN number.
+	 */
+	function login(ctx, username, pin, callback) {
+	  username = userMap.normalize(username);
+
+	  // Extract stuff from storage:
+	  var userStorage = new UserStorage(ctx.localStorage, username);
+	  var passwordKeySnrp = userStorage.getJson('passwordKeySnrp');
+	  var pinAuthId = userStorage.getItem('pinAuthId');
+	  var pinBox = userStorage.getJson('pinBox');
+	  if (!passwordKeySnrp || !pinAuthId || !pinBox) {
+	    return callback(Error('Missing data for PIN login'));
+	  }
+
+	  var pinAuth = crypto.scrypt(username + pin, crypto.userIdSnrp);
+	  var request = {
+	    'did': pinAuthId,
+	    'lpin1': pinAuth.toString('base64')
+	  };
+	  ctx.authRequest('POST', '/v1/account/pinpackage/get', request, function (err, reply) {
+	    if (err) return callback(err);
+	    try {
+	      var pinKeyBox = JSON.parse(reply['pin_package']);
+
+	      // Extract the data key:
+	      var pinKeyKey = crypto.scrypt(username + pin, passwordKeySnrp);
+	      var pinKey = crypto.decrypt(pinKeyBox, pinKeyKey);
+	      var dataKey = crypto.decrypt(pinBox, pinKey);
+	    } catch (e) {
+	      return callback(e);
+	    }
+	    return callback(null, Login.offline(ctx.localStorage, username, dataKey));
+	  });
+	}
+	exports.login = login;
+
+	/**
+	 * Sets up a device-local PIN login.
+	 */
+	function setup(ctx, login, pin, callback) {
+	  // Set up a device ID:
+	  var pinAuthId = login.userStorage.getItem('pinAuthId');
+	  if (!pinAuthId) {
+	    pinAuthId = crypto.random(32);
+	  }
+
+	  // Derive keys:
+	  var passwordKeySnrp = login.userStorage.getJson('passwordKeySnrp');
+	  var pinKey = crypto.random(32);
+	  var pinKeyKey = crypto.scrypt(login.username + pin, passwordKeySnrp);
+	  var pinAuth = crypto.scrypt(login.username + pin, crypto.userIdSnrp);
+
+	  // Encrypt:
+	  var pinBox = crypto.encrypt(login.dataKey, pinKey);
+	  var pinKeyBox = crypto.encrypt(pinKey, pinKeyKey);
+
+	  var request = {
+	    'l1': login.userId,
+	    'lp1': login.passwordAuth.toString('base64'),
+	    'lpin1': pinAuth.toString('base64'),
+	    'did': pinAuthId.toString('base64'),
+	    'pin_package': JSON.stringify(pinKeyBox),
+	    'ali': '2300-01-01T01:01:01' // 300 years in the future should be enough
+	  };
+	  ctx.authRequest('POST', '/v1/account/pinpackage/update', request, function (err, reply) {
+	    if (err) return callback(err);
+
+	    login.userStorage.setItem('pinAuthId', pinAuthId.toString('base64'));
+	    login.userStorage.setJson('pinBox', pinBox);
+
+	    return callback(null);
+	  });
+	}
+	exports.setup = setup;
+
+/***/ },
+/* 44 */
 /***/ function(module, exports) {
 
 	// base-x encoding
@@ -10530,14 +10635,14 @@ var abcuiloader =
 
 
 /***/ },
-/* 44 */
+/* 45 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var Context = __webpack_require__(151).Context;
 	var userMap = __webpack_require__(16);
-	var abcc = __webpack_require__(64);
+	var abcc = __webpack_require__(65);
 	var abce = __webpack_require__(148);
 
 	exports.Context = Context;
@@ -10553,7 +10658,7 @@ var abcuiloader =
 	};
 
 /***/ },
-/* 45 */
+/* 46 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -10617,7 +10722,7 @@ var abcuiloader =
 	module.exports = strings;
 
 /***/ },
-/* 46 */
+/* 47 */
 /***/ function(module, exports) {
 
 	/**
@@ -10653,7 +10758,7 @@ var abcuiloader =
 	};
 
 /***/ },
-/* 47 */
+/* 48 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -10871,7 +10976,7 @@ var abcuiloader =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ },
-/* 48 */
+/* 49 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -10994,7 +11099,7 @@ var abcuiloader =
 	module.exports = DOMLazyTree;
 
 /***/ },
-/* 49 */
+/* 50 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -11168,7 +11273,7 @@ var abcuiloader =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ },
-/* 50 */
+/* 51 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {var createHash = __webpack_require__(100)
@@ -11205,7 +11310,7 @@ var abcuiloader =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1).Buffer))
 
 /***/ },
-/* 51 */
+/* 52 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {var rng = __webpack_require__(105)
@@ -11219,7 +11324,7 @@ var abcuiloader =
 	    ].join('\n'))
 	}
 
-	exports.createHash = __webpack_require__(50)
+	exports.createHash = __webpack_require__(51)
 
 	exports.createHmac = __webpack_require__(95)
 
@@ -11265,7 +11370,7 @@ var abcuiloader =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1).Buffer))
 
 /***/ },
-/* 52 */
+/* 53 */
 /***/ function(module, exports) {
 
 	// Copyright Joyent, Inc. and other Node contributors.
@@ -11573,7 +11678,7 @@ var abcuiloader =
 
 
 /***/ },
-/* 53 */
+/* 54 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -11598,7 +11703,7 @@ var abcuiloader =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ },
-/* 54 */
+/* 55 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -11663,7 +11768,7 @@ var abcuiloader =
 	exports.default = EANencoder;
 
 /***/ },
-/* 55 */
+/* 56 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -11726,7 +11831,7 @@ var abcuiloader =
 	exports.default = MSI;
 
 /***/ },
-/* 56 */
+/* 57 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -11983,7 +12088,7 @@ var abcuiloader =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ },
-/* 57 */
+/* 58 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -12000,7 +12105,7 @@ var abcuiloader =
 	'use strict';
 
 	var EventConstants = __webpack_require__(29);
-	var EventPluginHub = __webpack_require__(56);
+	var EventPluginHub = __webpack_require__(57);
 	var EventPluginUtils = __webpack_require__(118);
 
 	var accumulateInto = __webpack_require__(236);
@@ -12126,7 +12231,7 @@ var abcuiloader =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ },
-/* 58 */
+/* 59 */
 /***/ function(module, exports) {
 
 	/**
@@ -12179,7 +12284,7 @@ var abcuiloader =
 	module.exports = ReactInstanceMap;
 
 /***/ },
-/* 59 */
+/* 60 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -12243,7 +12348,7 @@ var abcuiloader =
 	module.exports = SyntheticUIEvent;
 
 /***/ },
-/* 60 */
+/* 61 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -12482,7 +12587,7 @@ var abcuiloader =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ },
-/* 61 */
+/* 62 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// Copyright Joyent, Inc. and other Node contributors.
@@ -12534,7 +12639,7 @@ var abcuiloader =
 
 
 /***/ },
-/* 62 */
+/* 63 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {// Copyright Joyent, Inc. and other Node contributors.
@@ -12571,7 +12676,7 @@ var abcuiloader =
 
 	Readable.ReadableState = ReadableState;
 
-	var EE = __webpack_require__(52).EventEmitter;
+	var EE = __webpack_require__(53).EventEmitter;
 
 	/*<replacement>*/
 	if (!EE.listenerCount) EE.listenerCount = function(emitter, type) {
@@ -12663,7 +12768,7 @@ var abcuiloader =
 	  this.encoding = null;
 	  if (options.encoding) {
 	    if (!StringDecoder)
-	      StringDecoder = __webpack_require__(63).StringDecoder;
+	      StringDecoder = __webpack_require__(64).StringDecoder;
 	    this.decoder = new StringDecoder(options.encoding);
 	    this.encoding = options.encoding;
 	  }
@@ -12773,7 +12878,7 @@ var abcuiloader =
 	// backwards compatibility.
 	Readable.prototype.setEncoding = function(enc) {
 	  if (!StringDecoder)
-	    StringDecoder = __webpack_require__(63).StringDecoder;
+	    StringDecoder = __webpack_require__(64).StringDecoder;
 	  this._readableState.decoder = new StringDecoder(enc);
 	  this._readableState.encoding = enc;
 	  return this;
@@ -13492,7 +13597,7 @@ var abcuiloader =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ },
-/* 63 */
+/* 64 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// Copyright Joyent, Inc. and other Node contributors.
@@ -13719,7 +13824,7 @@ var abcuiloader =
 
 
 /***/ },
-/* 64 */
+/* 65 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -13777,7 +13882,7 @@ var abcuiloader =
 	exports = abcc;
 
 /***/ },
-/* 65 */
+/* 66 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {'use strict';
@@ -13901,7 +14006,7 @@ var abcuiloader =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1).Buffer))
 
 /***/ },
-/* 66 */
+/* 67 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -14039,111 +14144,6 @@ var abcuiloader =
 	exports.setup = setup;
 
 /***/ },
-/* 67 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var crypto = __webpack_require__(13);
-	var userMap = __webpack_require__(16);
-	var UserStorage = __webpack_require__(26).UserStorage;
-	var Login = __webpack_require__(32);
-
-	/**
-	 * Returns true if the local device has what is needed for a PIN login.
-	 */
-	function exists(ctx, username) {
-	  username = userMap.normalize(username);
-
-	  // Extract stuff from storage:
-	  var userStorage = new UserStorage(ctx.localStorage, username);
-	  var pinAuthId = userStorage.getItem('pinAuthId');
-	  var pinBox = userStorage.getJson('pinBox');
-	  if (!pinAuthId || !pinBox) {
-	    return false;
-	  }
-
-	  return true;
-	}
-	exports.exists = exists;
-
-	/**
-	 * Logs the user in using a PIN number.
-	 */
-	function login(ctx, username, pin, callback) {
-	  username = userMap.normalize(username);
-
-	  // Extract stuff from storage:
-	  var userStorage = new UserStorage(ctx.localStorage, username);
-	  var passwordKeySnrp = userStorage.getJson('passwordKeySnrp');
-	  var pinAuthId = userStorage.getItem('pinAuthId');
-	  var pinBox = userStorage.getJson('pinBox');
-	  if (!passwordKeySnrp || !pinAuthId || !pinBox) {
-	    return callback(Error('Missing data for PIN login'));
-	  }
-
-	  var pinAuth = crypto.scrypt(username + pin, crypto.userIdSnrp);
-	  var request = {
-	    'did': pinAuthId,
-	    'lpin1': pinAuth.toString('base64')
-	  };
-	  ctx.authRequest('POST', '/v1/account/pinpackage/get', request, function (err, reply) {
-	    if (err) return callback(err);
-	    try {
-	      var pinKeyBox = JSON.parse(reply['pin_package']);
-
-	      // Extract the data key:
-	      var pinKeyKey = crypto.scrypt(username + pin, passwordKeySnrp);
-	      var pinKey = crypto.decrypt(pinKeyBox, pinKeyKey);
-	      var dataKey = crypto.decrypt(pinBox, pinKey);
-	    } catch (e) {
-	      return callback(e);
-	    }
-	    return callback(null, Login.offline(ctx.localStorage, username, dataKey));
-	  });
-	}
-	exports.login = login;
-
-	/**
-	 * Sets up a device-local PIN login.
-	 */
-	function setup(ctx, login, pin, callback) {
-	  // Set up a device ID:
-	  var pinAuthId = login.userStorage.getItem('pinAuthId');
-	  if (!pinAuthId) {
-	    pinAuthId = crypto.random(32);
-	  }
-
-	  // Derive keys:
-	  var passwordKeySnrp = login.userStorage.getJson('passwordKeySnrp');
-	  var pinKey = crypto.random(32);
-	  var pinKeyKey = crypto.scrypt(login.username + pin, passwordKeySnrp);
-	  var pinAuth = crypto.scrypt(login.username + pin, crypto.userIdSnrp);
-
-	  // Encrypt:
-	  var pinBox = crypto.encrypt(login.dataKey, pinKey);
-	  var pinKeyBox = crypto.encrypt(pinKey, pinKeyKey);
-
-	  var request = {
-	    'l1': login.userId,
-	    'lp1': login.passwordAuth.toString('base64'),
-	    'lpin1': pinAuth.toString('base64'),
-	    'did': pinAuthId.toString('base64'),
-	    'pin_package': JSON.stringify(pinKeyBox),
-	    'ali': '2300-01-01T01:01:01' // 300 years in the future should be enough
-	  };
-	  ctx.authRequest('POST', '/v1/account/pinpackage/update', request, function (err, reply) {
-	    if (err) return callback(err);
-
-	    login.userStorage.setItem('pinAuthId', pinAuthId.toString('base64'));
-	    login.userStorage.setJson('pinBox', pinBox);
-
-	    return callback(null);
-	  });
-	}
-	exports.setup = setup;
-
-/***/ },
 /* 68 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -14152,7 +14152,7 @@ var abcuiloader =
 	var BASE58 = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
 
 	var crypto = __webpack_require__(13);
-	var base58 = __webpack_require__(43)(BASE58);
+	var base58 = __webpack_require__(44)(BASE58);
 	var userMap = __webpack_require__(16);
 	var Login = __webpack_require__(32);
 
@@ -16706,7 +16706,7 @@ var abcuiloader =
 
 	'use strict';
 
-	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; /* global $ */
 
 	var _react = __webpack_require__(6);
 
@@ -18302,7 +18302,7 @@ var abcuiloader =
 
 	'use strict';
 
-	var SyntheticUIEvent = __webpack_require__(59);
+	var SyntheticUIEvent = __webpack_require__(60);
 	var ViewportMetrics = __webpack_require__(235);
 
 	var getEventModifierState = __webpack_require__(131);
@@ -18635,7 +18635,7 @@ var abcuiloader =
 	  }
 	});
 
-	var _PatternUtils = __webpack_require__(47);
+	var _PatternUtils = __webpack_require__(48);
 
 	Object.defineProperty(exports, 'formatPattern', {
 	  enumerable: true,
@@ -18769,7 +18769,7 @@ var abcuiloader =
 
 	'use strict';
 
-	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; /* global $ */
 
 	var _react = __webpack_require__(6);
 
@@ -18777,7 +18777,7 @@ var abcuiloader =
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var strings = __webpack_require__(45);
+	var strings = __webpack_require__(46);
 
 	var PasswordRuleRow = _react2.default.createClass({
 	  displayName: 'PasswordRuleRow',
@@ -18998,7 +18998,7 @@ var abcuiloader =
 /* 95 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(Buffer) {var createHash = __webpack_require__(50)
+	/* WEBPACK VAR INJECTION */(function(Buffer) {var createHash = __webpack_require__(51)
 
 	var zeroBuffer = new Buffer(128)
 	zeroBuffer.fill(0)
@@ -21080,7 +21080,7 @@ var abcuiloader =
 
 	'use strict';
 
-	var DOMLazyTree = __webpack_require__(48);
+	var DOMLazyTree = __webpack_require__(49);
 	var Danger = __webpack_require__(332);
 	var ReactMultiChildUpdateTypes = __webpack_require__(231);
 	var ReactDOMComponentTree = __webpack_require__(9);
@@ -21751,7 +21751,7 @@ var abcuiloader =
 	var ReactNoopUpdateQueue = __webpack_require__(124);
 
 	var canDefineProperty = __webpack_require__(128);
-	var emptyObject = __webpack_require__(53);
+	var emptyObject = __webpack_require__(54);
 	var invariant = __webpack_require__(2);
 	var warning = __webpack_require__(3);
 
@@ -22159,7 +22159,7 @@ var abcuiloader =
 	var _prodInvariant = __webpack_require__(4);
 
 	var ReactCurrentOwner = __webpack_require__(30);
-	var ReactInstanceMap = __webpack_require__(58);
+	var ReactInstanceMap = __webpack_require__(59);
 	var ReactInstrumentation = __webpack_require__(21);
 	var ReactUpdates = __webpack_require__(28);
 
@@ -23307,20 +23307,20 @@ var abcuiloader =
 /* 140 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(61)
+	module.exports = __webpack_require__(62)
 
 
 /***/ },
 /* 141 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(process) {exports = module.exports = __webpack_require__(62);
+	/* WEBPACK VAR INJECTION */(function(process) {exports = module.exports = __webpack_require__(63);
 	exports.Stream = __webpack_require__(19);
 	exports.Readable = exports;
 	exports.Writable = __webpack_require__(41);
 	exports.Duplex = __webpack_require__(15);
 	exports.Transform = __webpack_require__(40);
-	exports.PassThrough = __webpack_require__(61);
+	exports.PassThrough = __webpack_require__(62);
 	if (!process.browser && process.env.READABLE_STREAM === 'disable') {
 	  module.exports = __webpack_require__(19);
 	}
@@ -23900,7 +23900,7 @@ var abcuiloader =
 
 	'use strict';
 
-	var abcc = __webpack_require__(64);
+	var abcc = __webpack_require__(65);
 
 	/**
 	 * ABCError
@@ -24004,8 +24004,8 @@ var abcuiloader =
 
 	'use strict';
 
-	var loginPassword = __webpack_require__(66);
-	var loginPin = __webpack_require__(67);
+	var loginPassword = __webpack_require__(67);
+	var loginPin = __webpack_require__(43);
 	var loginRecovery2 = __webpack_require__(68);
 
 	/**
@@ -24071,16 +24071,16 @@ var abcuiloader =
 
 	var Account = __webpack_require__(149).Account;
 	var loginEdge = __webpack_require__(152);
-	var loginCreate = __webpack_require__(65);
-	var loginPassword = __webpack_require__(66);
-	var loginPin = __webpack_require__(67);
+	var loginCreate = __webpack_require__(66);
+	var loginPassword = __webpack_require__(67);
+	var loginPin = __webpack_require__(43);
 	var loginRecovery2 = __webpack_require__(68);
 	var userMap = __webpack_require__(16);
 	var UserStorage = __webpack_require__(26).UserStorage;
 	var crypto = __webpack_require__(13);
 
-	// var serverRoot = 'https://auth.airbitz.co/api'
-	var serverRoot = 'https://test-auth.airbitz.co/api';
+	var serverRoot = 'https://auth.airbitz.co/api';
+	// var serverRoot = 'https://test-auth.airbitz.co/api'
 
 	/**
 	 * @param authRequest function (method, uri, body, callback (err, status, body))
@@ -24297,12 +24297,14 @@ var abcuiloader =
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {'use strict';
 
-	var loginCreate = __webpack_require__(65);
+	var loginCreate = __webpack_require__(66);
 	var crypto = __webpack_require__(13);
+	var loginPin = __webpack_require__(43);
+
 	var Elliptic = __webpack_require__(7).ec;
 	var secp256k1 = new Elliptic('secp256k1');
 	var BASE58 = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
-	var base58 = __webpack_require__(43)(BASE58);
+	var base58 = __webpack_require__(44)(BASE58);
 
 	function ABCEdgeLoginRequest(id) {
 	  this.id = id;
@@ -24319,6 +24321,7 @@ var abcuiloader =
 	function createLogin(ctx, accountReply, callback) {
 	  var username = accountReply.username + '-' + base58.encode(crypto.random(4));
 	  var password = base58.encode(crypto.random(24));
+	  var pin = accountReply.pin;
 
 	  var opts = {};
 	  if (accountReply.type === 'account:repo:co.airbitz.wallet') {
@@ -24329,6 +24332,18 @@ var abcuiloader =
 	    if (err) return callback(err);
 	    login.accountAttach(ctx, accountReply.type, accountReply.info, function (err) {
 	      if (err) return callback(err);
+
+	      if (typeof pin === 'string' && pin.length === 4) {
+	        if (!loginPin.exists(ctx, username)) {
+	          loginPin.setup(ctx, login, pin, function (err) {
+	            if (err) {
+	              // Do nothing
+	            }
+	            callback(null, login);
+	          });
+	          return;
+	        }
+	      }
 	      callback(null, login);
 	    });
 	  });
@@ -24356,8 +24371,12 @@ var abcuiloader =
 
 	  var info = reply['info'];
 	  var username = reply['username'];
+	  var pin = null;
+	  if (typeof reply.pinString === 'string') {
+	    pin = reply.pinString;
+	  }
 
-	  return { type: type, info: info, username: username };
+	  return { type: type, info: info, username: username, pin: pin };
 	}
 	exports.decodeAccountReply = decodeAccountReply;
 
@@ -24719,7 +24738,7 @@ var abcuiloader =
 	} else {
 	  // Node.js or Web worker
 	  try {
-	    var crypto = __webpack_require__(51);
+	    var crypto = __webpack_require__(52);
 
 	    Rand.prototype._rand = function _rand(n) {
 	      return crypto.randomBytes(n);
@@ -34659,17 +34678,18 @@ var abcuiloader =
 
 	var _reactDom = __webpack_require__(91);
 
+	var _reactDom2 = _interopRequireDefault(_reactDom);
+
 	var _reactRouter = __webpack_require__(92);
 
-	var _airbitzCoreJs = __webpack_require__(44);
+	var _airbitzCoreJs = __webpack_require__(45);
 
 	var _airbitzCoreJs2 = _interopRequireDefault(_airbitzCoreJs);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	// var abcc = abc.ABCConditionCode
 	var ABCError = _airbitzCoreJs2.default.ABCError;
-	var strings = __webpack_require__(45);
+	var strings = __webpack_require__(46);
 
 	var AbcUiFormView = __webpack_require__(74);
 	var LoginWithAirbitz = __webpack_require__(198);
@@ -34691,7 +34711,6 @@ var abcuiloader =
 	  },
 	  render: function render() {
 	    var block = null;
-	    var that = this;
 	    var userList = context ? context.usernameList().sort() : [];
 	    var toggleInput = null;
 	    if (this.props.allowInput) {
@@ -34705,7 +34724,7 @@ var abcuiloader =
 	        )
 	      );
 	    }
-	    if (this.props.allowInput && (userList.length == 0 || this.state.showInput)) {
+	    if (this.props.allowInput && (userList.length === 0 || this.state.showInput)) {
 	      block = _react2.default.createElement(
 	        'div',
 	        { className: 'input-group' },
@@ -34952,7 +34971,7 @@ var abcuiloader =
 	var LoginView = _react2.default.createClass({
 	  displayName: 'LoginView',
 	  getInitialState: function getInitialState() {
-	    var doRegistration = context.usernameList().sort().length == 0 ? true : false;
+	    var doRegistration = context.usernameList().sort().length === 0;
 	    return {
 	      forcePasswordLogin: false,
 	      showRegistration: doRegistration
@@ -34961,10 +34980,10 @@ var abcuiloader =
 
 	  statics: {
 	    currentUser: function currentUser() {
-	      return localStorage.getItem('airbitz.current_user');
+	      return window.localStorage.getItem('airbitz.current_user');
 	    },
 	    updateCurrentUser: function updateCurrentUser(username) {
-	      localStorage.setItem('airbitz.current_user', username);
+	      window.localStorage.setItem('airbitz.current_user', username);
 	    }
 	  },
 	  render: function render() {
@@ -35053,7 +35072,9 @@ var abcuiloader =
 	  },
 	  onClose: function onClose() {
 	    this.refs.loginWithAirbitz.cancelRequest();
-	    if (this.refs.pinPasswordForm) this.refs.pinPasswordForm.onClose();
+	    if (this.refs.pinPasswordForm) {
+	      this.refs.pinPasswordForm.onClose();
+	    }
 	    if (window.parent.exitCallback) {
 	      window.parent.exitCallback();
 	    }
@@ -35215,7 +35236,7 @@ var abcuiloader =
 	  },
 	  handleKeypressPassword2: function handleKeypressPassword2(e) {
 	    if (e.key === 'Enter') {
-	      ReactDOM.findDOMNode(this.refs.pin).focus();
+	      _reactDom2.default.findDOMNode(this.refs.pin).focus();
 	    }
 	  },
 	  handleKeypressPin: function handleKeypressPin(e) {
@@ -35225,7 +35246,7 @@ var abcuiloader =
 	  },
 	  handleSubmit: function handleSubmit() {
 	    var that = this;
-	    if (this.refs.password.value() != this.refs.password_repeat.value()) {
+	    if (this.refs.password.value() !== this.refs.password_repeat.value()) {
 	      that.refs.form.setState({ 'error': 'Passwords do not match' });
 	      return false;
 	    }
@@ -35234,7 +35255,7 @@ var abcuiloader =
 	      that.refs.form.setState({ 'error': 'Insufficient Password' });
 	      return false;
 	    }
-	    if (4 != this.refs.pin.value.length) {
+	    if (this.refs.pin.value.length !== 4) {
 	      that.refs.form.setState({ 'error': 'PIN Must be 4 digits long' });
 	      return false;
 	    }
@@ -35266,8 +35287,8 @@ var abcuiloader =
 	    if (window.parent.loginCallback) {
 	      window.parent.loginCallback(null, account);
 	    }
-	    that.refs.regModal.close();
-	    that.refs.register.setLoading(false);
+	    this.refs.regModal.close();
+	    this.refs.register.setLoading(false);
 	    // })
 	  },
 	  onClose: function onClose() {
@@ -35302,7 +35323,7 @@ var abcuiloader =
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var JsBarcode = __webpack_require__(273);
-	var strings = __webpack_require__(45);
+	var strings = __webpack_require__(46);
 
 	var context = window.parent.abcContext;
 	var vendorName = window.parent.abcuiContext.vendorName;
@@ -35748,7 +35769,7 @@ var abcuiloader =
 
 	var _invariant2 = _interopRequireDefault(_invariant);
 
-	var _Actions = __webpack_require__(46);
+	var _Actions = __webpack_require__(47);
 
 	var _PathUtils = __webpack_require__(37);
 
@@ -36004,7 +36025,7 @@ var abcuiloader =
 
 	var _AsyncUtils = __webpack_require__(268);
 
-	var _Actions = __webpack_require__(46);
+	var _Actions = __webpack_require__(47);
 
 	var _createLocation2 = __webpack_require__(270);
 
@@ -36832,7 +36853,7 @@ var abcuiloader =
 
 	var _RouteUtils = __webpack_require__(35);
 
-	var _PatternUtils = __webpack_require__(47);
+	var _PatternUtils = __webpack_require__(48);
 
 	var _InternalPropTypes = __webpack_require__(38);
 
@@ -37818,7 +37839,7 @@ var abcuiloader =
 	var ReactPropTypeLocationNames = __webpack_require__(125);
 	var ReactNoopUpdateQueue = __webpack_require__(124);
 
-	var emptyObject = __webpack_require__(53);
+	var emptyObject = __webpack_require__(54);
 	var invariant = __webpack_require__(2);
 	var keyMirror = __webpack_require__(76);
 	var keyOf = __webpack_require__(34);
@@ -39286,7 +39307,7 @@ var abcuiloader =
 
 	var _prodInvariant = __webpack_require__(4);
 
-	var DOMLazyTree = __webpack_require__(48);
+	var DOMLazyTree = __webpack_require__(49);
 	var DOMProperty = __webpack_require__(39);
 	var ReactBrowserEventEmitter = __webpack_require__(86);
 	var ReactCurrentOwner = __webpack_require__(30);
@@ -39295,14 +39316,14 @@ var abcuiloader =
 	var ReactDOMFeatureFlags = __webpack_require__(348);
 	var ReactElement = __webpack_require__(25);
 	var ReactFeatureFlags = __webpack_require__(227);
-	var ReactInstanceMap = __webpack_require__(58);
+	var ReactInstanceMap = __webpack_require__(59);
 	var ReactInstrumentation = __webpack_require__(21);
 	var ReactMarkupChecksum = __webpack_require__(366);
-	var ReactReconciler = __webpack_require__(49);
+	var ReactReconciler = __webpack_require__(50);
 	var ReactUpdateQueue = __webpack_require__(127);
 	var ReactUpdates = __webpack_require__(28);
 
-	var emptyObject = __webpack_require__(53);
+	var emptyObject = __webpack_require__(54);
 	var instantiateReactComponent = __webpack_require__(241);
 	var invariant = __webpack_require__(2);
 	var setInnerHTML = __webpack_require__(90);
@@ -40890,14 +40911,14 @@ var abcuiloader =
 
 	var _reactRouter = __webpack_require__(92);
 
-	var _airbitzCoreJs = __webpack_require__(44);
+	var _airbitzCoreJs = __webpack_require__(45);
 
 	var _airbitzCoreJs2 = _interopRequireDefault(_airbitzCoreJs);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var ABCError = _airbitzCoreJs2.default.ABCError;
-	var strings = __webpack_require__(45);
+	var strings = __webpack_require__(46);
 
 	var AbcUiFormView = __webpack_require__(74);
 
@@ -41192,7 +41213,7 @@ var abcuiloader =
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _airbitzCoreJs = __webpack_require__(44);
+	var _airbitzCoreJs = __webpack_require__(45);
 
 	var _airbitzCoreJs2 = _interopRequireDefault(_airbitzCoreJs);
 
@@ -41203,7 +41224,7 @@ var abcuiloader =
 	var BootstrapModal = modal.BootstrapModal;
 	var AbcUiDropDown = __webpack_require__(247);
 	var AbcUiFormView = __webpack_require__(74);
-	var strings = __webpack_require__(45);
+	var strings = __webpack_require__(46);
 	var ABCError = _airbitzCoreJs2.default.ABCError;
 	var tools = __webpack_require__(249);
 
@@ -41603,7 +41624,7 @@ var abcuiloader =
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _airbitzCoreJs = __webpack_require__(44);
+	var _airbitzCoreJs = __webpack_require__(45);
 
 	var _airbitzCoreJs2 = _interopRequireDefault(_airbitzCoreJs);
 
@@ -41618,7 +41639,7 @@ var abcuiloader =
 	var LoginWithAirbitz = __webpack_require__(198);
 	var classNames = __webpack_require__(199);
 
-	var strings = __webpack_require__(45);
+	var strings = __webpack_require__(46);
 	var modal = __webpack_require__(75);
 	var BootstrapButton = modal.BootstrapButton;
 	var BootstrapModal = modal.BootstrapModal;
@@ -41884,10 +41905,7 @@ var abcuiloader =
 	var AbcUiDropDown = _react2.default.createClass({
 	  displayName: "AbcUiDropDown",
 	  render: function render() {
-	    var block = null;
-	    var that = this;
 	    var contentList = this.props.contentList;
-	    var toggleInput = null;
 	    var selectElement = _react2.default.createElement(
 	      "select",
 	      { ref: "selectedItem",
@@ -41922,8 +41940,6 @@ var abcuiloader =
 
 	'use strict';
 
-	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
 	var _react = __webpack_require__(6);
 
 	var _react2 = _interopRequireDefault(_react);
@@ -41946,18 +41962,6 @@ var abcuiloader =
 	var ChangePinView = manageAccount.ChangePinView;
 	var ChangePasswordView = manageAccount.ChangePasswordView;
 
-	var context = window.parent.abcContext;
-
-	var MenuItem = _react2.default.createClass({
-	  displayName: 'MenuItem',
-	  render: function render() {
-	    return _react2.default.createElement(
-	      'li',
-	      null,
-	      _react2.default.createElement('a', _extends({}, this.props, { href: 'javascript:;' }))
-	    );
-	  }
-	});
 	var Index = _react2.default.createClass({
 	  displayName: 'Index',
 	  render: function render() {
@@ -41976,17 +41980,6 @@ var abcuiloader =
 	      'div',
 	      null,
 	      this.props.children
-	    );
-	  }
-	});
-
-	var NotFound = _react2.default.createClass({
-	  displayName: 'NotFound',
-	  render: function render() {
-	    return _react2.default.createElement(
-	      'h1',
-	      null,
-	      'Not Found'
 	    );
 	  }
 	});
@@ -42990,7 +42983,7 @@ var abcuiloader =
 
 	var _invariant2 = _interopRequireDefault(_invariant);
 
-	var _Actions = __webpack_require__(46);
+	var _Actions = __webpack_require__(47);
 
 	var _PathUtils = __webpack_require__(37);
 
@@ -43176,7 +43169,7 @@ var abcuiloader =
 
 	var _warning2 = _interopRequireDefault(_warning);
 
-	var _Actions = __webpack_require__(46);
+	var _Actions = __webpack_require__(47);
 
 	var _PathUtils = __webpack_require__(37);
 
@@ -43239,7 +43232,7 @@ var abcuiloader =
 
 	var _PathUtils = __webpack_require__(37);
 
-	var _Actions = __webpack_require__(46);
+	var _Actions = __webpack_require__(47);
 
 	var _createHistory = __webpack_require__(206);
 
@@ -44054,7 +44047,7 @@ var abcuiloader =
 		value: true
 	});
 
-	var _ean_encoder = __webpack_require__(54);
+	var _ean_encoder = __webpack_require__(55);
 
 	var _ean_encoder2 = _interopRequireDefault(_ean_encoder);
 
@@ -44196,7 +44189,7 @@ var abcuiloader =
 		value: true
 	});
 
-	var _ean_encoder = __webpack_require__(54);
+	var _ean_encoder = __webpack_require__(55);
 
 	var _ean_encoder2 = _interopRequireDefault(_ean_encoder);
 
@@ -44251,7 +44244,7 @@ var abcuiloader =
 		value: true
 	});
 
-	var _ean_encoder = __webpack_require__(54);
+	var _ean_encoder = __webpack_require__(55);
 
 	var _ean_encoder2 = _interopRequireDefault(_ean_encoder);
 
@@ -44317,7 +44310,7 @@ var abcuiloader =
 		value: true
 	});
 
-	var _ean_encoder = __webpack_require__(54);
+	var _ean_encoder = __webpack_require__(55);
 
 	var _ean_encoder2 = _interopRequireDefault(_ean_encoder);
 
@@ -44408,7 +44401,7 @@ var abcuiloader =
 		value: true
 	});
 
-	var _ean_encoder = __webpack_require__(54);
+	var _ean_encoder = __webpack_require__(55);
 
 	var _ean_encoder2 = _interopRequireDefault(_ean_encoder);
 
@@ -44786,7 +44779,7 @@ var abcuiloader =
 		value: true
 	});
 
-	var _MSI2 = __webpack_require__(55);
+	var _MSI2 = __webpack_require__(56);
 
 	var _MSI3 = _interopRequireDefault(_MSI2);
 
@@ -44827,7 +44820,7 @@ var abcuiloader =
 		value: true
 	});
 
-	var _MSI2 = __webpack_require__(55);
+	var _MSI2 = __webpack_require__(56);
 
 	var _MSI3 = _interopRequireDefault(_MSI2);
 
@@ -44869,7 +44862,7 @@ var abcuiloader =
 		value: true
 	});
 
-	var _MSI2 = __webpack_require__(55);
+	var _MSI2 = __webpack_require__(56);
 
 	var _MSI3 = _interopRequireDefault(_MSI2);
 
@@ -44910,7 +44903,7 @@ var abcuiloader =
 		value: true
 	});
 
-	var _MSI2 = __webpack_require__(55);
+	var _MSI2 = __webpack_require__(56);
 
 	var _MSI3 = _interopRequireDefault(_MSI2);
 
@@ -44953,7 +44946,7 @@ var abcuiloader =
 	});
 	exports.MSI1110 = exports.MSI1010 = exports.MSI11 = exports.MSI10 = exports.MSI = undefined;
 
-	var _MSI = __webpack_require__(55);
+	var _MSI = __webpack_require__(56);
 
 	var _MSI2 = _interopRequireDefault(_MSI);
 
@@ -46827,7 +46820,7 @@ var abcuiloader =
 
 	exports.__esModule = true;
 
-	var _PatternUtils = __webpack_require__(47);
+	var _PatternUtils = __webpack_require__(48);
 
 	function routeParamsChanged(route, prevState, nextState) {
 	  if (!route.path) return false;
@@ -46960,7 +46953,7 @@ var abcuiloader =
 
 	exports.__esModule = true;
 
-	var _PatternUtils = __webpack_require__(47);
+	var _PatternUtils = __webpack_require__(48);
 
 	/**
 	 * Extracts an object of params the given route cares about from
@@ -47016,7 +47009,7 @@ var abcuiloader =
 
 	exports.default = isActive;
 
-	var _PatternUtils = __webpack_require__(47);
+	var _PatternUtils = __webpack_require__(48);
 
 	function deepEqual(a, b) {
 	  if (a == b) return true;
@@ -47171,7 +47164,7 @@ var abcuiloader =
 
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-	var _Actions = __webpack_require__(46);
+	var _Actions = __webpack_require__(47);
 
 	var _invariant = __webpack_require__(14);
 
@@ -47270,7 +47263,7 @@ var abcuiloader =
 
 	var _makeStateWithLocation2 = _interopRequireDefault(_makeStateWithLocation);
 
-	var _PatternUtils = __webpack_require__(47);
+	var _PatternUtils = __webpack_require__(48);
 
 	var _routerWarning = __webpack_require__(12);
 
@@ -47681,7 +47674,7 @@ var abcuiloader =
 	'use strict';
 
 	var EventConstants = __webpack_require__(29);
-	var EventPropagators = __webpack_require__(57);
+	var EventPropagators = __webpack_require__(58);
 	var ExecutionEnvironment = __webpack_require__(11);
 	var FallbackCompositionState = __webpack_require__(335);
 	var SyntheticCompositionEvent = __webpack_require__(379);
@@ -48285,8 +48278,8 @@ var abcuiloader =
 	'use strict';
 
 	var EventConstants = __webpack_require__(29);
-	var EventPluginHub = __webpack_require__(56);
-	var EventPropagators = __webpack_require__(57);
+	var EventPluginHub = __webpack_require__(57);
+	var EventPropagators = __webpack_require__(58);
 	var ExecutionEnvironment = __webpack_require__(11);
 	var ReactDOMComponentTree = __webpack_require__(9);
 	var ReactUpdates = __webpack_require__(28);
@@ -48616,7 +48609,7 @@ var abcuiloader =
 
 	var _prodInvariant = __webpack_require__(4);
 
-	var DOMLazyTree = __webpack_require__(48);
+	var DOMLazyTree = __webpack_require__(49);
 	var ExecutionEnvironment = __webpack_require__(11);
 
 	var createNodesFromMarkup = __webpack_require__(258);
@@ -48701,7 +48694,7 @@ var abcuiloader =
 	'use strict';
 
 	var EventConstants = __webpack_require__(29);
-	var EventPropagators = __webpack_require__(57);
+	var EventPropagators = __webpack_require__(58);
 	var ReactDOMComponentTree = __webpack_require__(9);
 	var SyntheticMouseEvent = __webpack_require__(88);
 
@@ -49219,7 +49212,7 @@ var abcuiloader =
 
 	'use strict';
 
-	var ReactReconciler = __webpack_require__(49);
+	var ReactReconciler = __webpack_require__(50);
 
 	var instantiateReactComponent = __webpack_require__(241);
 	var KeyEscapeUtils = __webpack_require__(119);
@@ -49481,14 +49474,14 @@ var abcuiloader =
 	var ReactCurrentOwner = __webpack_require__(30);
 	var ReactElement = __webpack_require__(25);
 	var ReactErrorUtils = __webpack_require__(123);
-	var ReactInstanceMap = __webpack_require__(58);
+	var ReactInstanceMap = __webpack_require__(59);
 	var ReactInstrumentation = __webpack_require__(21);
 	var ReactNodeTypes = __webpack_require__(232);
 	var ReactPropTypeLocations = __webpack_require__(87);
-	var ReactReconciler = __webpack_require__(49);
+	var ReactReconciler = __webpack_require__(50);
 
 	var checkReactTypeSpec = __webpack_require__(237);
-	var emptyObject = __webpack_require__(53);
+	var emptyObject = __webpack_require__(54);
 	var invariant = __webpack_require__(2);
 	var shallowEqual = __webpack_require__(106);
 	var shouldUpdateReactComponent = __webpack_require__(135);
@@ -50405,7 +50398,7 @@ var abcuiloader =
 	var ReactDOMComponentTree = __webpack_require__(9);
 	var ReactDefaultInjection = __webpack_require__(360);
 	var ReactMount = __webpack_require__(230);
-	var ReactReconciler = __webpack_require__(49);
+	var ReactReconciler = __webpack_require__(50);
 	var ReactUpdates = __webpack_require__(28);
 	var ReactVersion = __webpack_require__(234);
 
@@ -50552,12 +50545,12 @@ var abcuiloader =
 
 	var AutoFocusUtils = __webpack_require__(328);
 	var CSSPropertyOperations = __webpack_require__(330);
-	var DOMLazyTree = __webpack_require__(48);
+	var DOMLazyTree = __webpack_require__(49);
 	var DOMNamespaces = __webpack_require__(117);
 	var DOMProperty = __webpack_require__(39);
 	var DOMPropertyOperations = __webpack_require__(220);
 	var EventConstants = __webpack_require__(29);
-	var EventPluginHub = __webpack_require__(56);
+	var EventPluginHub = __webpack_require__(57);
 	var EventPluginRegistry = __webpack_require__(85);
 	var ReactBrowserEventEmitter = __webpack_require__(86);
 	var ReactDOMButton = __webpack_require__(343);
@@ -51597,7 +51590,7 @@ var abcuiloader =
 
 	var _assign = __webpack_require__(8);
 
-	var DOMLazyTree = __webpack_require__(48);
+	var DOMLazyTree = __webpack_require__(49);
 	var ReactDOMComponentTree = __webpack_require__(9);
 
 	var ReactDOMEmptyComponent = function (instantiate) {
@@ -52572,7 +52565,7 @@ var abcuiloader =
 	    _assign = __webpack_require__(8);
 
 	var DOMChildrenOperations = __webpack_require__(116);
-	var DOMLazyTree = __webpack_require__(48);
+	var DOMLazyTree = __webpack_require__(49);
 	var ReactDOMComponentTree = __webpack_require__(9);
 
 	var escapeTextContentForBrowser = __webpack_require__(89);
@@ -53475,7 +53468,7 @@ var abcuiloader =
 	var _assign = __webpack_require__(8);
 
 	var ReactUpdates = __webpack_require__(28);
-	var Transaction = __webpack_require__(60);
+	var Transaction = __webpack_require__(61);
 
 	var emptyFunction = __webpack_require__(23);
 
@@ -53634,7 +53627,7 @@ var abcuiloader =
 
 	'use strict';
 
-	var EventPluginHub = __webpack_require__(56);
+	var EventPluginHub = __webpack_require__(57);
 
 	function runEventQueueInBatch(events) {
 	  EventPluginHub.enqueueEvents(events);
@@ -53877,7 +53870,7 @@ var abcuiloader =
 	'use strict';
 
 	var DOMProperty = __webpack_require__(39);
-	var EventPluginHub = __webpack_require__(56);
+	var EventPluginHub = __webpack_require__(57);
 	var EventPluginUtils = __webpack_require__(118);
 	var ReactComponentEnvironment = __webpack_require__(122);
 	var ReactClass = __webpack_require__(222);
@@ -54017,12 +54010,12 @@ var abcuiloader =
 	var _prodInvariant = __webpack_require__(4);
 
 	var ReactComponentEnvironment = __webpack_require__(122);
-	var ReactInstanceMap = __webpack_require__(58);
+	var ReactInstanceMap = __webpack_require__(59);
 	var ReactInstrumentation = __webpack_require__(21);
 	var ReactMultiChildUpdateTypes = __webpack_require__(231);
 
 	var ReactCurrentOwner = __webpack_require__(30);
-	var ReactReconciler = __webpack_require__(49);
+	var ReactReconciler = __webpack_require__(50);
 	var ReactChildReconciler = __webpack_require__(338);
 
 	var emptyFunction = __webpack_require__(23);
@@ -54576,7 +54569,7 @@ var abcuiloader =
 	var ReactComponent = __webpack_require__(121);
 	var ReactNoopUpdateQueue = __webpack_require__(124);
 
-	var emptyObject = __webpack_require__(53);
+	var emptyObject = __webpack_require__(54);
 
 	/**
 	 * Base class helpers for the updating state of a component.
@@ -54625,7 +54618,7 @@ var abcuiloader =
 	var ReactBrowserEventEmitter = __webpack_require__(86);
 	var ReactInputSelection = __webpack_require__(229);
 	var ReactInstrumentation = __webpack_require__(21);
-	var Transaction = __webpack_require__(60);
+	var Transaction = __webpack_require__(61);
 	var ReactUpdateQueue = __webpack_require__(127);
 
 	/**
@@ -54890,7 +54883,7 @@ var abcuiloader =
 	var _assign = __webpack_require__(8);
 
 	var PooledClass = __webpack_require__(36);
-	var Transaction = __webpack_require__(60);
+	var Transaction = __webpack_require__(61);
 	var ReactInstrumentation = __webpack_require__(21);
 	var ReactServerUpdateQueue = __webpack_require__(373);
 
@@ -54987,7 +54980,7 @@ var abcuiloader =
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	var ReactUpdateQueue = __webpack_require__(127);
-	var Transaction = __webpack_require__(60);
+	var Transaction = __webpack_require__(61);
 	var warning = __webpack_require__(3);
 
 	function warnNoop(publicInstance, callerName) {
@@ -55438,7 +55431,7 @@ var abcuiloader =
 	'use strict';
 
 	var EventConstants = __webpack_require__(29);
-	var EventPropagators = __webpack_require__(57);
+	var EventPropagators = __webpack_require__(58);
 	var ExecutionEnvironment = __webpack_require__(11);
 	var ReactDOMComponentTree = __webpack_require__(9);
 	var ReactInputSelection = __webpack_require__(229);
@@ -55642,7 +55635,7 @@ var abcuiloader =
 
 	var EventConstants = __webpack_require__(29);
 	var EventListener = __webpack_require__(200);
-	var EventPropagators = __webpack_require__(57);
+	var EventPropagators = __webpack_require__(58);
 	var ReactDOMComponentTree = __webpack_require__(9);
 	var SyntheticAnimationEvent = __webpack_require__(377);
 	var SyntheticClipboardEvent = __webpack_require__(378);
@@ -55653,7 +55646,7 @@ var abcuiloader =
 	var SyntheticDragEvent = __webpack_require__(380);
 	var SyntheticTouchEvent = __webpack_require__(384);
 	var SyntheticTransitionEvent = __webpack_require__(385);
-	var SyntheticUIEvent = __webpack_require__(59);
+	var SyntheticUIEvent = __webpack_require__(60);
 	var SyntheticWheelEvent = __webpack_require__(386);
 
 	var emptyFunction = __webpack_require__(23);
@@ -56448,7 +56441,7 @@ var abcuiloader =
 
 	'use strict';
 
-	var SyntheticUIEvent = __webpack_require__(59);
+	var SyntheticUIEvent = __webpack_require__(60);
 
 	/**
 	 * @interface FocusEvent
@@ -56531,7 +56524,7 @@ var abcuiloader =
 
 	'use strict';
 
-	var SyntheticUIEvent = __webpack_require__(59);
+	var SyntheticUIEvent = __webpack_require__(60);
 
 	var getEventCharCode = __webpack_require__(130);
 	var getEventKey = __webpack_require__(391);
@@ -56620,7 +56613,7 @@ var abcuiloader =
 
 	'use strict';
 
-	var SyntheticUIEvent = __webpack_require__(59);
+	var SyntheticUIEvent = __webpack_require__(60);
 
 	var getEventModifierState = __webpack_require__(131);
 
@@ -56911,7 +56904,7 @@ var abcuiloader =
 
 	var ReactCurrentOwner = __webpack_require__(30);
 	var ReactDOMComponentTree = __webpack_require__(9);
-	var ReactInstanceMap = __webpack_require__(58);
+	var ReactInstanceMap = __webpack_require__(59);
 
 	var getHostComponentFromComposite = __webpack_require__(239);
 	var invariant = __webpack_require__(2);

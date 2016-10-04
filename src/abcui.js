@@ -40,6 +40,7 @@ function InnerAbcUi (args) {
 InnerAbcUi.prototype.openLoginWindow = function (callback) {
   var frame = createIFrame(this.bundlePath + '/assets/index.html#/login')
   var that = this
+  var abcContext = window.abcContext
   window.loginCallback = function (error, account, opts) {
     if (account) {
       window.abcAccount = account
@@ -47,7 +48,7 @@ InnerAbcUi.prototype.openLoginWindow = function (callback) {
       if (opts && opts.setupRecovery) {
         opts.noRequirePassword = true
         that.openSetupRecoveryWindow(account, opts, function () {})
-      } else if (account.edgeLogin || account.passwordLogin) {
+      } else if (!abcContext.pinExists(account.username)) {
         that.openChangePinEdgeLoginWindow(account, opts, function () {})
       }
       callback(error, account)
