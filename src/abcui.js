@@ -35,6 +35,12 @@ function InnerAbcUi (args) {
     'vendorName': args.vendorName,
     'bundlePath': this.bundlePath
   }
+
+  if (typeof args.vendorImageUrl === 'string') {
+    window.abcuiContext.vendorImageUrl = args.vendorImageUrl
+  } else {
+    window.abcuiContext.vendorImageUrl = ''
+  }
 }
 
 InnerAbcUi.prototype.openLoginWindow = function (callback) {

@@ -15139,6 +15139,12 @@ var abcui =
 	    }
 	  };
 
+	  if (typeof opts.displayImageUrl === 'string') {
+	    data.accountRequest.displayImageUrl = opts.displayImageUrl;
+	  } else {
+	    data.accountRequest.displayImageUrl = '';
+	  }
+
 	  var request = {
 	    'expires': 300,
 	    'data': data
@@ -25479,6 +25485,12 @@ var abcui =
 	    'vendorName': args.vendorName,
 	    'bundlePath': this.bundlePath
 	  };
+
+	  if (typeof args.vendorImageUrl === 'string') {
+	    window.abcuiContext.vendorImageUrl = args.vendorImageUrl;
+	  } else {
+	    window.abcuiContext.vendorImageUrl = '';
+	  }
 	}
 
 	InnerAbcUi.prototype.openLoginWindow = function (callback) {

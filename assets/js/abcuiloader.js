@@ -24426,6 +24426,12 @@ var abcuiloader =
 	    }
 	  };
 
+	  if (typeof opts.displayImageUrl === 'string') {
+	    data.accountRequest.displayImageUrl = opts.displayImageUrl;
+	  } else {
+	    data.accountRequest.displayImageUrl = '';
+	  }
+
 	  var request = {
 	    'expires': 300,
 	    'data': data
@@ -35332,6 +35338,7 @@ var abcuiloader =
 
 	var context = window.parent.abcContext;
 	var vendorName = window.parent.abcuiContext.vendorName;
+	var vendorImageUrl = window.parent.abcuiContext.vendorImageUrl;
 
 	var LoginWithAirbitz = _react2.default.createClass({
 	  displayName: 'LoginWithAirbitz',
@@ -35386,7 +35393,11 @@ var abcuiloader =
 	  },
 	  componentDidMount: function componentDidMount() {
 	    var that = this;
-	    context.requestEdgeLogin({ displayName: vendorName, onLogin: this.handleEdgeLogin }, function (error, results) {
+	    context.requestEdgeLogin({
+	      displayName: vendorName,
+	      displayImageUrl: vendorImageUrl,
+	      onLogin: this.handleEdgeLogin
+	    }, function (error, results) {
 	      if (error) {
 	        // XXX todo -paulvp
 	      } else if (results) {

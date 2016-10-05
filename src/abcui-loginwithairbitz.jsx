@@ -5,6 +5,7 @@ var strings = require('./abcui-strings')
 
 var context = window.parent.abcContext
 var vendorName = window.parent.abcuiContext.vendorName
+var vendorImageUrl = window.parent.abcuiContext.vendorImageUrl
 
 var LoginWithAirbitz = React.createClass({
   getInitialState () {
@@ -44,7 +45,11 @@ var LoginWithAirbitz = React.createClass({
   },
   componentDidMount () {
     var that = this
-    context.requestEdgeLogin({displayName: vendorName, onLogin: this.handleEdgeLogin}, function (error, results) {
+    context.requestEdgeLogin({
+      displayName: vendorName,
+      displayImageUrl: vendorImageUrl,
+      onLogin: this.handleEdgeLogin
+    }, function (error, results) {
       if (error) {
         // XXX todo -paulvp
       } else if (results) {
