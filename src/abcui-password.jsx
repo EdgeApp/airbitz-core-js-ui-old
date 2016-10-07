@@ -77,7 +77,9 @@ var PasswordRequirementsInput = React.createClass({
     this.setState({'tests': PasswordRequirementsInput.testPassword(this.refs.input.value)})
   },
   meetsRequirements () {
-    return PasswordRequirementsInput.testPassword(this.refs.input.value).reduce((p, c) => p && c.passed, true)
+    var passed = PasswordRequirementsInput.testPassword(this.refs.input.value).reduce((p, c) => p && c.passed, true)
+    var extraLong = (this.refs.input.value.length >= 16)
+    return (passed || extraLong)
   },
   value () {
     return this.refs.input.value

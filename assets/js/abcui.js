@@ -14979,13 +14979,14 @@ var abcui =
 	  var noNumber = password.match(/\d/) == null;
 	  var noUpperCase = password.match(/[A-Z]/) == null;
 	  var noLowerCase = password.match(/[a-z]/) == null;
+	  var extraLong = password.length > 16;
 
 	  return {
 	    'tooShort': tooShort,
 	    'noNumber': noNumber,
 	    'noUpperCase': noUpperCase,
 	    'noLowerCase': noLowerCase,
-	    'passed': !(tooShort || noNumber || noUpperCase || noLowerCase)
+	    'passed': extraLong || !(tooShort || noNumber || noUpperCase || noLowerCase)
 	  };
 	};
 
