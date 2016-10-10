@@ -18871,7 +18871,7 @@ var abcuiloader =
 	    var passed = PasswordRequirementsInput.testPassword(this.refs.input.value).reduce(function (p, c) {
 	      return p && c.passed;
 	    }, true);
-	    var extraLong = this.refs.input.value.length > 16;
+	    var extraLong = this.refs.input.value.length >= 16;
 	    return passed || extraLong;
 	  },
 	  value: function value() {
@@ -24268,7 +24268,7 @@ var abcuiloader =
 	  var noNumber = password.match(/\d/) == null;
 	  var noUpperCase = password.match(/[A-Z]/) == null;
 	  var noLowerCase = password.match(/[a-z]/) == null;
-	  var extraLong = password.length > 16;
+	  var extraLong = password.length >= 16;
 
 	  return {
 	    'tooShort': tooShort,
