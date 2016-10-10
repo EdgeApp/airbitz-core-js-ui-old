@@ -1,6 +1,6 @@
 {
   "name": "airbitz-core-js-ui",
-  "version": "0.0.4",
+  "version": "0.0.6",
   "description": "Airbitz core javascript UI tools",
   "author": "Airbitz, Inc.",
   "contributors": [
@@ -22,7 +22,7 @@
     "standard-jsx": "^8.0.0"
   },
   "devDependencies": {
-    "airbitz-core-js": "^0.0.1",
+    "airbitz-core-js": "^0.0.6",
     "babel-cli": "^6.10.1",
     "babel-core": "^6.10.4",
     "babel-eslint": "^6.1.0",
