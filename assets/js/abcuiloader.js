@@ -24381,7 +24381,6 @@ var abcuiloader =
 	  var accountRequest = lobby['accountRequest'];
 	  var replyBox = accountRequest['replyBox'];
 	  var replyKey = accountRequest['replyKey'];
-	  var type = accountRequest['type'];
 
 	  // If the reply is missing, just return false:
 	  if (!replyBox || !replyKey) {
@@ -24393,14 +24392,16 @@ var abcuiloader =
 	  var dataKey = Buffer(crypto.hmac_sha256('dataKey', new Uint8Array(secret)));
 	  var reply = JSON.parse(crypto.decrypt(replyBox, dataKey).toString('utf-8'));
 
-	  var info = reply['info'];
-	  var username = reply['username'];
+	  var returnObj = {
+	    type: accountRequest['type'],
+	    info: reply['info'],
+	    username: reply['username']
+	  };
 	  if (typeof reply.pinString === 'string') {
-	    var pinString = reply.pinString;
-	    return { type: type, info: info, username: username, pinString: pinString };
-	  } else {
-	    return { type: type, info: info, username: username };
+	    returnObj.pinString = reply['pinString'];
 	  }
+
+	  return returnObj;
 	}
 	exports.decodeAccountReply = decodeAccountReply;
 
