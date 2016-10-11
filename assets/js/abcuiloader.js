@@ -24408,7 +24408,7 @@ var abcuiloader =
 	 * Polls the lobby every second or so,
 	 * looking for a reply to our account request.
 	 */
-	function pollServer(ctx, edgeLogin, keys, onLogin) {
+	function pollServer(ctx, edgeLogin, keys, onLogin, onProcessLogin) {
 	  // Don't do anything if the user has cancelled this request:
 	  if (edgeLogin.done_) {
 	    return;
@@ -24421,7 +24421,10 @@ var abcuiloader =
 	      try {
 	        var accountReply = decodeAccountReply(keys, reply);
 	        if (!accountReply) {
-	          return pollServer(ctx, edgeLogin, keys, onLogin);
+	          return pollServer(ctx, edgeLogin, keys, onLogin, onProcessLogin);
+	        }
+	        if (onProcessLogin !== null) {
+	          onProcessLogin(accountReply.username);
 	        }
 	        createLogin(ctx, accountReply, onLogin);
 	      } catch (e) {
@@ -24461,7 +24464,11 @@ var abcuiloader =
 
 	    try {
 	      var edgeLogin = new ABCEdgeLoginRequest(reply.id);
-	      pollServer(ctx, edgeLogin, keys, opts.onLogin);
+	      var onProcessLogin = null;
+	      if (opts.hasOwnProperty('onProcessLogin')) {
+	        onProcessLogin = opts.onProcessLogin;
+	      }
+	      pollServer(ctx, edgeLogin, keys, opts.onLogin, onProcessLogin);
 	    } catch (e) {
 	      return callback(e);
 	    }
@@ -35364,6 +35371,7 @@ var abcuiloader =
 	  getInitialState: function getInitialState() {
 	    return {
 	      barcode: '',
+	      initiatingLogin: null,
 	      showLogin: false
 	    };
 	  },
@@ -35393,10 +35401,22 @@ var abcuiloader =
 	            this.props.register ? strings.scan_barcode_to_register : strings.scan_barcode_to_signin
 	          )
 	        ),
-	        _react2.default.createElement(
+	        this.state.initiatingLogin === null ? _react2.default.createElement(
 	          'div',
 	          { className: 'form-group center-block', style: { 'width': '240px' } },
 	          _react2.default.createElement('img', { id: 'barcode', style: { 'width': '240px' } })
+	        ) : _react2.default.createElement(
+	          'div',
+	          { className: 'form-group text-center' },
+	          'Initiating Login for user',
+	          _react2.default.createElement('br', null),
+	          _react2.default.createElement(
+	            'b',
+	            null,
+	            this.state.initiatingLogin
+	          ),
+	          _react2.default.createElement('br', null),
+	          _react2.default.createElement('span', { className: 'glyphicon glyphicon-refresh glyphicon-refresh-animate' })
 	        ),
 	        _react2.default.createElement(
 	          'div',
@@ -35415,7 +35435,8 @@ var abcuiloader =
 	    context.requestEdgeLogin({
 	      displayName: vendorName,
 	      displayImageUrl: vendorImageUrl,
-	      onLogin: this.handleEdgeLogin
+	      onLogin: this.handleEdgeLogin,
+	      onProcessLogin: this.handleProcessLogin
 	    }, function (error, results) {
 	      if (error) {
 	        // XXX todo -paulvp
@@ -35431,6 +35452,9 @@ var abcuiloader =
 	        that.setState({ edgeLoginRequest: results });
 	      }
 	    });
+	  },
+	  handleProcessLogin: function handleProcessLogin(username) {
+	    this.setState({ initiatingLogin: username });
 	  },
 	  handleEdgeLogin: function handleEdgeLogin(error, account) {
 	    if (error) {

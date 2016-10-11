@@ -11,6 +11,7 @@ var LoginWithAirbitz = React.createClass({
   getInitialState () {
     return {
       barcode: '',
+      initiatingLogin: null,
       showLogin: false
     }
   },
@@ -33,9 +34,15 @@ var LoginWithAirbitz = React.createClass({
               {this.props.register ? strings.scan_barcode_to_register : strings.scan_barcode_to_signin}
             </a>
           </div>
-          <div className="form-group center-block" style={{'width': '240px'}}>
-            <img id="barcode" style={{'width': '240px'}} />
-          </div>
+          {this.state.initiatingLogin === null ? (
+            <div className="form-group center-block" style={{'width': '240px'}}>
+              <img id="barcode" style={{'width': '240px'}} />
+            </div>) : (
+            <div className="form-group text-center">
+              Initiating Login for user<br />
+              <b>{this.state.initiatingLogin}</b><br />
+              <span className="glyphicon glyphicon-refresh glyphicon-refresh-animate" />
+            </div>)}
           <div className="form-group center-block" >
             <label>OR</label>
           </div>
@@ -48,7 +55,8 @@ var LoginWithAirbitz = React.createClass({
     context.requestEdgeLogin({
       displayName: vendorName,
       displayImageUrl: vendorImageUrl,
-      onLogin: this.handleEdgeLogin
+      onLogin: this.handleEdgeLogin,
+      onProcessLogin: this.handleProcessLogin
     }, function (error, results) {
       if (error) {
         // XXX todo -paulvp
@@ -64,6 +72,9 @@ var LoginWithAirbitz = React.createClass({
         that.setState({edgeLoginRequest: results})
       }
     })
+  },
+  handleProcessLogin (username) {
+    this.setState({initiatingLogin: username})
   },
   handleEdgeLogin (error, account) {
     if (error) {
