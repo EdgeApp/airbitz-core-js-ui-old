@@ -121,7 +121,7 @@ var SetupRecoveryView = React.createClass({
                 <span className="fa fa-windows"></span>
                 {String.format(strings.send_using_xx, 'Hotmail, Outlook, Live Mail')}
               </a>
-              <a className="btn btn-block btn-social btn-reddit" onClick={this.callBackEmail}>
+              <a className="btn btn-block btn-social btn-reddit" onClick={this.callBackEmailGeneric}>
                 <span className="fa fa-envelope"></span>
                 {String.format(strings.send_using_xx, 'Email App')}
               </a><br />
