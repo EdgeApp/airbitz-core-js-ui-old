@@ -44,7 +44,7 @@ function InnerAbcUi (args) {
     throw Error('Missing api key')
   }
   DomWindow.abcContext = this.abcContext =
-    abc.makeABCContext({'apiKey': args.apiKey, 'accountType': args.accountType})
+    abc.makeContext({'apiKey': args.apiKey, 'accountType': args.accountType})
   if (args['bundlePath']) {
     this.bundlePath = args.bundlePath
   } else {

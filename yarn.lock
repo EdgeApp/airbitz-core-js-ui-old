@@ -39,9 +39,9 @@ aes-js@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/aes-js/-/aes-js-2.1.0.tgz#2bf04b06a05fff29d38e9048ff30dc59f1f0cd74"
 
-airbitz-core-js@^0.0.10:
-  version "0.0.10"
-  resolved "https://registry.yarnpkg.com/airbitz-core-js/-/airbitz-core-js-0.0.10.tgz#e93d684217d14aac5f3653802720cc2b3cfcefea"
+airbitz-core-js@^0.0.11:
+  version "0.0.11"
+  resolved "https://registry.yarnpkg.com/airbitz-core-js/-/airbitz-core-js-0.0.11.tgz#d7dca3c3cbb10dfd10553c428498d883e159de5e"
   dependencies:
     aes-js "^2.1.0"
     base-x "^1.0.4"

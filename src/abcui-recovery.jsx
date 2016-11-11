@@ -1,5 +1,5 @@
 import React from 'react'
-import abc from 'airbitz-core-js'
+import {ABCError} from 'airbitz-core-js'
 
 var modal = require('./abcui-modal.jsx')
 var BootstrapButton = modal.BootstrapButton
@@ -7,7 +7,6 @@ var BootstrapModal = modal.BootstrapModal
 var AbcUiDropDown = require('./abcui-dropdown.jsx')
 var AbcUiFormView = require('./abcui-formview.jsx')
 var strings = require('./abcui-strings')
-var ABCError = abc.ABCError
 var tools = require('./abcui-tools')
 
 var context = window.parent.abcContext

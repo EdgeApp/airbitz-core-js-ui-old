@@ -1,9 +1,6 @@
 import React from 'react'
-import abc from 'airbitz-core-js'
+import {ABCError} from 'airbitz-core-js'
 var ReactDOM = require('react-dom')
-
-// var abcc = abc.ABCConditionCode
-var ABCError = abc.ABCError
 
 var AbcUiFormView = require('./abcui-formview.jsx')
 var LoginWithAirbitz = require('./abcui-loginwithairbitz.jsx')

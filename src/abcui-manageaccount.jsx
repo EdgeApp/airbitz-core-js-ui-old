@@ -1,8 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router'
-import abc from 'airbitz-core-js'
+import {ABCError} from 'airbitz-core-js'
 
-var ABCError = abc.ABCError
 var strings = require('./abcui-strings')
 
 var AbcUiFormView = require('./abcui-formview.jsx')
