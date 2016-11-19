@@ -10089,14 +10089,24 @@ var abcui =
 	var crypto = __webpack_require__(9);
 	var ScopedStorage = __webpack_require__(71).ScopedStorage;
 
-	var syncServer = 'https://git-js.airbitz.co';
+	var syncServers = ['https://git-js.airbitz.co', 'https://git4.sync.airbitz.co'];
 
 	/**
 	 * Fetches some resource from a sync server.
 	 */
 	function syncRequest(authFetch, method, uri, body, callback) {
-	  authFetch(method, syncServer + uri, body, function (err, status, body) {
-	    if (err) return callback(err);
+	  syncRequestInner(authFetch, method, uri, body, callback, 0);
+	}
+
+	function syncRequestInner(authFetch, method, uri, body, callback, serverIndex) {
+	  authFetch(method, syncServers[serverIndex] + uri, body, function (err, status, body) {
+	    if (err) {
+	      if (serverIndex < syncServers.length - 1) {
+	        return syncRequestInner(authFetch, method, uri, body, callback, serverIndex + 1);
+	      } else {
+	        return callback(err);
+	      }
+	    }
 	    try {
 	      var reply = JSON.parse(body);
 	    } catch (e) {
