@@ -21,9 +21,10 @@ var LoginWithAirbitz = React.createClass({
     }
   },
   render () {
-    var buttonUrl = 'airbitz-ret://x-callback-uri/edgelogin/[EDGELOGINTOKEN]'
-    buttonUrl = encodeURI(buttonUrl)
-    this.buttonBouncerUrl = 'https://airbitz.co/blf/?address=' + buttonUrl
+    this.buttonBouncerUrl = ''
+    if (this.state.edgeLoginRequest) {
+      this.buttonBouncerUrl = 'https://airbitz.co/elf/?address=' + this.state.edgeLoginRequest.id
+    }
 
     return (
       <div className="row">
