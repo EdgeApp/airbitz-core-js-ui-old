@@ -28,8 +28,11 @@ or just include this repo somewhere in your server's path.
 Include the `abcui.js` file in your code
 
     <script src="/path-to-abcui/assets/js/abcui.js"></script>
-
+    
 where `/path-to-abcui/` leads to the root directory of this repo when accessed via HTTP.
+Or using webpack:
+
+    var abcui = require('airbitz-core-js-ui')
 
 Now start diving in and make some calls
 
@@ -49,6 +52,10 @@ Create an overlay popup where a user can register a new account or login to a pr
 
 ![Login UI](https://airbitz.co/go/wp-content/uploads/2016/08/Screen-Shot-2016-08-26-at-12.50.04-PM.png)
 
+    _abcUi.openLoginWindow(function(error, account) {
+      _account = account;
+      
+    })
 
 Launch an account management window for changing password, PIN, and recovery questions
 
@@ -58,11 +65,36 @@ Launch an account management window for changing password, PIN, and recovery que
 
 ![Manage UI](https://airbitz.co/go/wp-content/uploads/2016/08/Screen-Shot-2016-08-26-at-12.50.26-PM.png)
 
-Get a rootkey that can be used as raw entropy for a cryptocurrency master key
+Get or create a wallet inside of the account
+    
+    _abcUi.openLoginWindow(function(error, account) {
+      _account = account;
+      
+      // Get the first wallet in the account that matches our required wallet type
+      const abcWallet = account.getFirstWallet('wallet:repo:ethereum');
+      if (abcWallet == null) {
+        // Create an ethereum wallet if one doesn't exist:
+        const keys = {
+          ethereumKey: new Buffer(secureRandom(32)).toString('hex')
+        }
+        account.createWallet(walletType, keys, function (err, id) {
+          if (err) {
+            // Yikes. This shouldn't fail except for network or disk errors  
+          } else {
+            _wallet = account.getWallet(id)
+            _key = _wallet.keys.ethereumKey
+            // Update your UI here
+          }
+        })
+      } else {
+        _wallet = abcWallet
+        _key = _wallet.keys.ethereumKey
+        // Update your UI here
+      }
+    }
 
-> Note that this is a temporary API as production API will store keys in an ABCWallet object
+`_key` can then be used as a secure source of entropy for this wallet within your app
 
-	_account.repoInfo.dataKey.toString('base64')
 
 Logoff a user
 
