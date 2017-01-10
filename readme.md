@@ -72,7 +72,7 @@ Get or create a wallet inside of the account
         const keys = {
           ethereumKey: new Buffer(secureRandom(32)).toString('hex')
         }
-        account.createWallet(walletType, keys, function (err, id) {
+        account.createWallet("wallet:repo:ethereum", keys, function (err, id) {
           if (err) {
             // Yikes. This shouldn't fail except for network or disk errors  
           } else {
