@@ -52,11 +52,6 @@ Create an overlay popup where a user can register a new account or login to a pr
 
 ![Login UI](https://airbitz.co/go/wp-content/uploads/2016/08/Screen-Shot-2016-08-26-at-12.50.04-PM.png)
 
-    _abcUi.openLoginWindow(function(error, account) {
-      _account = account;
-      
-    })
-
 Launch an account management window for changing password, PIN, and recovery questions
 
     _abcUi.openManageWindow(_account, function(error) {
