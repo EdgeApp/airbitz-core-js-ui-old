@@ -29,7 +29,6 @@ Include the `abcui.js` file in your code
 
     <script src="/path-to-abcui/assets/js/abcui.js"></script>
     
-where `/path-to-abcui/` leads to the root directory of this repo when accessed via HTTP.
 Or using webpack:
 
     var abcui = require('airbitz-core-js-ui')
@@ -43,6 +42,8 @@ Initialize the library
                                      'bundlePath': '/path-to-abcui/',
                                      'vendorName': 'My Awesome Project',
                                      'vendorImageUrl': 'https://mydomain.com/mylogo.png'});
+
+where `/path-to-abcui/` leads to the root directory of this repo when accessed via HTTP.
 
 Create an overlay popup where a user can register a new account or login to a previously created account via password or PIN.
 
