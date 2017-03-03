@@ -8,11 +8,11 @@ var BootstrapButton = React.createClass({
   },
   render () {
     if (this.state.loading) {
-      return (<button type="button" className="btn btn-primary" disabled="disabled">
-        <span className="glyphicon glyphicon-refresh glyphicon-refresh-animate" />
+      return (<button type='button' className='btn btn-primary' disabled='disabled'>
+        <span className='glyphicon glyphicon-refresh glyphicon-refresh-animate' />
       </button>)
     } else {
-      return (<button type="button" {...this.props} className="btn btn-primary">{this.props.children}</button>)
+      return (<button type='button' {...this.props} className='btn btn-primary'>{this.props.children}</button>)
     }
   },
   setLoading (isLoading, callback) {
@@ -25,17 +25,17 @@ var BootstrapInput = React.createClass({
     return { error: null, loading: null }
   },
   render () {
-    var classes = 'form-group '
+    // var classes = 'form-group '
     let subView
     if (this.state.loading) {
-      subView = (<span className="help-block"><span className="glyphicon glyphicon-refresh glyphicon-refresh-animate" /> {this.state.loading}</span>)
+      subView = (<span className='help-block'><span className='glyphicon glyphicon-refresh glyphicon-refresh-animate' /> {this.state.loading}</span>)
     } else if (this.state.error) {
-      subView = (<span className="help-block">{this.state.error}</span>)
-      classes += 'has-error'
+      subView = (<span className='help-block'>{this.state.error}</span>)
+      // classes += 'has-error'
     }
     return (
-      <div className="{classes}">
-        <input ref="input" onKeyPress={this.onKeyPress} {...this.props} />
+      <div className='{classes}'>
+        <input ref='input' onKeyPress={this.onKeyPress} {...this.props} />
         {subView}
       </div>)
   },
@@ -68,19 +68,19 @@ var BootstrapModal = React.createClass({
   },
   render () {
     return (
-      <div className="modal fade" ref="root">
-        <div className="modal-dialog modal-lg">
-          <div className="modal-content">
-            <div className="modal-header">
+      <div className='modal fade' ref='root'>
+        <div className='modal-dialog modal-lg'>
+          <div className='modal-content'>
+            <div className='modal-header'>
               <button
-                type="button"
-                className="close"
+                type='button'
+                className='close'
                 onClick={this.handleCancel}>
                 &times;
               </button>
               <h4>{this.state.title}</h4>
             </div>
-            <div className="modal-body">
+            <div className='modal-body'>
               {this.props.children}
             </div>
           </div>

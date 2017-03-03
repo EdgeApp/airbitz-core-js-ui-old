@@ -27,29 +27,29 @@ var LoginWithAirbitz = React.createClass({
     }
 
     return (
-      <div className="row">
-        <div className="col-sm-12 text-center">
-          <div className="form-group center-block" style={{'width': '320px'}}>
-            <a className="btn btn-block btn-social btn-facebook" onClick={this.onClick}>
-              <img src="Airbitz-icon-white-transparent.png" style={{'width': '28px', 'padding': '4px'}} />
+      <div className='row'>
+        <div className='col-sm-12 text-center'>
+          <div className='form-group center-block' style={{'width': '320px'}}>
+            <a className='btn btn-block btn-social btn-facebook' onClick={this.onClick}>
+              <img src='Airbitz-icon-white-transparent.png' style={{'width': '28px', 'padding': '4px'}} />
               {this.props.register ? strings.scan_barcode_to_register : strings.scan_barcode_to_signin}
             </a>
           </div>
           {this.state.initiatingLogin === null ? (
-            <div className="form-group center-block" style={{'width': '240px'}}>
-              <img id="barcode" style={{'width': '240px'}} />
+            <div className='form-group center-block' style={{'width': '240px'}}>
+              <img id='barcode' style={{'width': '240px'}} />
             </div>) : (
-            <div className="form-group text-center">
+              <div className='form-group text-center'>
               Initiating Login for user<br />
-              <b>{this.state.initiatingLogin}</b><br />
-              <span className="glyphicon glyphicon-refresh glyphicon-refresh-animate" />
-            </div>)}
-          <div className="form-group center-block" >
+                <b>{this.state.initiatingLogin}</b><br />
+                <span className='glyphicon glyphicon-refresh glyphicon-refresh-animate' />
+              </div>)}
+          <div className='form-group center-block' >
             <label>OR</label>
           </div>
         </div>
       </div>
-		)
+    )
   },
   componentDidMount () {
     var that = this

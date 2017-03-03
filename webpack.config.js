@@ -1,8 +1,8 @@
-/*eslint-disable no-var */
+/* eslint-disable no-var */
 
-var fs = require('fs');
-var path = require('path');
-var webpack = require('webpack');
+var fs = require('fs')
+var path = require('path')
+var webpack = require('webpack')
 
 module.exports = {
   entry: {
@@ -12,9 +12,9 @@ module.exports = {
   output: {
     filename: 'assets/js/[name].js',
     // Export the library as a global var:
-    libraryTarget: "var",
+    libraryTarget: 'var',
     // Name of the global var:
-    library: "[name]"
+    library: '[name]'
   },
 
   module: {
@@ -34,5 +34,5 @@ module.exports = {
         loader: 'json-loader'
       }
     ]
-  },
+  }
 }

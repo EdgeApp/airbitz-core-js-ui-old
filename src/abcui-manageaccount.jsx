@@ -16,12 +16,12 @@ var PasswordRequirementsInput = require('./abcui-password.jsx')
 var ManageAccountView = React.createClass({
   render () {
     return (
-      <BootstrapModal ref="modal" title="Manage Account" onClose={this.onClose}>
+      <BootstrapModal ref='modal' title='Manage Account' onClose={this.onClose}>
         <h4>ACCOUNT: <span>{window.parent.abcAccount.username}</span></h4>
-        <ul className="list-unstyled">
-          <li><Link className="btn" to={'/account/changepassword'}>Change Password</Link></li>
-          <li><Link className="btn" to={'/account/changepin'}>Change Pin</Link></li>
-          <li><Link className="btn" to={'/account/setuprecovery'}>Setup/Change Recovery</Link></li>
+        <ul className='list-unstyled'>
+          <li><Link className='btn' to={'/account/changepassword'}>Change Password</Link></li>
+          <li><Link className='btn' to={'/account/changepin'}>Change Pin</Link></li>
+          <li><Link className='btn' to={'/account/setuprecovery'}>Setup/Change Recovery</Link></li>
         </ul>
         {/*
          <h4>OPTIONS</h4>
@@ -52,28 +52,28 @@ var ManageAccountView = React.createClass({
 var ChangePasswordView = React.createClass({
   render () {
     return (
-      <BootstrapModal ref="modal" title="Change Password" onClose={this.onClose}>
-        <AbcUiFormView ref="form">
-          <div className="row">
-            <div className="col-sm-12">
-              <div className="form-group">
-                <input type="password" ref="currentPassword" placeholder="Current Password" className="form-control" />
+      <BootstrapModal ref='modal' title='Change Password' onClose={this.onClose}>
+        <AbcUiFormView ref='form'>
+          <div className='row'>
+            <div className='col-sm-12'>
+              <div className='form-group'>
+                <input type='password' ref='currentPassword' placeholder='Current Password' className='form-control' />
               </div>
             </div>
-            <div className="col-sm-12">
-              <div className="form-group">
-                <PasswordRequirementsInput ref="password" placeholder="Password" className="form-control" />
+            <div className='col-sm-12'>
+              <div className='form-group'>
+                <PasswordRequirementsInput ref='password' placeholder='Password' className='form-control' />
               </div>
             </div>
-            <div className="col-sm-12">
-              <div className="form-group">
-                <BootstrapInput type="password" ref="confirmPassword" placeholder="Confirm Password" className="form-control" onChange={this.comparePasswords} />
+            <div className='col-sm-12'>
+              <div className='form-group'>
+                <BootstrapInput type='password' ref='confirmPassword' placeholder='Confirm Password' className='form-control' onChange={this.comparePasswords} />
               </div>
             </div>
-            <div className="col-sm-12">
-              <div className="form-group">
-                <span className="input-group-btn">
-                  <BootstrapButton ref="changeButton" onClick={this.handleSubmit}>Save</BootstrapButton>
+            <div className='col-sm-12'>
+              <div className='form-group'>
+                <span className='input-group-btn'>
+                  <BootstrapButton ref='changeButton' onClick={this.handleSubmit}>Save</BootstrapButton>
                 </span>
               </div>
             </div>
@@ -128,29 +128,29 @@ var ChangePasswordView = React.createClass({
 var ChangePinView = React.createClass({
   render () {
     return (
-      <BootstrapModal ref="modal" title={this.props.route.title} onClose={this.onClose}>
-        <AbcUiFormView ref="form">
-          <div className="row">
+      <BootstrapModal ref='modal' title={this.props.route.title} onClose={this.onClose}>
+        <AbcUiFormView ref='form'>
+          <div className='row'>
             {!this.props.route.noRequirePassword ? (
-              <div className="col-sm-12">
-                <div className="form-group">
-                  <div className="input-group">
-                    <input type="password" ref="currentPassword" onKeyPress={this.handlePasswordKeyPress} placeholder="Current Password" className="form-control" />
+              <div className='col-sm-12'>
+                <div className='form-group'>
+                  <div className='input-group'>
+                    <input type='password' ref='currentPassword' onKeyPress={this.handlePasswordKeyPress} placeholder='Current Password' className='form-control' />
                   </div>
                 </div>
               </div>
             ) : null}
-            <div className="col-sm-12">
-              <div className="form-group">
-                <div className="input-group">
-                  <input type="password" ref="pin" onKeyPress={this.handlePinKeyPress} placeholder="New PIN" className="form-control" maxLength="4" />
+            <div className='col-sm-12'>
+              <div className='form-group'>
+                <div className='input-group'>
+                  <input type='password' ref='pin' onKeyPress={this.handlePinKeyPress} placeholder='New PIN' className='form-control' maxLength='4' />
                 </div>
               </div>
             </div>
-            <div className="col-sm-12">
-              <div className="form-group">
-                <span className="input-group-btn">
-                  <BootstrapButton ref="changeButton" onClick={this.handleSubmit}>Save</BootstrapButton>
+            <div className='col-sm-12'>
+              <div className='form-group'>
+                <span className='input-group-btn'>
+                  <BootstrapButton ref='changeButton' onClick={this.handleSubmit}>Save</BootstrapButton>
                 </span>
               </div>
             </div>

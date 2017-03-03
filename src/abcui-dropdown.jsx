@@ -4,8 +4,8 @@ var AbcUiDropDown = React.createClass({
   render () {
     var contentList = this.props.contentList
     var selectElement = (
-      <select ref="selectedItem"
-        className="form-control"
+      <select ref='selectedItem'
+        className='form-control'
         onChange={this.handleSelection}
         defaultValue={this.props.selectedItem}>
         {contentList.map(function (content) {
@@ -26,4 +26,3 @@ var AbcUiDropDown = React.createClass({
 })
 
 module.exports = AbcUiDropDown
-

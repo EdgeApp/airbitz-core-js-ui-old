@@ -15,12 +15,12 @@ var QuestionAnswerView = React.createClass({
   render () {
     if (this.props.setup) {
       return (
-        <div className="col-sm-12">
-          <div className="form-group">
-            <AbcUiDropDown ref="question" contentList={this.props.questionChoices} selectedItem={this.props.question} />
+        <div className='col-sm-12'>
+          <div className='form-group'>
+            <AbcUiDropDown ref='question' contentList={this.props.questionChoices} selectedItem={this.props.question} />
           </div>
-          <div className="form-group">
-            <input type="text" ref="answer" placeholder={this.props.answer} className="form-control" />
+          <div className='form-group'>
+            <input type='text' ref='answer' placeholder={this.props.answer} className='form-control' />
           </div>
         </div>
       )
@@ -45,10 +45,10 @@ var RecoveryView = React.createClass({
       <div>
         <BootstrapModal title={strings.password_recovery_text} onClose={this.onClose}>
           {strings.if_recovery_setup}<br /><br />
-          <a href="https://airbitz.co/app" target="_blank">https://airbitz.co/app</a><br /><br />
+          <a href='https://airbitz.co/app' target='_blank'>https://airbitz.co/app</a><br /><br />
           {strings.if_recovery_setup2}<br /><br />
-          <span className="input-group-btn">
-            <BootstrapButton ref="btn-close" onClick={this.onClose}>{strings.ok_button_text}</BootstrapButton>
+          <span className='input-group-btn'>
+            <BootstrapButton ref='btn-close' onClick={this.onClose}>{strings.ok_button_text}</BootstrapButton>
           </span>
         </BootstrapModal>
       </div>
@@ -91,9 +91,9 @@ var SetupRecoveryView = React.createClass({
       <div>
 
         {this.state.showQAModal ? (
-          <BootstrapModal id="recoverymodal" ref="modal" title={strings.password_recovery_text} onClose={this.onCloseQA}>
-            <AbcUiFormView ref="form">
-              <RecoveryQAView setup="1"
+          <BootstrapModal id='recoverymodal' ref='modal' title={strings.password_recovery_text} onClose={this.onCloseQA}>
+            <AbcUiFormView ref='form'>
+              <RecoveryQAView setup='1'
                 questions={questions}
                 answers={answers}
                 questionChoices={this.state.questionChoices}
@@ -104,29 +104,29 @@ var SetupRecoveryView = React.createClass({
         ) : null}
 
         {this.state.showEmailModal ? (
-          <BootstrapModal id="emailmodal" ref="emailmodal" title={strings.save_recovery_token_popup} onClose={this.onCloseEmail}>
-            <AbcUiFormView ref="emailform">
+          <BootstrapModal id='emailmodal' ref='emailmodal' title={strings.save_recovery_token_popup} onClose={this.onCloseEmail}>
+            <AbcUiFormView ref='emailform'>
               <label>{strings.save_recovery_token_popup_message}</label>
-              <input type="text" ref="email" placeholder={strings.email_address_text} className="form-control" /><br />
-              <a className="btn btn-block btn-social btn-google" onClick={this.callBackGmail}>
-                <span className="fa fa-google"></span>
+              <input type='text' ref='email' placeholder={strings.email_address_text} className='form-control' /><br />
+              <a className='btn btn-block btn-social btn-google' onClick={this.callBackGmail}>
+                <span className='fa fa-google' />
                 {String.format(strings.send_using_xx, 'Gmail')}
               </a>
-              <a className="btn btn-block btn-social btn-yahoo" onClick={this.callBackYahoo}>
-                <span className="fa fa-yahoo"></span>
+              <a className='btn btn-block btn-social btn-yahoo' onClick={this.callBackYahoo}>
+                <span className='fa fa-yahoo' />
                 {String.format(strings.send_using_xx, 'Yahoo')}
               </a>
-              <a className="btn btn-block btn-social btn-microsoft" onClick={this.callBackYahoo}>
-                <span className="fa fa-windows"></span>
+              <a className='btn btn-block btn-social btn-microsoft' onClick={this.callBackYahoo}>
+                <span className='fa fa-windows' />
                 {String.format(strings.send_using_xx, 'Hotmail, Outlook, Live Mail')}
               </a>
-              <a className="btn btn-block btn-social btn-reddit" onClick={this.callBackEmailGeneric}>
-                <span className="fa fa-envelope"></span>
+              <a className='btn btn-block btn-social btn-reddit' onClick={this.callBackEmailGeneric}>
+                <span className='fa fa-envelope' />
                 {String.format(strings.send_using_xx, 'Email App')}
               </a><br />
 
               {this.state.showDone ? (
-                <a className="btn btn-block btn-primary" onClick={this.callBackEmailDone}>
+                <a className='btn btn-block btn-primary' onClick={this.callBackEmailDone}>
                   {strings.done_text}
                 </a>
               ) : null}
@@ -286,31 +286,31 @@ var RecoveryQAView = React.createClass({
     'use strict'
 
     return (
-      <div className="row">
+      <div className='row'>
         <QuestionAnswerView
-          ref="qa1"
+          ref='qa1'
           question={this.props.questions[0]}
           answer={this.props.answers[0]}
-          setup="1"
+          setup='1'
           questionChoices={this.props.questionChoices} />
         <QuestionAnswerView
-          ref="qa2"
+          ref='qa2'
           question={this.props.questions[1]}
           answer={this.props.answers[1]}
-          setup="1"
+          setup='1'
           questionChoices={this.props.questionChoices} />
         {this.props.requirePassword ? (
-          <div className="col-sm-12">
-            <div className="form-group">
+          <div className='col-sm-12'>
+            <div className='form-group'>
               <label>Current password</label>
-              <input type="password" ref="currentPassword" placeholder={strings.current_password_text} className="form-control" />
+              <input type='password' ref='currentPassword' placeholder={strings.current_password_text} className='form-control' />
             </div>
           </div>
         ) : null}
-        <div className="col-sm-12">
-          <div className="form-group">
-            <span className="input-group-btn">
-              <BootstrapButton ref="register" onClick={this.handleSubmit}>{strings.save_button_text}</BootstrapButton>
+        <div className='col-sm-12'>
+          <div className='form-group'>
+            <span className='input-group-btn'>
+              <BootstrapButton ref='register' onClick={this.handleSubmit}>{strings.save_button_text}</BootstrapButton>
             </span>
           </div>
         </div>
