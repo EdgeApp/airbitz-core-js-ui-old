@@ -100,21 +100,25 @@ var ChangePasswordView = React.createClass({
       this.refs.form.setState({'error': 'Insufficient password'})
     } else if (!this.passwordsMatch()) {
       this.refs.form.setState({'error': 'Password mismatch'})
-    } else if (account.passwordOk(this.refs.currentPassword.value)) {
-      this.refs.changeButton.setLoading(true)
-      window.parent.abcAccount.passwordSetup(this.refs.password.value(), function (err, result) {
-        if (err) {
-          that.refs.form.setState({'error': ABCError(err, 'Invalid Password').message})
-        } else {
-          that.refs.modal.close()
-          if (window.parent.exitCallback) {
-            window.parent.exitCallback()
-          }
-        }
-        that.refs.changeButton.setLoading(false)
-      })
     } else {
-      that.refs.form.setState({'error': 'Incorrect current password'})
+      account.passwordOk(this.refs.currentPassword.value).then((isPasswordCorrect) => {
+        if (isPasswordCorrect) {
+          this.refs.changeButton.setLoading(true)
+          window.parent.abcAccount.passwordSetup(this.refs.password.value(), function (err, result) {
+            if (err) {
+              that.refs.form.setState({'error': ABCError(err, 'Invalid Password').message})
+            } else {
+              that.refs.modal.close()
+              if (window.parent.exitCallback) {
+                window.parent.exitCallback()
+              }
+            }
+            that.refs.changeButton.setLoading(false)
+          })
+        } else {
+          that.refs.form.setState({'error': 'Incorrect current password'})
+        }
+      })
     }
   },
   onClose () {
@@ -172,7 +176,8 @@ var ChangePinView = React.createClass({
     var that = this
     var account = window.parent.abcAccount
 
-    if (this.props.route.noRequirePassword || account.passwordOk(this.refs.currentPassword.value)) {
+    if (this.props.route.noRequirePassword) {
+      // change the pin
       this.refs.changeButton.setLoading(true)
       window.parent.abcAccount.pinSetup(this.refs.pin.value, function (err, result) {
         if (err) {
@@ -186,9 +191,29 @@ var ChangePinView = React.createClass({
         that.refs.changeButton.setLoading(false)
       })
     } else {
-      that.refs.form.setState({'error': 'Incorrect current password'})
+      account.passwordOk(this.refs.currentPassword.value).then((isPasswordCorrect) => {
+        if (isPasswordCorrect) {
+          // change the pin
+          this.refs.changeButton.setLoading(true)
+          window.parent.abcAccount.pinSetup(this.refs.pin.value, function (err, result) {
+            if (err) {
+              that.refs.form.setState({'error': ABCError(err, strings.error_setting_pin_text).message})
+            } else {
+              that.refs.modal.close()
+              if (window.parent.exitCallback) {
+                window.parent.exitCallback()
+              }
+            }
+            that.refs.changeButton.setLoading(false)
+          })
+        } else {
+          // incorrect password
+          that.refs.form.setState({'error': 'Incorrect current password'})
+        }
+      })
     }
   },
+
   onClose () {
     'use strict'
     if (window.parent.exitCallback) {
